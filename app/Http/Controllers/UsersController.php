@@ -49,26 +49,26 @@ class UsersController extends Controller
 
 
     /**
-    * Returns a view that invokes the ajax tables which actually contains
-    * the content for the users listing, which is generated in getDatatable().
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @see UsersController::getDatatable() method that generates the JSON response
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that invokes the ajax tables which actually contains
+     * the content for the users listing, which is generated in getDatatable().
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @see UsersController::getDatatable() method that generates the JSON response
+     * @since [v1.0]
+     * @return View
+     */
     public function getIndex()
     {
         return View::make('users/index');
     }
 
     /**
-    * Returns a view that displays the user creation form.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that displays the user creation form.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return View
+     */
     public function getCreate()
     {
 
@@ -89,19 +89,19 @@ class UsersController extends Controller
         $company_list = Helper::companyList();
 
         return View::make('users/edit', compact('groups', 'userGroups', 'permissions', 'userPermissions'))
-        ->with('location_list', $location_list)
-        ->with('manager_list', $manager_list)
-        ->with('company_list', $company_list)
-        ->with('user', new User);
+            ->with('location_list', $location_list)
+            ->with('manager_list', $manager_list)
+            ->with('company_list', $company_list)
+            ->with('user', new User);
     }
 
     /**
-    * Validate and store the new user data, or return an error.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Validate and store the new user data, or return an error.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return Redirect
+     */
     public function postCreate(SaveUserRequest $request)
     {
 
@@ -159,7 +159,7 @@ class UsersController extends Controller
             }
 
             if (($request->input('email_user') == 1) && ($request->has('email'))) {
-              // Send the credentials through email
+                // Send the credentials through email
                 $data = array();
                 $data['email'] = e($request->input('email'));
                 $data['username'] = e($request->input('username'));
@@ -182,13 +182,13 @@ class UsersController extends Controller
     }
 
     /**
-    * JSON handler for creating a user through a modal popup
-    *
-    * @todo Handle validation more graciously
-    * @author [B. Wetherington] [<uberbrady@gmail.com>]
-    * @since [v1.8]
-    * @return string JSON
-    */
+     * JSON handler for creating a user through a modal popup
+     *
+     * @todo Handle validation more graciously
+     * @author [B. Wetherington] [<uberbrady@gmail.com>]
+     * @since [v1.8]
+     * @return string JSON
+     */
     public function store()
     {
 
@@ -208,7 +208,7 @@ class UsersController extends Controller
 
 
 
-      // Was the user created?
+        // Was the user created?
         if ($user->save()) {
 
             if (Input::get('email_user') == 1) {
@@ -237,21 +237,21 @@ class UsersController extends Controller
     }
 
     /**
-    * Returns a view that displays the edit user form
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param int $id
-    * @return View
-    */
+     * Returns a view that displays the edit user form
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param int $id
+     * @return View
+     */
 
     private function filterDisplayable($permissions) {
         $output = null;
         foreach($permissions as $key=>$permission) {
-                $output[$key] = array_filter($permission, function($p) {
-                    return $p['display'] === true;
-                });
-            }
+            $output[$key] = array_filter($permission, function($p) {
+                return $p['display'] === true;
+            });
+        }
         return $output;
     }
 
@@ -285,19 +285,19 @@ class UsersController extends Controller
 
         // Show the page
         return View::make('users/edit', compact('user', 'groups', 'userGroups', 'permissions', 'userPermissions'))
-                        ->with('location_list', $location_list)
-                        ->with('company_list', $company_list)
-                        ->with('manager_list', $manager_list);
+            ->with('location_list', $location_list)
+            ->with('company_list', $company_list)
+            ->with('manager_list', $manager_list);
     }
 
     /**
-    * Validate and save edited user data from edit form.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param  int  $id
-    * @return Redirect
-    */
+     * Validate and save edited user data from edit form.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param  int  $id
+     * @return Redirect
+     */
     public function postEdit(UpdateUserRequest $request, $id = null)
     {
         // We need to reverse the UI specific logic for our
@@ -330,7 +330,7 @@ class UsersController extends Controller
             if (!Company::isCurrentUserHasAccess($user)) {
                 return redirect()->route('users')->with('error', trans('general.insufficient_permissions'));
             }
-            
+
         } catch (UserNotFoundException $e) {
             $error = trans('admin/users/message.user_not_found', compact('id'));
             return redirect()->route('users')->with('error', $error);
@@ -356,7 +356,7 @@ class UsersController extends Controller
         $user->email = e($request->input('email'));
 
 
-       // Update the user
+        // Update the user
         $user->first_name = e($request->input('first_name'));
         $user->last_name = e($request->input('last_name'));
         $user->two_factor_optin = e($request->input('two_factor_optin'));
@@ -376,7 +376,7 @@ class UsersController extends Controller
         if (!Auth::user()->isSuperUser()) {
             unset($permissions_array['superuser']);
             $permissions_array['superuser'] = $orig_superuser;
-       }
+        }
 
 
         $user->permissions =  json_encode($permissions_array);
@@ -394,7 +394,7 @@ class UsersController extends Controller
         }
 
 
-            // Was the user updated?
+        // Was the user updated?
         if ($user->save()) {
 
 
@@ -405,18 +405,18 @@ class UsersController extends Controller
             return redirect()->route('users')->with('success', $success);
         }
 
-            return redirect()->back()->withInput()->withErrors($user->getErrors());
+        return redirect()->back()->withInput()->withErrors($user->getErrors());
 
     }
 
     /**
-    * Delete a user
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param  int  $id
-    * @return Redirect
-    */
+     * Delete a user
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param  int  $id
+     * @return Redirect
+     */
     public function getDelete($id = null)
     {
         try {
@@ -463,12 +463,12 @@ class UsersController extends Controller
     }
 
     /**
-    * Returns a view that confirms the user's a bulk delete will be applied to.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.7]
-    * @return View
-    */
+     * Returns a view that confirms the user's a bulk delete will be applied to.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.7]
+     * @return View
+     */
     public function postBulkEdit()
     {
 
@@ -482,19 +482,19 @@ class UsersController extends Controller
             //print_r($licenses);
 
             $users = User::whereIn('id', $user_raw_array)->with('groups', 'assets', 'licenses', 'accessories')->get();
-           // $users = Company::scopeCompanyables($users)->get();
+            // $users = Company::scopeCompanyables($users)->get();
 
             return View::make('users/confirm-bulk-delete', compact('users', 'statuslabel_list'));
         }
     }
 
     /**
-    * Soft-delete bulk users
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Soft-delete bulk users
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return Redirect
+     */
     public function postBulkSave()
     {
 
@@ -510,7 +510,7 @@ class UsersController extends Controller
             if (($key = array_search(Auth::user()->id, $user_raw_array)) !== false) {
                 unset($user_raw_array[$key]);
             }
-            
+
 
             if (!config('app.lock_passwords')) {
 
@@ -539,9 +539,9 @@ class UsersController extends Controller
 
                     Asset::whereIn('id', $asset_array)->update(
                         array(
-                                'status_id' => e(Input::get('status_id')),
-                                'assigned_to' => null,
-                            )
+                            'status_id' => e(Input::get('status_id')),
+                            'assigned_to' => null,
+                        )
                     );
                 }
 
@@ -592,17 +592,17 @@ class UsersController extends Controller
     }
 
     /**
-    * Restore a deleted user
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param  int  $id
-    * @return Redirect
-    */
+     * Restore a deleted user
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param  int  $id
+     * @return Redirect
+     */
     public function getRestore($id = null)
     {
 
-            // Get user information
+        // Get user information
         if (!$user = User::onlyTrashed()->find($id)) {
             return redirect()->route('users')->with('error', trans('admin/users/messages.user_not_found'));
         }
@@ -623,13 +623,13 @@ class UsersController extends Controller
 
 
     /**
-    * Return a view with user detail
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param  int  $userId
-    * @return View
-    */
+     * Return a view with user detail
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param  int  $userId
+     * @return View
+     */
     public function getView($userId = null)
     {
 
@@ -654,13 +654,13 @@ class UsersController extends Controller
     }
 
     /**
-    * Unsuspend a user.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param  int  $id
-    * @return Redirect
-    */
+     * Unsuspend a user.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param  int  $id
+     * @return Redirect
+     */
     public function getUnsuspend($id = null)
     {
         try {
@@ -698,14 +698,14 @@ class UsersController extends Controller
 
 
     /**
-    * Return a view containing a pre-populated new user form,
-    * populated with some fields from an existing user.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param  int  $id
-    * @return Redirect
-    */
+     * Return a view containing a pre-populated new user form,
+     * populated with some fields from an existing user.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param  int  $id
+     * @return Redirect
+     */
     public function getClone($id = null)
     {
         // We need to reverse the UI specific logic for our
@@ -744,13 +744,13 @@ class UsersController extends Controller
 
             // Show the page
             return View::make('users/edit', compact('groups', 'userGroups', 'permissions', 'userPermissions'))
-                            ->with('location_list', $location_list)
-                            ->with('company_list', $company_list)
-                            ->with('manager_list', $manager_list)
-                            ->with('user', $user)
-                            ->with('groups', $groups)
-                            ->with('userGroups', $userGroups)
-                            ->with('clone_user', $user_to_clone);
+                ->with('location_list', $location_list)
+                ->with('company_list', $company_list)
+                ->with('manager_list', $manager_list)
+                ->with('user', $user)
+                ->with('groups', $groups)
+                ->with('userGroups', $userGroups)
+                ->with('clone_user', $user_to_clone);
         } catch (UserNotFoundException $e) {
             // Prepare the error message
             $error = trans('admin/users/message.user_not_found', compact('id'));
@@ -761,12 +761,12 @@ class UsersController extends Controller
     }
 
     /**
-    * Return user import view
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @return View
-    */
+     * Return user import view
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return View
+     */
     public function getImport()
     {
         // Get all the available groups
@@ -784,12 +784,12 @@ class UsersController extends Controller
     }
 
     /**
-    * Handle user import file
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Handle user import file
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return Redirect
+     */
     public function postImport()
     {
 
@@ -884,13 +884,13 @@ class UsersController extends Controller
     }
 
     /**
-    * Return JSON response with a list of user details for the getIndex() view.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.6]
-    * @see UsersController::getIndex() method that consumed this JSON response
-    * @return string JSON
-    */
+     * Return JSON response with a list of user details for the getIndex() view.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.6]
+     * @see UsersController::getIndex() method that consumed this JSON response
+     * @return string JSON
+     */
     public function getDatatable(Request $request, $status = null)
     {
 
@@ -913,7 +913,7 @@ class UsersController extends Controller
         }
 
         $users = User::select(array('users.id','users.employee_num','users.two_factor_enrolled','users.jobtitle','users.email','users.username','users.location_id','users.manager_id','users.first_name','users.last_name','users.created_at','users.notes','users.company_id', 'users.deleted_at','users.activated'))
-        ->with('assets', 'accessories', 'consumables', 'licenses', 'manager', 'groups', 'userloc', 'company','throttle');
+            ->with('assets', 'accessories', 'consumables', 'licenses', 'manager', 'groups', 'userloc', 'company','throttle');
         $users = Company::scopeCompanyables($users);
 
         switch ($status) {
@@ -926,7 +926,7 @@ class UsersController extends Controller
             $users = $users->TextSearch(Input::get('search'));
         }
 
-         $order = Input::get('order') === 'asc' ? 'asc' : 'desc';
+        $order = Input::get('order') === 'asc' ? 'asc' : 'desc';
 
         switch (Input::get('sort')) {
             case 'manager':
@@ -937,11 +937,11 @@ class UsersController extends Controller
                 break;
             default:
                 $allowed_columns =
-                [
-                 'last_name','first_name','email','jobtitle','username','employee_num',
-                 'assets','accessories', 'consumables','licenses','groups','activated','created_at',
-                 'two_factor_enrolled','two_factor_optin'
-                ];
+                    [
+                        'last_name','first_name','email','jobtitle','username','employee_num',
+                        'assets','accessories', 'consumables','licenses','groups','activated','created_at',
+                        'two_factor_enrolled','two_factor_optin'
+                    ];
 
                 $sort = in_array($sort, $allowed_columns) ? $sort : 'first_name';
                 $users = $users->orderBy($sort, $order);
@@ -962,37 +962,37 @@ class UsersController extends Controller
             }
 
 
-                if (!is_null($user->deleted_at)) {
-                    if (Gate::allows('users.delete')) {
-                        $actions .= '<a href="' . route('restore/user',
-                                $user->id) . '" class="btn btn-warning btn-sm"><i class="fa fa-share icon-white"></i></a> ';
-                    }
-                } else {
+            if (!is_null($user->deleted_at)) {
+                if (Gate::allows('users.delete')) {
+                    $actions .= '<a href="' . route('restore/user',
+                            $user->id) . '" class="btn btn-warning btn-sm"><i class="fa fa-share icon-white"></i></a> ';
+                }
+            } else {
 
-                    if (Gate::allows('users.delete')) {
-                        if ($user->accountStatus() == 'suspended') {
-                            $actions .= '<a href="' . route('unsuspend/user',
-                                    $user->id) . '" class="btn btn-default btn-sm"><span class="fa fa-clock-o"></span></a> ';
-                        }
-                    }
-                    if (Gate::allows('users.edit')) {
-                        $actions .= '<a href="' . route('update/user',
-                                $user->id) . '" class="btn btn-warning btn-sm"><i class="fa fa-pencil icon-white"></i></a> ';
-
-                        $actions .= '<a href="' . route('clone/user',
-                                $user->id) . '" class="btn btn-info btn-sm"><i class="fa fa-clone"></i></a>';
-                    }
-                    if (Gate::allows('users.delete')) {
-                        if ((Auth::user()->id !== $user->id) && (!config('app.lock_passwords'))) {
-                            $actions .= '<a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="' . route('delete/user',
-                                    $user->id) . '" data-content="Are you sure you wish to delete this user?" data-title="Delete ' . htmlspecialchars($user->first_name) . '?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a> ';
-                        } else {
-                            $actions .= ' <span class="btn delete-asset btn-danger btn-sm disabled"><i class="fa fa-trash icon-white"></i></span>';
-                        }
-                    } else {
-                        $actions.='';
+                if (Gate::allows('users.delete')) {
+                    if ($user->accountStatus() == 'suspended') {
+                        $actions .= '<a href="' . route('unsuspend/user',
+                                $user->id) . '" class="btn btn-default btn-sm"><span class="fa fa-clock-o"></span></a> ';
                     }
                 }
+                if (Gate::allows('users.edit')) {
+                    $actions .= '<a href="' . route('update/user',
+                            $user->id) . '" class="btn btn-warning btn-sm"><i class="fa fa-pencil icon-white"></i></a> ';
+
+                    $actions .= '<a href="' . route('clone/user',
+                            $user->id) . '" class="btn btn-info btn-sm"><i class="fa fa-clone"></i></a>';
+                }
+                if (Gate::allows('users.delete')) {
+                    if ((Auth::user()->id !== $user->id) && (!config('app.lock_passwords'))) {
+                        $actions .= '<a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="' . route('delete/user',
+                                $user->id) . '" data-content="Are you sure you wish to delete this user?" data-title="Delete ' . htmlspecialchars($user->first_name) . '?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a> ';
+                    } else {
+                        $actions .= ' <span class="btn delete-asset btn-danger btn-sm disabled"><i class="fa fa-trash icon-white"></i></span>';
+                    }
+                } else {
+                    $actions.='';
+                }
+            }
 
             $actions .= '</nobr>';
 
@@ -1002,9 +1002,9 @@ class UsersController extends Controller
                 'name'          => '<a title="'.e($user->fullName()).'" href="'.config('app.url').'/admin/users/'.e($user->id).'/view">'.e($user->fullName()).'</a>',
                 'jobtitle'          => e($user->jobtitle),
                 'email'         => ($user->email!='') ?
-                            '<a href="mailto:'.e($user->email).'" class="hidden-md hidden-lg">'.e($user->email).'</a>'
-                            .'<a href="mailto:'.e($user->email).'" class="hidden-xs hidden-sm"><i class="fa fa-envelope"></i></a>'
-                            .'</span>' : '',
+                    '<a href="mailto:'.e($user->email).'" class="hidden-md hidden-lg">'.e($user->email).'</a>'
+                    .'<a href="mailto:'.e($user->email).'" class="hidden-xs hidden-sm"><i class="fa fa-envelope"></i></a>'
+                    .'</span>' : '',
                 'username'         => e($user->username),
                 'location'      => ($user->userloc) ? e($user->userloc->name) : '',
                 'manager'         => ($user->manager) ? '<a title="' . e($user->manager->fullName()) . '" href="'.config('app.url').'/' . e($user->manager->id) . '/view">' . e($user->manager->fullName()) . '</a>' : '',
@@ -1029,13 +1029,13 @@ class UsersController extends Controller
     }
 
     /**
-    * Return JSON response with a list of user details for the getIndex() view.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.6]
-    * @param int $userId
-    * @return string JSON
-    */
+     * Return JSON response with a list of user details for the getIndex() view.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.6]
+     * @param int $userId
+     * @return string JSON
+     */
     public function postUpload(AssetFileRequest $request, $userId = null)
     {
 
@@ -1056,7 +1056,7 @@ class UsersController extends Controller
                 $filename .= '-' . str_slug($file->getClientOriginalName()) . '.' . $extension;
                 $upload_success = $file->move($destinationPath, $filename);
 
-              //Log the deletion of seats to the log
+                //Log the deletion of seats to the log
                 $logaction = new Actionlog();
                 $logaction->item_id = $user->id;
                 $logaction->item_type = User::class;
@@ -1078,14 +1078,14 @@ class UsersController extends Controller
 
 
     /**
-    * Delete file
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.6]
-    * @param  int  $userId
-    * @param  int  $fileId
-    * @return Redirect
-    */
+     * Delete file
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.6]
+     * @param  int  $userId
+     * @param  int  $fileId
+     * @return Redirect
+     */
     public function getDeleteFile($userId = null, $fileId = null)
     {
         $user = User::find($userId);
@@ -1114,14 +1114,14 @@ class UsersController extends Controller
     }
 
     /**
-    * Display/download the uploaded file
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.6]
-    * @param  int  $userId
-    * @param  int  $fileId
-    * @return mixed
-    */
+     * Display/download the uploaded file
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.6]
+     * @param  int  $userId
+     * @param  int  $fileId
+     * @return mixed
+     */
     public function displayFile($userId = null, $fileId = null)
     {
 
@@ -1146,12 +1146,12 @@ class UsersController extends Controller
     }
 
     /**
-    * Return view for LDAP import
-    *
-    * @author Aladin Alaily
-    * @since [v1.8]
-    * @return View
-    */
+     * Return view for LDAP import
+     *
+     * @author Aladin Alaily
+     * @since [v1.8]
+     * @return View
+     */
     public function getLDAP()
     {
 
@@ -1171,21 +1171,21 @@ class UsersController extends Controller
         }
 
         return View::make('users/ldap')
-              ->with('location_list', $location_list);
+            ->with('location_list', $location_list);
 
     }
 
 
     /**
-    * Declare the rules for the ldap fields validation.
-    *
-    * @author Aladin Alaily
-    * @since [v1.8]
-    * @var array
-    * @deprecated 3.0
-    * @todo remove this method in favor of other validation
-    * @var array
-    */
+     * Declare the rules for the ldap fields validation.
+     *
+     * @author Aladin Alaily
+     * @since [v1.8]
+     * @var array
+     * @deprecated 3.0
+     * @todo remove this method in favor of other validation
+     * @var array
+     */
 
     protected $ldapValidationRules = array(
         'firstname' => 'required|string|min:2',
@@ -1195,12 +1195,12 @@ class UsersController extends Controller
     );
 
     /**
-    * LDAP form processing.
-    *
-    * @author Aladin Alaily
-    * @since [v1.8]
-    * @return Redirect
-    */
+     * LDAP form processing.
+     *
+     * @author Aladin Alaily
+     * @since [v1.8]
+     * @return Redirect
+     */
     public function postLDAP(Request $request)
     {
         ini_set('max_execution_time', 600); //600 seconds = 10 minutes
@@ -1252,15 +1252,21 @@ class UsersController extends Controller
                     $item["createorupdate"] = 'created';
                 }
 
-              // Create the user if they don't exist.
+                // Create the user if they don't exist.
 
 
                 $user->first_name = e($item["firstname"]);
                 $user->last_name = e($item["lastname"]);
                 $user->username = e($item["username"]);
-                $user->email = e($item["email"]);
                 $user->employee_num = e($item["employee_number"]);
                 $user->activated = 1;
+                $user->email = e($item["email"]);
+
+                if ($user->email == ""){
+                    $email = $user->getEmailAddress();
+                    $user->email = $email;
+                }
+
                 if ($request->input('location_id')!='') {
                     $user->location_id = e($request->input('location_id'));
                 }
@@ -1291,12 +1297,12 @@ class UsersController extends Controller
     }
 
     /**
-    * Return JSON containing a list of assets assigned to a user.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v3.0]
-    * @return string JSON
-    */
+     * Return JSON containing a list of assets assigned to a user.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return string JSON
+     */
     public function getAssetList($userId)
     {
         $assets = Asset::where('assigned_to', '=', $userId)->with('model')->get();
@@ -1341,7 +1347,7 @@ class UsersController extends Controller
                     trans('admin/users/table.activated'),
                     trans('general.created_at')
                 ];
-                
+
                 fputcsv($handle, $headers);
 
                 foreach ($users as $user) {

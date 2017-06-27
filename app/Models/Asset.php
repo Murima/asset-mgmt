@@ -12,6 +12,7 @@ use App\Models\Setting;
 use Auth;
 use Config;
 use DateTime;
+use DebugBar\DebugBar;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Log;
@@ -151,7 +152,8 @@ class Asset extends Depreciable
         if ((($this->requireAcceptance()=='1')  || ($this->getEula())) && (!config('app.lock_passwords'))) {
 
             \Mail::send('emails.accept-asset', $data, function ($m) use ($user) {
-                $m->to($user->email, $user->first_name . ' ' . $user->last_name);
+                //DebugBar::addMessage($user->getEmailAddress(), 'send');
+                $m->to($user->getEmailAddress(), $user->first_name . ' ' . $user->last_name);
                 $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
                 $m->subject(trans('mail.Confirm_asset_delivery'));
             });

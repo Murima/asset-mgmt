@@ -125,6 +125,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return "{$this->first_name} {$this->last_name}";
     }
 
+    /**
+     * Generates email address on the fly
+     * @return string
+     */
+    public function getEmailAddress(){
+        $email_domain = Setting::getSettings()->email_domain;
+        return $this->first_name . "." . $this->last_name . "@" .$email_domain;
+    }
+
     public function getFullNameAttribute()
     {
         return $this->first_name . " " . $this->last_name;

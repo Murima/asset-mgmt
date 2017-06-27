@@ -130,7 +130,9 @@
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
-                    @can('assets.view')
+                    <!--removed top NAV features-->
+
+                    {{--@can('assets.view')
                         <li {!! (Request::is('hardware*') ? ' class="active"' : '') !!}>
                             <a href="{{ URL::to('hardware') }}">
                                 <i class="fa fa-barcode"></i>
@@ -164,7 +166,7 @@
                                 <i class="fa fa-hdd-o"></i>
                             </a>
                         </li>
-                    @endcan
+                    @endcan--}}
 
                     @can('assets.view')
                         <form class="navbar-form navbar-left form-horizontal" role="search" action="{{ route('findbytag/hardware') }}" method="get">
@@ -586,13 +588,8 @@
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> {{ config('version.app_version') }}  build {{ config('version.build_version') }} ({{ config('version.hash_version') }})
-            <a target="_blank" class="btn btn-default btn-xs" href="https://snipe-it.readme.io">Documentation</a>
-            <a target="_blank" class="btn btn-default btn-xs" href="https://snipe-it-manual.readme.io">User's Manual</a>
-            <a target="_blank" class="btn btn-default btn-xs" href="https://snipeitapp.com/support/">Report a Bug</a>
+           {{-- <b>Version</b> {{ config('version.app_version') }}  build {{ config('version.build_version') }} ({{ config('version.hash_version') }})--}}
         </div>
-        <a target="_blank" href="https://snipeitapp.com">Snipe-IT</a> is an open source
-        project, made with <i class="fa fa-heart" style="color: #a94442; font-size: 10px"></i> by <a href="https://twitter.com/snipeyhead">@snipeyhead</a>.
     </footer>
 
 
