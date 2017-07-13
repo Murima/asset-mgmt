@@ -29,6 +29,7 @@ class Category extends SnipeModel
         'user_id' => 'numeric',
         'name'   => 'required|min:1|max:255|unique_undeleted',
         'category_type'   => 'required',
+        'category_prefix' => 'required|min:3',
     );
 
     /**
@@ -48,7 +49,7 @@ class Category extends SnipeModel
      *
      * @var array
      */
-    protected $fillable = ['name','category_type'];
+    protected $fillable = ['name','category_type', 'category_prefix'];
 
 
     public function has_models()

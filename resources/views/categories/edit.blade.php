@@ -8,6 +8,7 @@
 @section('inputFields')
 
 @include ('partials.forms.edit.name', ['translated_name' => trans('admin/categories/general.category_name')])
+@include('partials.forms.edit.tag_prefix', ['translated_name'=>trans('admin/categories/general.category_prefix')])
 
 <!-- Type -->
 <div class="form-group {{ $errors->has('category_type') ? ' has-error' : '' }}">

@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> 'Accessories',
     'activated'			=> 'Activated',
     'accessory'				=> 'Accessory',
@@ -159,6 +159,7 @@
     'supplier'              => 'Supplier',
     'suppliers'  			=> 'Suppliers',
     'submit'				=> 'Submit',
+    'tag_prefix'            => 'Tag prefix',
     'total_assets'			=> 'total assets',
     'total_licenses'		=> 'total licenses',
     'total_accessories'		=> 'total accessories',
@@ -182,4 +183,4 @@
     'zip'  					=> 'Zip',
     'noimage'					=> 'No image uploaded or image not found.',
     'token_expired'             => 'Your form session has expired. Please try again.',
-    ];
+];

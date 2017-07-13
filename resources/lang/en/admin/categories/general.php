@@ -5,6 +5,7 @@ return array(
     'about_categories'  				=> 'Categories help you organize your items. Some example categories might be &quot;Desktops&quot;, &quot;Laptops&quot;, &quot;Mobile Phones&quot;, &quot;Tablets&quot;, and so on, but you can use categories any way that makes sense for you.',
     'asset_categories' 					=> 'Asset Categories',
     'category_name'  					=> 'Category Name',
+    'category_prefix'                   => 'Category Prefix',
     'checkin_email'                     => 'Send email to user on checkin.',
     'clone'                             => 'Clone Category',
     'create'  							=> 'Create Category',

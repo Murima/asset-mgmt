@@ -74,6 +74,7 @@ class CategoriesController extends Controller
 
         // Update the category data
         $category->name                 = e(Input::get('name'));
+        $category->category_prefix               = e(input::get('category_prefix'));
         $category->category_type        = e(Input::get('category_type'));
         $category->eula_text            = e(Input::get('eula_text'));
         $category->use_default_eula     = e(Input::get('use_default_eula', '0'));
@@ -291,6 +292,7 @@ class CategoriesController extends Controller
                 'id'      => $category->id,
                 'name'  => (string)link_to('/admin/settings/categories/'.$category->id.'/view', $category->name) ,
                 'category_type' => ucwords($category->category_type),
+                'category_prefix'=> $category->category_prefix,
                 'count'         => $category->itemCount(),
                 'acceptance'    => ($category->require_acceptance=='1') ? '<i class="fa fa-check"></i>' : '',
                 'eula'          => ($category->getEula()) ? '<i class="fa fa-check"></i>' : '',

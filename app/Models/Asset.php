@@ -495,6 +495,7 @@ class Asset extends Depreciable
             $asset_tag = preg_replace('/^0*/', '', $asset_tag_digits);
 
             if ($settings->zerofill_count > 0) {
+
                 return $settings->auto_increment_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);
             }
             return $settings->auto_increment_prefix.($asset_tag + 1);
