@@ -12,7 +12,7 @@ use App\Models\Setting;
 use Auth;
 use Config;
 use DateTime;
-use DebugBar\DebugBar;
+use Debugbar;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Log;
@@ -491,9 +491,11 @@ class Asset extends Depreciable
                 ->where('physical', '=', '1')
                 ->max('asset_tag');
 
+            Debugbar::addMessage('temp', $temp_asset_tag);
             $asset_tag_digits = preg_replace('/\D/', '', $temp_asset_tag);
             $asset_tag = preg_replace('/^0*/', '', $asset_tag_digits);
 
+            Debugbar::addMessage('asset_tag',$asset_tag);
             if ($settings->zerofill_count > 0) {
 
                 return $settings->auto_increment_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);

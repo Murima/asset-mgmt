@@ -214,7 +214,7 @@ class Helper
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v2.5]
-     * @return Array
+     * @return Aarray
      */
     public static function locationsList()
     {

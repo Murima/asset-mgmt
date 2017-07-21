@@ -54,7 +54,9 @@
     <?php $model=$item->model; ?>
     @endif
     @if (Input::old('model_id'))
-    <?php $model=\App\Models\AssetModel::find(Input::old('model_id')); ?>
+    <?php $model=\App\Models\AssetModel::find(Input::old('model_id'));
+
+    ?>
     @elseif (isset($selected_model))
     <?php $model=$selected_model; ?>
     @endif

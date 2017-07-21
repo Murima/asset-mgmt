@@ -19,6 +19,7 @@ use App\Models\Setting;
 use App\Models\Statuslabel;
 use App\Models\Supplier;
 use App\Models\User;
+use Debugbar;
 use Validator;
 use Artisan;
 use Auth;

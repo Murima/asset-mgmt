@@ -11,7 +11,7 @@ return array(
     'country'                   => 'Country',
     'create'                    => 'Create Location',
     'update'                    => 'Update Location',
-    'name'                      => 'Location Name',
+    'name'                      => 'Country office',
     'address'                   => 'Address',
     'zip'                       => 'Postal Code',
     'locations'                 => 'Locations',
