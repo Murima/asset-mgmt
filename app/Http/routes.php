@@ -366,7 +366,8 @@ Route::group(
             Route::get('{modelId}/delete', [ 'as' => 'delete/model', 'uses' => 'AssetModelsController@getDelete', 'middleware' => ['authorize:superuser'] ]);
             Route::get('{modelId}/view', [ 'as' => 'view/model', 'uses' => 'AssetModelsController@getView' ]);
             Route::get('{modelID}/restore', [ 'as' => 'restore/model', 'uses' => 'AssetModelsController@getRestore', 'middleware' => ['authorize:superuser'] ]);
-            Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);
+            Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);            Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);
+            Route::get('{modelId}/cat_prefix', ['as' => 'cat_prefix/model','uses' => 'AssetModelsController@getCatPrefix']);
             Route::get('/', [ 'as' => 'models', 'uses' => 'AssetModelsController@getIndex' ,'middleware' => ['authorize:superuser'] ]);
         });
 

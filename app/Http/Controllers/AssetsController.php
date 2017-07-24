@@ -164,7 +164,12 @@ class AssetsController extends Controller
         $asset->archived                    = '0';
         $asset->physical                    = '1';
         $asset->depreciate                  = '0';
-        if (e(Input::get('status_id')) == '') {
+
+        $asset_model = new AssetModelsController();
+        $cat_prefix = $asset_model->getCatPrefix($asset->model_id);
+        //$tag= Asset::autoincrement_asset();
+
+            if (e(Input::get('status_id')) == '') {
             $asset->status_id =  null;
         } else {
             $asset->status_id = e(Input::get('status_id'));
@@ -265,6 +270,8 @@ class AssetsController extends Controller
 
             // Was the asset created?
         if ($asset->save()) {
+
+
             $asset->logCreate();
             if (Input::get('assigned_to')!='') {
                 $user = User::find(e(Input::get('assigned_to')));

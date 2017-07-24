@@ -27,7 +27,7 @@ return array(
     'model'				=> 'Model',
     'months'			=> 'months',
     'name'				=> 'Asset Name',
-    'notes'				=> 'Notes',
+    'notes'				=> 'Comments',
     'order'				=> 'Order Number',
     'qr'				=> 'QR Code',
     'requestable'		=> 'Users may request this asset',

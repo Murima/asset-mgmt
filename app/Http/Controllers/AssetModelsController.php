@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use Barryvdh\Debugbar\Middleware\Debugbar;
 use Image;
 use Input;
 use Lang;
@@ -399,7 +401,19 @@ class AssetModelsController extends Controller
         return View::make("models.custom_fields_form")->with("model", $model);
     }
 
+    /**
+     * get Category prefix based on model id
+     * @param $modelId
+     * @return String
+     */
+    public function getCatPrefix($modelId)
+    {
+        $model = AssetModel::find($modelId);
+        $category = Category::find($model->category_id);
+        $cat_prefix= $category->category_prefix;
 
+        return $cat_prefix;
+    }
 
     /**
     * Get the JSON response to populate the data tables on the
