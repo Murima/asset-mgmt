@@ -489,9 +489,7 @@ class Asset extends Depreciable
 
         if ($model_id){
             $asset_model = new AssetModelsController();
-            $cat_prefix = $asset_model->getCatPrefix($model_id);
-            $cat_prefix.="-";
-
+            $cat_prefix = $asset_model->getCatTag($model_id);
 
             if ($settings->auto_increment_assets == '1') {
                 $temp_asset_tag = \DB::table('assets')
@@ -506,9 +504,8 @@ class Asset extends Depreciable
                 Debugbar::addMessage('number',$asset_tag);
                 if ($settings->zerofill_count > 0) {
 
-
-
-                    return $settings->auto_increment_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);
+                    $cat_prefix.="-";
+                    return $settings->auto_increment_prefix.$cat_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);
                 }
                 return $settings->auto_increment_prefix.($asset_tag + 1);
             } else {

@@ -2,7 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Barryvdh\Debugbar\Middleware\Debugbar;
+//use Barryvdh\Debugbar\Middleware\Debugbar;
+use Debugbar;
 use Image;
 use Input;
 use Lang;
@@ -406,13 +407,11 @@ class AssetModelsController extends Controller
      * @param $modelId
      * @return String
      */
-    public function getCatPrefix($modelId)
+    public function getCatTag($modelId)
     {
-        $model = AssetModel::find($modelId);
-        $category = Category::find($model->category_id);
-        $cat_prefix= $category->category_prefix;
+        Debugbar::addMessage('in getCatTag', $modelId);
+        return Asset::autoincrement_asset($modelId);
 
-        return $cat_prefix;
     }
 
     /**
