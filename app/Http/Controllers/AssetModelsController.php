@@ -30,14 +30,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class AssetModelsController extends Controller
 {
     /**
-    * Returns a view that invokes the ajax tables which actually contains
-    * the content for the accessories listing, which is generated in getDatatable.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @see AssetModelsController::getDatatable() method that generates the JSON response
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that invokes the ajax tables which actually contains
+     * the content for the accessories listing, which is generated in getDatatable.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @see AssetModelsController::getDatatable() method that generates the JSON response
+     * @since [v1.0]
+     * @return View
+     */
     public function getIndex()
     {
         // Show the page
@@ -45,12 +45,12 @@ class AssetModelsController extends Controller
     }
 
     /**
-    * Returns a view containing the asset model creation form.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view containing the asset model creation form.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return View
+     */
     public function getCreate()
     {
         // Show the page
@@ -58,20 +58,20 @@ class AssetModelsController extends Controller
         $manufacturer_list = Helper::manufacturerList();
         $category_list = Helper::categoryList('asset');
         return View::make('models/edit')
-        ->with('category_list', $category_list)
-        ->with('depreciation_list', $depreciation_list)
-        ->with('manufacturer_list', $manufacturer_list)
-        ->with('item', new AssetModel);
+            ->with('category_list', $category_list)
+            ->with('depreciation_list', $depreciation_list)
+            ->with('manufacturer_list', $manufacturer_list)
+            ->with('item', new AssetModel);
     }
 
 
     /**
-    * Validate and process the new Asset Model data.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Validate and process the new Asset Model data.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return Redirect
+     */
     public function postCreate()
     {
 
@@ -116,27 +116,27 @@ class AssetModelsController extends Controller
             $model->image = $file_name;
         }
 
-            // Was it created?
+        // Was it created?
         if ($model->save()) {
             // Redirect to the new model  page
             return redirect()->to("hardware/models")->with('success', trans('admin/models/message.create.success'));
         }
 
-            return redirect()->back()->withInput()->withErrors($model->getErrors());
+        return redirect()->back()->withInput()->withErrors($model->getErrors());
 
     }
 
     /**
-    * Validates and stores new Asset Model data created from the
-    * modal form on the Asset Creation view.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v2.0]
-    * @return String JSON
-    */
+     * Validates and stores new Asset Model data created from the
+     * modal form on the Asset Creation view.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v2.0]
+     * @return String JSON
+     */
     public function store()
     {
-      //COPYPASTA!!!! FIXME
+        //COPYPASTA!!!! FIXME
         $model = new AssetModel;
 
         $settings=Input::all();
@@ -165,13 +165,13 @@ class AssetModelsController extends Controller
 
 
     /**
-    * Returns a view containing the asset model edit form.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param int $modelId
-    * @return View
-    */
+     * Returns a view containing the asset model edit form.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param int $modelId
+     * @return View
+     */
     public function getEdit($modelId = null)
     {
         // Check if the model exists
@@ -193,14 +193,14 @@ class AssetModelsController extends Controller
 
 
     /**
-    * Validates and processes form data from the edit
-    * Asset Model form based on the model ID passed.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param int $modelId
-    * @return Redirect
-    */
+     * Validates and processes form data from the edit
+     * Asset Model form based on the model ID passed.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param int $modelId
+     * @return Redirect
+     */
     public function postEdit($modelId = null)
     {
         // Check if the model exists
@@ -266,14 +266,14 @@ class AssetModelsController extends Controller
     }
 
     /**
-    * Validate and delete the given Asset Model. An Asset Model
-    * cannot be deleted if there are associated assets.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param int $modelId
-    * @return Redirect
-    */
+     * Validate and delete the given Asset Model. An Asset Model
+     * cannot be deleted if there are associated assets.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param int $modelId
+     * @return Redirect
+     */
     public function getDelete($modelId)
     {
         // Check if the model exists
@@ -297,13 +297,13 @@ class AssetModelsController extends Controller
 
 
     /**
-    * Restore a given Asset Model (mark as un-deleted)
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param int $modelId
-    * @return Redirect
-    */
+     * Restore a given Asset Model (mark as un-deleted)
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param int $modelId
+     * @return Redirect
+     */
     public function getRestore($modelId = null)
     {
 
@@ -329,19 +329,19 @@ class AssetModelsController extends Controller
 
 
     /**
-    * Get the model information to present to the model view page
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param int $modelId
-    * @return View
-    */
+     * Get the model information to present to the model view page
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param int $modelId
+     * @return View
+     */
     public function getView($modelId = null)
     {
         $model = AssetModel::withTrashed()->find($modelId);
 
         if (isset($model->id)) {
-                return View::make('models/view', compact('model'));
+            return View::make('models/view', compact('model'));
         } else {
             // Prepare the error message
             $error = trans('admin/models/message.does_not_exist', compact('id'));
@@ -354,13 +354,13 @@ class AssetModelsController extends Controller
     }
 
     /**
-    * Get the clone page to clone a model
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @param int $modelId
-    * @return View
-    */
+     * Get the clone page to clone a model
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param int $modelId
+     * @return View
+     */
     public function getClone($modelId = null)
     {
         // Check if the model exists
@@ -388,13 +388,13 @@ class AssetModelsController extends Controller
 
 
     /**
-    * Get the custom fields form
-    *
-    * @author [B. Wetherington] [<uberbrady@gmail.com>]
-    * @since [v2.0]
-    * @param int $modelId
-    * @return View
-    */
+     * Get the custom fields form
+     *
+     * @author [B. Wetherington] [<uberbrady@gmail.com>]
+     * @since [v2.0]
+     * @param int $modelId
+     * @return View
+     */
     public function getCustomFields($modelId)
     {
         $model = AssetModel::find($modelId);
@@ -413,17 +413,18 @@ class AssetModelsController extends Controller
         $cat_prefix= $category->category_prefix;
 
         return $cat_prefix;
+
     }
 
     /**
-    * Get the JSON response to populate the data tables on the
-    * Asset Model listing page.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v2.0]
-    * @param string $status
-    * @return String JSON
-    */
+     * Get the JSON response to populate the data tables on the
+     * Asset Model listing page.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v2.0]
+     * @param string $status
+     * @return String JSON
+     */
 
     public function getDatatable($status = null)
     {
@@ -484,7 +485,7 @@ class AssetModelsController extends Controller
                 'note'              => $model->getNote(),
                 'fieldset'          => ($model->fieldset) ? (string)link_to('admin/custom_fields/'.$model->fieldset->id, $model->fieldset->name) : '',
                 'actions'           => $actions
-                );
+            );
         }
 
         $data = array('total' => $modelCount, 'rows' => $rows);
@@ -494,13 +495,13 @@ class AssetModelsController extends Controller
 
 
     /**
-    * Get the asset information to present to the model view detail page
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v2.0]
-    * @param int $modelId
-    * @return String JSON
-    */
+     * Get the asset information to present to the model view detail page
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v2.0]
+     * @param int $modelId
+     * @return String JSON
+     */
     public function getDataView($modelID)
     {
         $assets = Asset::where('model_id', '=', $modelID)->with('company', 'assetstatus');
