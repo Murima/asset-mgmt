@@ -165,9 +165,6 @@ class AssetsController extends Controller
         $asset->physical                    = '1';
         $asset->depreciate                  = '0';
 
-        /*$asset_model = new AssetModelsController();
-        $cat_prefix = $asset_model->getCatPrefix($asset->model_id);*/
-        //$tag= Asset::autoincrement_asset();
 
             if (e(Input::get('status_id')) == '') {
             $asset->status_id =  null;

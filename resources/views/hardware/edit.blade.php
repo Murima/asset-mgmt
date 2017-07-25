@@ -155,6 +155,9 @@
                 $.get("{{config('app.url') }}/hardware/models/"+modelid+"/custom_fields",{_token: "{{ csrf_token() }}"},function (data) {
                     $('#custom_fields_content').html(data);
                 });
+                $.get("{{config('app.url') }}/hardware/models/"+modelid+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
+                    $("#asset_tag").val(tag);
+                });
 
                 $.get("{{config('app.url') }}/hardware/models/"+modelid+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
                     $("#asset_tag").val(tag);
@@ -164,6 +167,7 @@
         }
 
         $(function() {
+
             $('#model_select_id').on("change",fetchCustomFields);
         });
 
