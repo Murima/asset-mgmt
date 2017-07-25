@@ -165,6 +165,7 @@ class AssetsController extends Controller
         $asset->physical                    = '1';
         $asset->depreciate                  = '0';
 
+
             if (e(Input::get('status_id')) == '') {
             $asset->status_id =  null;
         } else {
@@ -211,6 +212,14 @@ class AssetsController extends Controller
             $asset->rtd_location_id = null;
         } else {
             $asset->rtd_location_id     = e(Input::get('rtd_location_id'));
+        }
+        if ($request->has('mouse') || $request->has('keyboard')
+        || $request->has('backpack')|| $request->has('charger')){
+                $accessories_values = array();
+            if ($request->has('mouse')){
+
+            }
+
         }
 
         // Create the image (if one was chosen.)
@@ -1938,6 +1947,13 @@ class AssetsController extends Controller
 
         // Redirect to the asset management page with error
           return redirect()->to("hardware/bulk-checkout")->with('error', trans('admin/hardware/message.checkout.error'))->withErrors($errors);
+      }
+
+    /**
+     * get Asset tag when static function cannot be used
+     */
+      public function getAssetTag($model_id){
+        return Asset::autoincrement_asset($model_id);
       }
 
 }

@@ -483,34 +483,40 @@ class Asset extends Depreciable
      * Get auto-increment
      * @param $model_id
      */
-    public static function autoincrement_asset($model_id=null)
+    public static function autoincrement_asset($model_id=null, $category_prefix=null)
     {
         $settings = \App\Models\Setting::getSettings();
 
-        if ($model_id){
+        if ($model_id) {
             $asset_model = new AssetModelsController();
-            $cat_prefix = $asset_model->getCatTag($model_id);
 
-            if ($settings->auto_increment_assets == '1') {
-                $temp_asset_tag = \DB::table('assets')
-                    ->where('physical', '=', '1')
-                    ->where('asset_type', '=', $cat_prefix)
-                    ->max('asset_tag');
+            $cat_prefix = $asset_model->getCatPrefix($model_id);
+            $category_prefix = $cat_prefix;
+        }
 
-                Debugbar::addMessage('temp', $temp_asset_tag);
-                $asset_tag_digits = preg_replace('/\D/', '', $temp_asset_tag);
-                $asset_tag = preg_replace('/^0*/', '', $asset_tag_digits);
 
-                Debugbar::addMessage('number',$asset_tag);
-                if ($settings->zerofill_count > 0) {
+        if ($settings->auto_increment_assets == '1') {
+            $temp_asset_tag = \DB::table('assets')
+                ->where('physical', '=', '1')
+                ->where('asset_type', '=', $category_prefix)
+                ->max('asset_tag');
 
-                    $cat_prefix.="-";
-                    return $settings->auto_increment_prefix.$cat_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);
-                }
-                return $settings->auto_increment_prefix.($asset_tag + 1);
-            } else {
-                return false;
+            Debugbar::addMessage('temp', $temp_asset_tag);
+            $asset_tag_digits = preg_replace('/\D/', '', $temp_asset_tag);
+            $asset_tag = preg_replace('/^0*/', '', $asset_tag_digits);
+
+
+            Debugbar::addMessage('number',$asset_tag);
+            if ($settings->zerofill_count > 0) {
+
+                $category_prefix.="-";
+                return $settings->auto_increment_prefix.$category_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);
+
+
             }
+            return $settings->auto_increment_prefix.($asset_tag + 1);
+        } else {
+            return false;
         }
 
     }

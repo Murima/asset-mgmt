@@ -13,7 +13,6 @@
 
     {{--@include ('partials.forms.edit.company')--}}
 
-    {{--TODO this asset_tag should be added back and be dynamic--}}
     <!-- Asset Tag -->
     <div class="form-group {{ $errors->has('asset_tag') ? ' has-error' : '' }}">
         <label for="asset_tag" class="col-md-3 control-label">{{ trans('admin/hardware/form.tag') }}</label>
@@ -21,7 +20,7 @@
             @if  ($item->id)
                 <input class="form-control" type="text" name="asset_tag" id="asset_tag" value="{{ Input::old('asset_tag', $item->asset_tag) }}" readonly />
             @else
-                <input class="form-control" type="text" name="asset_tag" id="asset_tag" value="{{ Input::old('asset_tag', \App\Models\Asset::autoincrement_asset(2)) }} " readonly>
+                <input class="form-control" type="text" name="asset_tag" id="asset_tag" value="{{ Input::old('asset_tag', \App\Models\Asset::autoincrement_asset()) }} " readonly>
             @endif
 
             {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fa fa-times"></i> :message</span>') !!}
@@ -68,6 +67,7 @@
     </div>
 
     @include ('partials.forms.edit.status')
+    @include('partials.forms.accessories_checkbox')
 
     @if (!$item->id)
         <!-- Assigned To -->
@@ -108,8 +108,13 @@
 
             {!! $errors->first('rtd_location_id', '<span class="alert-msg"><i class="fa fa-times"></i> :message</span>') !!}
         </div>
+
         <div class="col-md-1 col-sm-1 text-left">
             <a href='#' data-toggle="modal" data-target="#createModal" data-dependency='location' data-select='rtd_location_select' class="btn btn-sm btn-default">New</a>
+        </div>
+
+        <div class="col-md-7 col-sm-11 col-md-offset-3">
+            <p class="help-block">{{ trans('admin/hardware/form.help_location') }}</p>
         </div>
     </div>
 
@@ -150,6 +155,10 @@
                 $.get("{{config('app.url') }}/hardware/models/"+modelid+"/custom_fields",{_token: "{{ csrf_token() }}"},function (data) {
                     $('#custom_fields_content').html(data);
                 });
+                $.get("{{config('app.url') }}/hardware/models/"+modelid+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
+                    $("#asset_tag").val(tag);
+                });
+
                 $.get("{{config('app.url') }}/hardware/models/"+modelid+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
                     $("#asset_tag").val(tag);
                 });
