@@ -26,19 +26,20 @@ class AssetRequest extends Request
     public function rules()
     {
         $rules = [
-          'name'            => 'min:2|max:255',
-          'model_id'        => 'required|integer',
-          'status_id'       => 'required|integer',
-          'company_id'      => 'integer',
-          'warranty_months' => 'integer|min:0|max:240',
-          'physical'        => 'integer',
-          'checkout_date'   => 'date',
-          'checkin_date'    => 'date',
-          'supplier_id'     => 'integer',
-          'status'          => 'integer',
-          'asset_tag'       => 'required',
-          'purchase_cost'   => 'numeric',
-    
+            'name'            => 'min:2|max:255',
+            'model_id'        => 'required|integer',
+            'status_id'       => 'required|integer',
+            'company_id'      => 'integer',
+            'warranty_months' => 'integer|min:0|max:240',
+            'physical'        => 'integer',
+            'checkout_date'   => 'date',
+            'checkin_date'    => 'date',
+            'supplier_id'     => 'integer',
+            'status'          => 'integer',
+            'asset_tag'       => 'required',
+            'purchase_cost'   => 'numeric',
+            '_snipeit_cost_centre' => 'max:6',
+
         ];
 
         $model = AssetModel::find($this->request->get('model_id'));
