@@ -82,7 +82,7 @@ class AssetsController extends Controller
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v3.0]
-     * @return Redirect
+     * @return view
      */
     public function getAssetByTag()
     {
@@ -94,7 +94,7 @@ class AssetsController extends Controller
         if ($asset = Asset::where('asset_tag', '=', Input::get('assetTag'))->first()) {
             return redirect()->route('view/hardware', $asset->id)->with('topsearch', $topsearch);
         }
-        return redirect()->to('hardware')->with('error', trans('admin/hardware/message.does_not_exist'));
+        return $this->getIndex();
 
     }
 
@@ -1696,7 +1696,15 @@ class AssetsController extends Controller
         if ($request->has('order_number')) {
             $assets->where('order_number', '=', e($request->get('order_number')));
         }
-
+        //added broader search term
+        if ($request->has('search_term')){
+            if ($assets->where('_snipeit_sof', '=', $request->get('search_term'))->exists()){
+                $assets = $assets->where('_snipeit_sof', '=', $request->get('search_term'));
+            }
+            elseif($assets->where('_snipeit_po_number', '=', $request->get('search_term'))->exists()){
+                $assets = $assets->where('_snipeit_po_number', '=', $request->get('search_term'));
+            }
+        }
         switch ($status) {
             case 'Deleted':
                 $assets->withTrashed()->Deleted();
