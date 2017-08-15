@@ -19,6 +19,7 @@ use App\Models\Setting;
 use App\Models\Statuslabel;
 use App\Models\Supplier;
 use App\Models\User;
+use Codeception\Util\Debug;
 use Debugbar;
 use Validator;
 use Artisan;
@@ -223,9 +224,10 @@ class AssetsController extends Controller
             $asset->iss_location_id     = e(Input::get('iss_location_id'));
         }
 
-        if ($request->has('mouse') || $request->has('keyboard')
-            || $request->has('backpack')|| $request->has('charger')){
-            $accessories_values = array();
+        if (e(Input::get('accessory'))){
+            Debugbar::addMessage('in accessory');
+            dd(Input::get('accessory'));
+
             if ($request->has('mouse')){
 
             }

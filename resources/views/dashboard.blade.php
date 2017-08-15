@@ -16,7 +16,7 @@
       <!-- panel -->
       <div class="col-lg-3 col-xs-6">
         <!-- small box -->
-        <div class="small-box bg-teal">
+        <div class="small-box bg-aqua">
           <div class="inner">
             <h3>{{ number_format(\App\Models\Asset::assetcount()) }}</h3>
             <p>{{ trans('general.total_assets') }}</p>

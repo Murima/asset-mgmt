@@ -47,7 +47,7 @@
                   @endif
 
                   <!-- Asset Name -->
-                  <div class="form-group {{ $errors->has('name') ? 'error' : '' }}">
+                 {{-- <div class="form-group {{ $errors->has('name') ? 'error' : '' }}">
 
                       {{ Form::label('name', trans('admin/hardware/form.name'), array('class' => 'col-md-3 control-label')) }}
 
@@ -55,7 +55,7 @@
                       <input class="form-control" type="text" name="name" id="name" value="{{ Input::old('name', $asset->name) }}" />
                       {!! $errors->first('name', '<span class="alert-msg"><i class="fa fa-times"></i> :message</span>') !!}
                     </div>
-                  </div>
+                  </div>--}}
 
                     <!-- User -->
                     <div id="assigned_user" class="form-group{{ $errors->has('assigned_to') ? ' has-error' : '' }}">
@@ -90,7 +90,7 @@
 
 
                   <!-- Expected Checkin Date -->
-                  <div class="form-group {{ $errors->has('expected_checkin') ? 'error' : '' }}">
+                 {{-- <div class="form-group {{ $errors->has('expected_checkin') ? 'error' : '' }}">
 
                       {{ Form::label('name', trans('admin/hardware/form.expected_checkin'), array('class' => 'col-md-3 control-label')) }}
 
@@ -101,7 +101,7 @@
                     </div>
                       {!! $errors->first('expected_checkin', '<span class="alert-msg"><i class="fa fa-times"></i> :message</span>') !!}
                     </div>
-                  </div>
+                  </div>--}}
 
                   <!-- Note -->
                   <div class="form-group {{ $errors->has('note') ? 'error' : '' }}">

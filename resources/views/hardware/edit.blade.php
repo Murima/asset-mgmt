@@ -86,7 +86,7 @@
     @endif
 
     @include ('partials.forms.edit.serial', ['translated_serial' => trans('admin/hardware/form.serial')])
-    @include ('partials.forms.edit.name', ['translated_name' => trans('admin/hardware/form.name')])
+   {{-- @include ('partials.forms.edit.name', ['translated_name' => trans('admin/hardware/form.name')])--}}
     @include ('partials.forms.edit.purchase_date')
     @include ('partials.forms.edit.supplier')
     {{--@include ('partials.forms.edit.order_number')--}}
@@ -158,6 +158,7 @@
 
 @section('moar_scripts')
     @include('partials/modals')
+
     <script>
 
         function fetchCustomFields() {

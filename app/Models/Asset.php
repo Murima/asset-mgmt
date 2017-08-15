@@ -503,7 +503,6 @@ class Asset extends Depreciable
             $asset_tag_digits = preg_replace('/\D/', '', $temp_asset_tag);
             $asset_tag = preg_replace('/^0*/', '', $asset_tag_digits);
 
-            Debugbar::addMessage('number',$asset_tag);
             if ($settings->zerofill_count > 0) {
 
                 $category_prefix.="-";
