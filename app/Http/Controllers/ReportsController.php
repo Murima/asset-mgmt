@@ -138,6 +138,7 @@ class ReportsController extends Controller
                     trans('admin/hardware/table.checkoutto'),
                     trans('admin/hardware/table.checkout_date'),
                     trans('admin/hardware/table.location'),
+                    trans('admin/hardware/form.issue_location'),
                     trans('general.notes'),
                 ];
                 foreach($customfields as $field) {
@@ -162,6 +163,8 @@ class ReportsController extends Controller
                         ($asset->supplier) ? e($asset->supplier->name) : '',
                         ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
                         ($asset->last_checkout!='') ? e($asset->last_checkout) : '',
+                        ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
+                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
                         ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
                             e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
                         ($asset->notes) ? e($asset->notes) : '',
