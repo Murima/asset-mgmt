@@ -99,6 +99,7 @@ class AssetModelsController extends Controller
         $model->notes               = e(Input::get('notes'));
         $model->user_id             = Auth::user()->id;
         $model->requestable         = Input::has('requestable');
+        $model->specific_category   = e(Input::get('specific_category'));
 
         if (Input::get('custom_fieldset')!='') {
             $model->fieldset_id = e(Input::get('custom_fieldset'));

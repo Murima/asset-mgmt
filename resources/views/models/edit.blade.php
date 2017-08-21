@@ -9,6 +9,7 @@
 @section('inputFields')
 
     @include ('partials.forms.edit.category')
+    @include('partials.forms.edit.specific_category',['translated_name' => trans('admin/models/table.specific_category')])
     @include ('partials.forms.edit.name', ['translated_name' => trans('admin/models/table.name')])
     @include ('partials.forms.edit.manufacturer')
 

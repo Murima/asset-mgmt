@@ -43,6 +43,7 @@ return array(
     'select_statustype'	=> 'Select Status Type',
     'serial'			=> 'Serial',
     'status'			=> 'Status',
+    'supplier'          => 'Supplier',
     'accessories'       => 'Accessories',
     'tag'				=> 'Asset Tag',
     'update'			=> 'Asset Update',
