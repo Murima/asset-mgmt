@@ -86,7 +86,7 @@
     @endif
 
     @include ('partials.forms.edit.serial', ['translated_serial' => trans('admin/hardware/form.serial')])
-    @include ('partials.forms.edit.name', ['translated_name' => trans('admin/hardware/form.name')])
+   {{-- @include ('partials.forms.edit.name', ['translated_name' => trans('admin/hardware/form.name')])--}}
     @include ('partials.forms.edit.purchase_date')
     @include ('partials.forms.edit.supplier')
     {{--@include ('partials.forms.edit.order_number')--}}
@@ -118,6 +118,19 @@
         </div>
     </div>
 
+    <!-- Issuing location -->
+    <div class="form-group">
+        <label for="iss_location_id" class="col-md-3 control-label">{{ trans('admin/hardware/form.issue_location') }}</label>
+        <div class="col-md-7 col-sm-11">
+            {{ Form::select('iss_location_id', $location_list , Input::old('iss_location_id', $item->rtd_location_id), array('class'=>'select2', 'style'=>'width:100%','id'=>'iss_location_select')) }}
+
+        </div>
+
+        <div class="col-md-7 col-sm-11 col-md-offset-3">
+            <p class="help-block">{{ trans('admin/hardware/form.help_issue_location') }}</p>
+        </div>
+    </div>
+
     @include ('partials.forms.edit.requestable', ['requestable_text' => trans('admin/hardware/general.requestable')])
 
     <!-- Image -->
@@ -145,6 +158,7 @@
 
 @section('moar_scripts')
     @include('partials/modals')
+
     <script>
 
         function fetchCustomFields() {

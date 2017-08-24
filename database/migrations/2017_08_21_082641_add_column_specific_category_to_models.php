@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCategoryPrefixToCategories extends Migration
+class AddColumnSpecificCategoryToModels extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,9 @@ class AddCategoryPrefixToCategories extends Migration
      */
     public function up()
     {
-        Schema::table('categories', function ($table) {
-            $table->string('category_prefix')->nullable();
+        //add the column specific_category
+        Schema::table('models', function ($table) {
+            $table->string('specific_category')->nullable();
         });
     }
 
@@ -25,9 +26,8 @@ class AddCategoryPrefixToCategories extends Migration
     public function down()
     {
         //
-        Schema::table('categories', function ($table) {
-            $table->dropColumn('category_prefix');
+        Schema::table('models', function ($table) {
+            $table->dropColumn('specific_category');
         });
     }
-
 }

@@ -19,6 +19,7 @@ use App\Models\Setting;
 use App\Models\Statuslabel;
 use App\Models\Supplier;
 use App\Models\User;
+use Codeception\Util\Debug;
 use Debugbar;
 use Validator;
 use Artisan;
@@ -64,14 +65,14 @@ class AssetsController extends Controller
     }
 
     /**
-    * Returns a view that invokes the ajax tables which actually contains
-    * the content for the assets listing, which is generated in getDatatable.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @see AssetController::getDatatable() method that generates the JSON response
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that invokes the ajax tables which actually contains
+     * the content for the assets listing, which is generated in getDatatable.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @see AssetController::getDatatable() method that generates the JSON response
+     * @since [v1.0]
+     * @return View
+     */
     public function getIndex()
     {
         return View::make('hardware/index');
@@ -82,7 +83,7 @@ class AssetsController extends Controller
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v3.0]
-     * @return Redirect
+     * @return view
      */
     public function getAssetByTag()
     {
@@ -94,17 +95,17 @@ class AssetsController extends Controller
         if ($asset = Asset::where('asset_tag', '=', Input::get('assetTag'))->first()) {
             return redirect()->route('view/hardware', $asset->id)->with('topsearch', $topsearch);
         }
-        return redirect()->to('hardware')->with('error', trans('admin/hardware/message.does_not_exist'));
+        return $this->getIndex();
 
     }
 
     /**
-    * Returns a view that presents a form to create a new asset.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that presents a form to create a new asset.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return View
+     */
     public function getCreate($model_id = null)
     {
         // Grab the dropdown lists
@@ -139,12 +140,12 @@ class AssetsController extends Controller
     }
 
     /**
-    * Validate and process new asset form data.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Validate and process new asset form data.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @return Redirect
+     */
     public function postCreate(AssetRequest $request)
     {
         // create a new model instance
@@ -166,7 +167,7 @@ class AssetsController extends Controller
         $asset->depreciate                  = '0';
 
 
-            if (e(Input::get('status_id')) == '') {
+        if (e(Input::get('status_id')) == '') {
             $asset->status_id =  null;
         } else {
             $asset->status_id = e(Input::get('status_id'));
@@ -213,9 +214,17 @@ class AssetsController extends Controller
         } else {
             $asset->rtd_location_id     = e(Input::get('rtd_location_id'));
         }
-        if ($request->has('mouse') || $request->has('keyboard')
-        || $request->has('backpack')|| $request->has('charger')){
-                $accessories_values = array();
+
+        if(e(Input::get('iss_location_id')) == ''){
+            $asset->iss_location_id = null;
+        } else {
+            $asset->iss_location_id     = e(Input::get('iss_location_id'));
+        }
+
+        if (e(Input::get('accessory'))){
+            Debugbar::addMessage('in accessory');
+            dd(Input::get('accessory'));
+
             if ($request->has('mouse')){
 
             }
@@ -273,7 +282,7 @@ class AssetsController extends Controller
             }
         }
 
-            // Was the asset created?
+        // Was the asset created?
         if ($asset->save()) {
 
             $asset->logCreate();
@@ -291,13 +300,13 @@ class AssetsController extends Controller
     }
 
     /**
-    * Returns a view that presents a form to edit an existing asset.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that presents a form to edit an existing asset.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return View
+     */
     public function getEdit($assetId = null)
     {
 
@@ -321,26 +330,26 @@ class AssetsController extends Controller
         $statuslabel_types =Helper::statusTypeList();
 
         return View::make('hardware/edit', compact('item'))
-        ->with('model_list', $model_list)
-        ->with('supplier_list', $supplier_list)
-        ->with('company_list', $company_list)
-        ->with('location_list', $location_list)
-        ->with('statuslabel_list', $statuslabel_list)
-        ->with('assigned_to', $assigned_to)
-        ->with('manufacturer', $manufacturer_list)
-        ->with('statuslabel_types', $statuslabel_types)
-        ->with('category', $category_list);
+            ->with('model_list', $model_list)
+            ->with('supplier_list', $supplier_list)
+            ->with('company_list', $company_list)
+            ->with('location_list', $location_list)
+            ->with('statuslabel_list', $statuslabel_list)
+            ->with('assigned_to', $assigned_to)
+            ->with('manufacturer', $manufacturer_list)
+            ->with('statuslabel_types', $statuslabel_types)
+            ->with('category', $category_list);
     }
 
 
     /**
-    * Validate and process asset edit form.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Validate and process asset edit form.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return Redirect
+     */
 
     public function postEdit(AssetRequest $request, $assetId = null)
     {
@@ -467,19 +476,19 @@ class AssetsController extends Controller
         if ($asset->save()) {
             // Redirect to the new asset page
 
-                $logaction = new Actionlog();
-                $logaction->item_type = Asset::class;
-                $logaction->item_id = $asset->id;
-                $logaction->created_at =  date("Y-m-d H:i:s");
-                if (Input::has('rtd_location_id')) {
-                    $logaction->location_id = e(Input::get('rtd_location_id'));
-                }
-                $logaction->user_id = Auth::user()->id;
-                $log = $logaction->logaction('update');
+            $logaction = new Actionlog();
+            $logaction->item_type = Asset::class;
+            $logaction->item_id = $asset->id;
+            $logaction->created_at =  date("Y-m-d H:i:s");
+            if (Input::has('rtd_location_id')) {
+                $logaction->location_id = e(Input::get('rtd_location_id'));
+            }
+            $logaction->user_id = Auth::user()->id;
+            $log = $logaction->logaction('update');
 
-                
-                
-                \Session::flash('success', trans('admin/hardware/message.update.success'));
+
+
+            \Session::flash('success', trans('admin/hardware/message.update.success'));
             return response()->json(['redirect_url' => route("view/hardware", $assetId)]);
         }
         \Input::flash();
@@ -489,13 +498,13 @@ class AssetsController extends Controller
     }
 
     /**
-    * Delete a given asset (mark as deleted).
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Delete a given asset (mark as deleted).
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return Redirect
+     */
     public function getDelete($assetId)
     {
         // Check if the asset exists
@@ -507,8 +516,8 @@ class AssetsController extends Controller
         }
 
         DB::table('assets')
-        ->where('id', $asset->id)
-        ->update(array('assigned_to' => null));
+            ->where('id', $asset->id)
+            ->update(array('assigned_to' => null));
 
 
         $asset->delete();
@@ -529,14 +538,14 @@ class AssetsController extends Controller
     }
 
     /**
-    * Returns a view that presents a form to check an asset out to a
-    * user.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that presents a form to check an asset out to a
+     * user.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return View
+     */
     public function getCheckout($assetId)
     {
         // Check if the asset exists
@@ -555,13 +564,13 @@ class AssetsController extends Controller
     }
 
     /**
-    * Validate and process the form data to check out an asset to a user.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Validate and process the form data to check out an asset to a user.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return Redirect
+     */
     public function postCheckout(AssetCheckoutRequest $request, $assetId)
     {
 
@@ -591,24 +600,24 @@ class AssetsController extends Controller
 
 
         if ($asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')))) {
-          // Redirect to the new asset page
+            // Redirect to the new asset page
             return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
         }
 
-      // Redirect to the asset management page with error
+        // Redirect to the asset management page with error
         return redirect()->to("hardware/$assetId/checkout")->with('error', trans('admin/hardware/message.checkout.error'))->withErrors($asset->getErrors());
     }
 
 
     /**
-    * Returns a view that presents a form to check an asset back into inventory.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @param string $backto
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that presents a form to check an asset back into inventory.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @param string $backto
+     * @since [v1.0]
+     * @return View
+     */
     public function getCheckin($assetId, $backto = null)
     {
         // Check if the asset exists
@@ -624,13 +633,13 @@ class AssetsController extends Controller
 
 
     /**
-    * Validate and process the form data to check an asset back into inventory.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Validate and process the form data to check an asset back into inventory.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return Redirect
+     */
     public function postCheckin(AssetCheckinRequest $request, $assetId = null, $backto = null)
     {
         // Check if the asset exists
@@ -686,20 +695,20 @@ class AssetsController extends Controller
                 $client = new \Maknz\Slack\Client($settings->slack_endpoint, $slack_settings);
 
                 try {
-                        $client->attach([
-                            'color' => 'good',
-                            'fields' => [
-                                [
-                                    'title' => 'Checked In:',
-                                    'value' => class_basename(strtoupper($logaction->item_type)).' asset <'.config('app.url').'/hardware/'.$asset->id.'/view'.'|'.e($asset->showAssetName()).'> checked in by <'.config('app.url').'/admin/users/'.Auth::user()->id.'/view'.'|'.e(Auth::user()->fullName()).'>.'
-                                ],
-                                [
-                                    'title' => 'Note:',
-                                    'value' => e($logaction->note)
-                                ],
+                    $client->attach([
+                        'color' => 'good',
+                        'fields' => [
+                            [
+                                'title' => 'Checked In:',
+                                'value' => class_basename(strtoupper($logaction->item_type)).' asset <'.config('app.url').'/hardware/'.$asset->id.'/view'.'|'.e($asset->showAssetName()).'> checked in by <'.config('app.url').'/admin/users/'.Auth::user()->id.'/view'.'|'.e(Auth::user()->fullName()).'>.'
+                            ],
+                            [
+                                'title' => 'Note:',
+                                'value' => e($logaction->note)
+                            ],
 
-                            ]
-                        ])->send('Asset Checked In');
+                        ]
+                    ])->send('Asset Checked In');
 
                 } catch (Exception $e) {
 
@@ -737,13 +746,13 @@ class AssetsController extends Controller
 
 
     /**
-    * Returns a view that presents information about an asset for detail view.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that presents information about an asset for detail view.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return View
+     */
     public function getView($assetId = null)
     {
         $asset = Asset::withTrashed()->find($assetId);
@@ -787,13 +796,13 @@ class AssetsController extends Controller
     }
 
     /**
-    * Return a QR code for the asset
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return Response
-    */
+     * Return a QR code for the asset
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return Response
+     */
     public function getQrCode($assetId = null)
     {
         $settings = Setting::getSettings();
@@ -854,12 +863,12 @@ class AssetsController extends Controller
 
 
     /**
-    * Get the Asset import upload page.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v2.0]
-    * @return View
-    */
+     * Get the Asset import upload page.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v2.0]
+     * @return View
+     */
     public function getImportUpload()
     {
 
@@ -881,10 +890,10 @@ class AssetsController extends Controller
                 clearstatcache();
                 if (substr(strrchr($entry, '.'), 1)=='csv') {
                     $files[] = array(
-                            'filename' => $entry,
-                            'filesize' => Setting::fileSizeConvert(filesize($path.'/'.$entry)),
-                            'modified' => filemtime($path.'/'.$entry)
-                        );
+                        'filename' => $entry,
+                        'filesize' => Setting::fileSizeConvert(filesize($path.'/'.$entry)),
+                        'modified' => filemtime($path.'/'.$entry)
+                    );
                 }
 
             }
@@ -898,12 +907,12 @@ class AssetsController extends Controller
 
 
     /**
-    * Upload the import file via AJAX
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @since [v2.0]
-    * @return View
-    */
+     * Upload the import file via AJAX
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v2.0]
+     * @return View
+     */
     public function postAPIImportUpload(AssetFileRequest $request)
     {
 
@@ -974,13 +983,13 @@ class AssetsController extends Controller
 
 
     /**
-    * Process the uploaded file
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param string $filename
-    * @since [v2.0]
-    * @return Redirect
-    */
+     * Process the uploaded file
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param string $filename
+     * @since [v2.0]
+     * @return Redirect
+     */
     public function postProcessImportFile()
     {
         // php artisan asset-import:csv path/to/your/file.csv --domain=yourdomain.com --email_format=firstname.lastname
@@ -992,12 +1001,12 @@ class AssetsController extends Controller
             return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
         }
         $importOptions =    ['filename'=> config('app.private_uploads').'/imports/assets/'.$filename,
-                                '--email_format'=>'firstname.lastname',
-                                '--username_format'=>'firstname.lastname',
-                                '--web-importer' => true,
-                                '--user_id' => Auth::user()->id,
-                                '--item-type' => $itemType,
-                            ];
+            '--email_format'=>'firstname.lastname',
+            '--username_format'=>'firstname.lastname',
+            '--web-importer' => true,
+            '--user_id' => Auth::user()->id,
+            '--item-type' => $itemType,
+        ];
         if ($updateItems) {
             $importOptions['--update'] = true;
         }
@@ -1030,13 +1039,13 @@ class AssetsController extends Controller
     }
 
     /**
-    * Returns a view that presents a form to clone an asset.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return View
-    */
+     * Returns a view that presents a form to clone an asset.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return View
+     */
     public function getClone($assetId = null)
     {
         // Check if the asset exists
@@ -1065,16 +1074,16 @@ class AssetsController extends Controller
         $asset->assigned_to = '';
 
         return View::make('hardware/edit')
-        ->with('supplier_list', $supplier_list)
-        ->with('model_list', $model_list)
-        ->with('statuslabel_list', $statuslabel_list)
-        ->with('statuslabel_types', $statuslabel_types)
-        ->with('assigned_to', $assigned_to)
-        ->with('item', $asset)
-        ->with('location_list', $location_list)
-        ->with('manufacturer', $manufacturer_list)
-        ->with('category', $category_list)
-        ->with('company_list', $company_list);
+            ->with('supplier_list', $supplier_list)
+            ->with('model_list', $model_list)
+            ->with('statuslabel_list', $statuslabel_list)
+            ->with('statuslabel_types', $statuslabel_types)
+            ->with('assigned_to', $assigned_to)
+            ->with('item', $asset)
+            ->with('location_list', $location_list)
+            ->with('manufacturer', $manufacturer_list)
+            ->with('category', $category_list)
+            ->with('company_list', $company_list);
 
     }
 
@@ -1252,13 +1261,13 @@ class AssetsController extends Controller
 
 
     /**
-    * Retore a deleted asset.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return View
-    */
+     * Retore a deleted asset.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return View
+     */
     public function getRestore($assetId = null)
     {
 
@@ -1281,13 +1290,13 @@ class AssetsController extends Controller
 
 
     /**
-    * Upload a file to the server.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param int $assetId
-    * @since [v1.0]
-    * @return Redirect
-    */
+     * Upload a file to the server.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param int $assetId
+     * @since [v1.0]
+     * @return Redirect
+     */
     public function postUpload(AssetFileRequest $request, $assetId = null)
     {
 
@@ -1330,14 +1339,14 @@ class AssetsController extends Controller
     }
 
     /**
-    * Delete the associated file
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param  int  $assetId
-    * @param  int  $fileId
-    * @since [v1.0]
-    * @return View
-    */
+     * Delete the associated file
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param  int  $assetId
+     * @param  int  $fileId
+     * @since [v1.0]
+     * @return View
+     */
     public function getDeleteFile($assetId = null, $fileId = null)
     {
         $asset = Asset::find($assetId);
@@ -1371,14 +1380,14 @@ class AssetsController extends Controller
 
 
     /**
-    * Check for permissions and display the file.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param  int  $assetId
-    * @param  int  $fileId
-    * @since [v1.0]
-    * @return View
-    */
+     * Check for permissions and display the file.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param  int  $assetId
+     * @param  int  $fileId
+     * @since [v1.0]
+     * @return View
+     */
     public function displayFile($assetId = null, $fileId = null)
     {
 
@@ -1398,10 +1407,10 @@ class AssetsController extends Controller
             $filetype = Helper::checkUploadIsImage($file);
 
             if ($filetype) {
-                  $contents = file_get_contents($file);
-                  return Response::make($contents)->header('Content-Type', $filetype);
+                $contents = file_get_contents($file);
+                return Response::make($contents)->header('Content-Type', $filetype);
             } else {
-                  return Response::download($file);
+                return Response::download($file);
             }
 
         } else {
@@ -1417,13 +1426,13 @@ class AssetsController extends Controller
 
 
     /**
-    * Display the bulk edit page.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param  int  $assetId
-    * @since [v2.0]
-    * @return View
-    */
+     * Display the bulk edit page.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param  int  $assetId
+     * @since [v2.0]
+     * @return View
+     */
     public function postBulkEdit($assets = null)
     {
 
@@ -1431,7 +1440,7 @@ class AssetsController extends Controller
             return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
 
         } elseif (!Input::has('edit_asset')) {
-                 return redirect()->back()->with('error', 'No assets selected');
+            return redirect()->back()->with('error', 'No assets selected');
 
         } else {
             $asset_raw_array = Input::get('edit_asset');
@@ -1451,10 +1460,10 @@ class AssetsController extends Controller
 
                 $settings = Setting::getSettings();
 
-                    $assets = Asset::find($asset_ids);
-                    $count = 0;
+                $assets = Asset::find($asset_ids);
+                $count = 0;
 
-                    return View::make('hardware/labels')->with('assets', $assets)->with('settings', $settings)->with('count', $count)->with('settings', $settings);
+                return View::make('hardware/labels')->with('assets', $assets)->with('settings', $settings)->with('count', $count)->with('settings', $settings);
 
 
 
@@ -1464,7 +1473,7 @@ class AssetsController extends Controller
                 $assets = Asset::with('assigneduser', 'assetloc')->find($asset_ids);
                 return View::make('hardware/bulk-delete')->with('assets', $assets);
 
-             // Bulk edit
+                // Bulk edit
             } elseif (Input::get('bulk_actions')=='edit') {
 
                 $assets = Input::get('edit_asset');
@@ -1475,12 +1484,12 @@ class AssetsController extends Controller
                 $companies_list = array('' => '') + array('clear' => trans('general.remove_company')) + Helper::companyList();
 
                 return View::make('hardware/bulk')
-                ->with('assets', $assets)
-                ->with('supplier_list', $supplier_list)
-                ->with('statuslabel_list', $statuslabel_list)
-                ->with('location_list', $location_list)
-                ->with('models_list', $models_list)
-                ->with('companies_list', $companies_list);
+                    ->with('assets', $assets)
+                    ->with('supplier_list', $supplier_list)
+                    ->with('statuslabel_list', $statuslabel_list)
+                    ->with('location_list', $location_list)
+                    ->with('models_list', $models_list)
+                    ->with('companies_list', $companies_list);
 
 
             }
@@ -1496,13 +1505,13 @@ class AssetsController extends Controller
 
 
     /**
-    * Save bulk edits
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param  array  $assets
-    * @since [v2.0]
-    * @return Redirect
-    */
+     * Save bulk edits
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param  array  $assets
+     * @since [v2.0]
+     * @return Redirect
+     */
     public function postBulkSave($assets = null)
     {
 
@@ -1566,8 +1575,8 @@ class AssetsController extends Controller
 
 
                     if (DB::table('assets')
-                    ->where('id', $key)
-                    ->update($update_array)) {
+                        ->where('id', $key)
+                        ->update($update_array)) {
 
                         $logaction = new Actionlog();
                         $logaction->item_type = Asset::class;
@@ -1586,7 +1595,7 @@ class AssetsController extends Controller
 
                 return redirect()->to("hardware")->with('success', trans('admin/hardware/message.update.success'));
 
-            // no values given, nothing to update
+                // no values given, nothing to update
             } else {
                 return redirect()->to("hardware")->with('info', trans('admin/hardware/message.update.nothing_updated'));
 
@@ -1600,32 +1609,32 @@ class AssetsController extends Controller
     }
 
     /**
-    * Save bulk deleted.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param  array  $assets
-    * @since [v2.0]
-    * @return View
-    */
+     * Save bulk deleted.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param  array  $assets
+     * @since [v2.0]
+     * @return View
+     */
     public function postBulkDelete($assets = null)
     {
 
         if (!Company::isCurrentUserAuthorized()) {
             return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
         } elseif (Input::has('bulk_edit')) {
-              //$assets = Input::get('bulk_edit');
+            //$assets = Input::get('bulk_edit');
             $assets = Asset::find(Input::get('bulk_edit'));
-          //print_r($assets);
+            //print_r($assets);
 
 
             foreach ($assets as $asset) {
-          //echo '<li>'.$asset;
+                //echo '<li>'.$asset;
                 $update_array['deleted_at'] = date('Y-m-d H:i:s');
                 $update_array['assigned_to'] = null;
 
                 if (DB::table('assets')
-                ->where('id', $asset->id)
-                ->update($update_array)) {
+                    ->where('id', $asset->id)
+                    ->update($update_array)) {
 
                     $logaction = new Actionlog();
                     $logaction->item_type = Asset::class;
@@ -1637,7 +1646,7 @@ class AssetsController extends Controller
                 }
 
             } // endforeach
-                return redirect()->to("hardware")->with('success', trans('admin/hardware/message.delete.success'));
+            return redirect()->to("hardware")->with('success', trans('admin/hardware/message.delete.success'));
 
             // no values given, nothing to update
         } else {
@@ -1653,40 +1662,48 @@ class AssetsController extends Controller
 
 
     /**
-    * Generates the JSON used to display the asset listing.
-    *
-    * @author [A. Gianotto] [<snipe@snipe.net>]
-    * @param  string  $status
-    * @since [v2.0]
-    * @return String JSON
-    */
+     * Generates the JSON used to display the asset listing.
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @param  string  $status
+     * @since [v2.0]
+     * @return String JSON
+     */
     public function getDatatable(Request $request, $status = null)
     {
 
 
         $assets = Company::scopeCompanyables(Asset::select('assets.*'))->with('model', 'assigneduser', 'assigneduser.userloc', 'assetstatus', 'defaultLoc', 'assetlog', 'model', 'model.category', 'model.manufacturer', 'model.fieldset', 'assetstatus', 'assetloc', 'company')
-        ->Hardware();
+            ->Hardware();
 
         if ($request->has('search')) {
-             $assets = $assets->TextSearch(e($request->get('search')));
+            $assets = $assets->TextSearch(e($request->get('search')));
         }
 
         if ($request->has('offset')) {
-             $offset = e($request->get('offset'));
+            $offset = e($request->get('offset'));
         } else {
-             $offset = 0;
+            $offset = 0;
         }
 
         if ($request->has('limit')) {
-             $limit = e($request->get('limit'));
+            $limit = e($request->get('limit'));
         } else {
-             $limit = 50;
+            $limit = 50;
         }
 
         if ($request->has('order_number')) {
             $assets->where('order_number', '=', e($request->get('order_number')));
         }
-
+        //added broader search term
+        if ($request->has('search_term')){
+            if ($assets->where('_snipeit_sof', '=', $request->get('search_term'))->exists()){
+                $assets = $assets->where('_snipeit_sof', '=', $request->get('search_term'));
+            }
+            elseif($assets->where('_snipeit_po_number', '=', $request->get('search_term'))->exists()){
+                $assets = $assets->where('_snipeit_po_number', '=', $request->get('search_term'));
+            }
+        }
         switch ($status) {
             case 'Deleted':
                 $assets->withTrashed()->Deleted();
@@ -1718,26 +1735,26 @@ class AssetsController extends Controller
 
 
         $allowed_columns = [
-        'id',
-        'name',
-        'asset_tag',
-        'serial',
-        'model',
-        'model_number',
-        'last_checkout',
-        'category',
-        'manufacturer',
-        'notes',
-        'expected_checkin',
-        'order_number',
-        'companyName',
-        'location',
-        'image',
-        'status_label',
-        'assigned_to',
-        'created_at',
-        'purchase_date',
-        'purchase_cost'
+            'id',
+            'name',
+            'asset_tag',
+            'serial',
+            'model',
+            'model_number',
+            'last_checkout',
+            'category',
+            'manufacturer',
+            'notes',
+            'expected_checkin',
+            'order_number',
+            'companyName',
+            'location',
+            'image',
+            'status_label',
+            'assigned_to',
+            'created_at',
+            'purchase_date',
+            'purchase_cost'
         ];
 
         $all_custom_fields = CustomField::all(); //used as a 'cache' of custom fields throughout this page load
@@ -1823,30 +1840,30 @@ class AssetsController extends Controller
             $purchase_cost = Helper::formatCurrencyOutput($asset->purchase_cost);
 
             $row = array(
-            'checkbox'      =>'<div class="text-center"><input type="checkbox" name="edit_asset['.$asset->id.']" class="one_required"></div>',
-            'id'        => $asset->id,
-            'image' => (($asset->image) && ($asset->image!='')) ? '<img src="'.config('app.url').'/uploads/assets/'.$asset->image.'" height=50 width=50>' : ((($asset->model) && ($asset->model->image!='')) ? '<img src="'.config('app.url').'/uploads/models/'.$asset->model->image.'" height=40 width=50>' : ''),
-            'name'          => '<a title="'.e($asset->name).'" href="hardware/'.$asset->id.'/view">'.e($asset->name).'</a>',
-            'asset_tag'     => '<a title="'.e($asset->asset_tag).'" href="hardware/'.$asset->id.'/view">'.e($asset->asset_tag).'</a>',
-            'serial'        => e($asset->serial),
-            'model'         => ($asset->model) ? (string)link_to('/hardware/models/'.$asset->model->id.'/view', e($asset->model->name)) : 'No model',
-            'model_number'  => ($asset->model && $asset->model->model_number) ? (string)$asset->model->model_number : '',
-            'status_label'        => ($asset->assigneduser) ? 'Deployed' : ((e($asset->assetstatus)) ? e($asset->assetstatus->name) : ''),
-            'assigned_to'        => ($asset->assigneduser) ? (string)link_to(config('app.url').'/admin/users/'.$asset->assigned_to.'/view', e($asset->assigneduser->fullName())) : '',
-            'location'      => (($asset->assigneduser) && ($asset->assigneduser->userloc!='')) ? (string)link_to('admin/settings/locations/'.$asset->assigneduser->userloc->id.'/view', e($asset->assigneduser->userloc->name)) : (($asset->defaultLoc!='') ? (string)link_to('admin/settings/locations/'.$asset->defaultLoc->id.'/view', e($asset->defaultLoc->name)) : ''),
-            'category'      => (($asset->model) && ($asset->model->category)) ?(string)link_to('/admin/settings/categories/'.$asset->model->category->id.'/view', e($asset->model->category->name)) : '',
-            'manufacturer'      => (($asset->model) && ($asset->model->manufacturer)) ? (string)link_to('/admin/settings/manufacturers/'.$asset->model->manufacturer->id.'/view', e($asset->model->manufacturer->name)) : '',
-            'eol'           => ($asset->eol_date()) ? $asset->eol_date() : '',
-            'purchase_cost'           => $purchase_cost,
-            'purchase_date'           => ($asset->purchase_date) ? $asset->purchase_date : '',
-            'notes'         => e($asset->notes),
-            'order_number'  => ($asset->order_number!='') ? '<a href="'.config('app.url').'/hardware?order_number='.e($asset->order_number).'">'.e($asset->order_number).'</a>' : '',
-            'last_checkout' => ($asset->last_checkout!='') ? e($asset->last_checkout) : '',
-            'expected_checkin' => ($asset->expected_checkin!='')  ? e($asset->expected_checkin) : '',
-            'created_at' => ($asset->created_at!='')  ? e($asset->created_at->format('F j, Y h:iA')) : '',
-            'change'        => ($inout) ? $inout : '',
-            'actions'       => ($actions) ? $actions : '',
-            'companyName'   => is_null($asset->company) ? '' : e($asset->company->name)
+                'checkbox'      =>'<div class="text-center"><input type="checkbox" name="edit_asset['.$asset->id.']" class="one_required"></div>',
+                'id'        => $asset->id,
+                'image' => (($asset->image) && ($asset->image!='')) ? '<img src="'.config('app.url').'/uploads/assets/'.$asset->image.'" height=50 width=50>' : ((($asset->model) && ($asset->model->image!='')) ? '<img src="'.config('app.url').'/uploads/models/'.$asset->model->image.'" height=40 width=50>' : ''),
+                'name'          => '<a title="'.e($asset->name).'" href="hardware/'.$asset->id.'/view">'.e($asset->name).'</a>',
+                'asset_tag'     => '<a title="'.e($asset->asset_tag).'" href="hardware/'.$asset->id.'/view">'.e($asset->asset_tag).'</a>',
+                'serial'        => e($asset->serial),
+                'model'         => ($asset->model) ? (string)link_to('/hardware/models/'.$asset->model->id.'/view', e($asset->model->name)) : 'No model',
+                'model_number'  => ($asset->model && $asset->model->model_number) ? (string)$asset->model->model_number : '',
+                'status_label'        => ($asset->assigneduser) ? 'Deployed' : ((e($asset->assetstatus)) ? e($asset->assetstatus->name) : ''),
+                'assigned_to'        => ($asset->assigneduser) ? (string)link_to(config('app.url').'/admin/users/'.$asset->assigned_to.'/view', e($asset->assigneduser->fullName())) : '',
+                'location'      => (($asset->assigneduser) && ($asset->assigneduser->userloc!='')) ? (string)link_to('admin/settings/locations/'.$asset->assigneduser->userloc->id.'/view', e($asset->assigneduser->userloc->name)) : (($asset->defaultLoc!='') ? (string)link_to('admin/settings/locations/'.$asset->defaultLoc->id.'/view', e($asset->defaultLoc->name)) : ''),
+                'category'      => (($asset->model) && ($asset->model->category)) ?(string)link_to('/admin/settings/categories/'.$asset->model->category->id.'/view', e($asset->model->category->name)) : '',
+                'manufacturer'      => (($asset->model) && ($asset->model->manufacturer)) ? (string)link_to('/admin/settings/manufacturers/'.$asset->model->manufacturer->id.'/view', e($asset->model->manufacturer->name)) : '',
+                'eol'           => ($asset->eol_date()) ? $asset->eol_date() : '',
+                'purchase_cost'           => $purchase_cost,
+                'purchase_date'           => ($asset->purchase_date) ? $asset->purchase_date : '',
+                'notes'         => e($asset->notes),
+                'order_number'  => ($asset->order_number!='') ? '<a href="'.config('app.url').'/hardware?order_number='.e($asset->order_number).'">'.e($asset->order_number).'</a>' : '',
+                'last_checkout' => ($asset->last_checkout!='') ? e($asset->last_checkout) : '',
+                'expected_checkin' => ($asset->expected_checkin!='')  ? e($asset->expected_checkin) : '',
+                'created_at' => ($asset->created_at!='')  ? e($asset->created_at->format('F j, Y h:iA')) : '',
+                'change'        => ($inout) ? $inout : '',
+                'actions'       => ($actions) ? $actions : '',
+                'companyName'   => is_null($asset->company) ? '' : e($asset->company->name)
             );
             foreach ($all_custom_fields as $field) {
                 $column_name = $field->db_column_name();
@@ -1886,74 +1903,74 @@ class AssetsController extends Controller
         return $data;
     }
 
-      public function getBulkCheckout()
-      {
-          // Get the dropdown of users and then pass it to the checkout view
-          $users_list = Helper::usersList();
-          // Filter out assets that are not deployable.
-          $assets = Asset::RTD()->get();
+    public function getBulkCheckout()
+    {
+        // Get the dropdown of users and then pass it to the checkout view
+        $users_list = Helper::usersList();
+        // Filter out assets that are not deployable.
+        $assets = Asset::RTD()->get();
 
-          $assets_list = Company::scopeCompanyables($assets, 'assets.company_id')->lists('detailed_name', 'id')->toArray();
+        $assets_list = Company::scopeCompanyables($assets, 'assets.company_id')->lists('detailed_name', 'id')->toArray();
 
-          return View::make('hardware/bulk-checkout')->with('users_list', $users_list)->with('assets_list', $assets_list);
-      }
+        return View::make('hardware/bulk-checkout')->with('users_list', $users_list)->with('assets_list', $assets_list);
+    }
 
-      public function postBulkCheckout(Request $request)
-      {
+    public function postBulkCheckout(Request $request)
+    {
 
-          $this->validate($request, [
-             "assigned_to"   => 'required'
-          ]);
+        $this->validate($request, [
+            "assigned_to"   => 'required'
+        ]);
 
-          $user = User::find(e(Input::get('assigned_to')));
-          $admin = Auth::user();
+        $user = User::find(e(Input::get('assigned_to')));
+        $admin = Auth::user();
 
-          $asset_ids = array_filter(Input::get('selected_assets'));
+        $asset_ids = array_filter(Input::get('selected_assets'));
 
-          if ((Input::has('checkout_at')) && (Input::get('checkout_at')!= date("Y-m-d"))) {
-              $checkout_at = e(Input::get('checkout_at'));
-          } else {
-              $checkout_at = date("Y-m-d H:i:s");
-          }
+        if ((Input::has('checkout_at')) && (Input::get('checkout_at')!= date("Y-m-d"))) {
+            $checkout_at = e(Input::get('checkout_at'));
+        } else {
+            $checkout_at = date("Y-m-d H:i:s");
+        }
 
-          if (Input::has('expected_checkin')) {
-              $expected_checkin = e(Input::get('expected_checkin'));
-          } else {
-              $expected_checkin = '';
-          }
+        if (Input::has('expected_checkin')) {
+            $expected_checkin = e(Input::get('expected_checkin'));
+        } else {
+            $expected_checkin = '';
+        }
 
-          $has_errors = false;
-          $errors = [];
-          DB::transaction(function() use ($user, $admin, $checkout_at, $expected_checkin, $errors, $asset_ids)
-          {
-              foreach($asset_ids as $asset_id)
-              {
-                  $asset = Asset::find($asset_id);
+        $has_errors = false;
+        $errors = [];
+        DB::transaction(function() use ($user, $admin, $checkout_at, $expected_checkin, $errors, $asset_ids)
+        {
+            foreach($asset_ids as $asset_id)
+            {
+                $asset = Asset::find($asset_id);
 
-                  $error = $asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), null);
+                $error = $asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), null);
 
-                  if($error)
-                  {
-                      $has_errors = true;
-                      array_merge_recursive($errors, $asset->getErrors()->toArray());
-                  }
-              }
-            });
+                if($error)
+                {
+                    $has_errors = true;
+                    array_merge_recursive($errors, $asset->getErrors()->toArray());
+                }
+            }
+        });
 
-          if (!$errors) {
+        if (!$errors) {
             // Redirect to the new asset page
-              return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
-          }
+            return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
+        }
 
         // Redirect to the asset management page with error
-          return redirect()->to("hardware/bulk-checkout")->with('error', trans('admin/hardware/message.checkout.error'))->withErrors($errors);
-      }
+        return redirect()->to("hardware/bulk-checkout")->with('error', trans('admin/hardware/message.checkout.error'))->withErrors($errors);
+    }
 
     /**
      * get Asset tag when static function cannot be used
      */
-      public function getAssetTag($model_id){
+    public function getAssetTag($model_id){
         return Asset::autoincrement_asset($model_id);
-      }
+    }
 
 }

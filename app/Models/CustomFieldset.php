@@ -9,7 +9,7 @@ class CustomFieldset extends Model
     protected $guarded=["id"];
 
     public $rules=[
-    "name" => "required|unique:custom_fieldsets"
+        "name" => "required|unique:custom_fieldsets",
     ];
 
     public function fields()
@@ -34,8 +34,8 @@ class CustomFieldset extends Model
             $rule = [];
 
             if (($field->field_encrypted!='1') ||
-                  (($field->field_encrypted =='1')  && (Gate::allows('admin')) ))
-                  {
+                (($field->field_encrypted =='1')  && (Gate::allows('admin')) ))
+            {
 
                 if ($field->pivot->required) {
                     $rule[]="required";

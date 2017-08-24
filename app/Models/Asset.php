@@ -300,6 +300,7 @@ class Asset extends Depreciable
         }
     }
 
+
     /**
      * Get the asset's location based on default RTD location
      **/
@@ -506,7 +507,10 @@ class Asset extends Depreciable
             $asset_tag = preg_replace('/^0*/', '', $asset_tag_digits);
 
 
+
+
             Debugbar::addMessage('number',$asset_tag);
+
             if ($settings->zerofill_count > 0) {
 
                 $category_prefix.="-";

@@ -9,7 +9,7 @@ return array(
     'checkout_date' => 'Checkout Date',
     'checkoutto' 	=> 'Checked Out',
     'diff' 			=> 'Diff',
-    'dl_csv' 		=> 'Download CSV',
+    'dl_csv' 		=> 'Download Excel',
     'eol' 			=> 'EOL',
     'id'      		=> 'ID',
     'location' 		=> 'Location',

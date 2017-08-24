@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCategoryPrefixToCategories extends Migration
+class AddIssuLocationToUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,9 @@ class AddCategoryPrefixToCategories extends Migration
      */
     public function up()
     {
-        Schema::table('categories', function ($table) {
-            $table->string('category_prefix')->nullable();
+        //
+        Schema::table('assets', function ($table) {
+            $table->string('iss_location_id')->nullable();
         });
     }
 
@@ -25,9 +26,8 @@ class AddCategoryPrefixToCategories extends Migration
     public function down()
     {
         //
-        Schema::table('categories', function ($table) {
-            $table->dropColumn('category_prefix');
+        Schema::table('assets', function ($table) {
+            $table->dropColumn('iss_location_id');
         });
     }
-
 }

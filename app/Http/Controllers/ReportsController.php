@@ -128,9 +128,8 @@ class ReportsController extends Controller
                     trans('admin/hardware/form.manufacturer'),
                     trans('admin/hardware/form.model'),
                     trans('general.model_no'),
-                    trans('general.name'),
+                    trans('admin/reports/asset_register.description'),
                     trans('admin/hardware/table.serial'),
-                    trans('general.status'),
                     trans('admin/hardware/table.purchase_date'),
                     trans('admin/hardware/table.purchase_cost'),
                     trans('admin/hardware/form.order'),
@@ -138,6 +137,7 @@ class ReportsController extends Controller
                     trans('admin/hardware/table.checkoutto'),
                     trans('admin/hardware/table.checkout_date'),
                     trans('admin/hardware/table.location'),
+                    trans('admin/hardware/form.issue_location'),
                     trans('general.notes'),
                 ];
                 foreach($customfields as $field) {
@@ -153,15 +153,16 @@ class ReportsController extends Controller
                         ($asset->model->manufacturer) ? $asset->model->manufacturer->name : '',
                         ($asset->model) ? $asset->model->name : '',
                         ($asset->model->model_number) ? $asset->model->model_number : '',
-                        ($asset->name) ? $asset->name : '',
+                        ($asset->model->category_id) ? e($asset->model->category->name.",".$asset->model->name) : '',
                         ($asset->serial) ? $asset->serial : '',
-                        ($asset->assetstatus) ? e($asset->assetstatus->name) : '',
                         ($asset->purchase_date) ? e($asset->purchase_date) : '',
                         ($asset->purchase_cost > 0) ? Helper::formatCurrencyOutput($asset->purchase_cost) : '',
                         ($asset->order_number) ? e($asset->order_number) : '',
                         ($asset->supplier) ? e($asset->supplier->name) : '',
                         ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
                         ($asset->last_checkout!='') ? e($asset->last_checkout) : '',
+                        ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
+                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
                         ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
                             e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
                         ($asset->notes) ? e($asset->notes) : '',
