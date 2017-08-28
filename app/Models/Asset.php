@@ -481,26 +481,20 @@ class Asset extends Depreciable
     }
 
     /**
-     * Get auto-increment
+     * Get auto-increment asset tag
      * @param $model_id
      */
-    public static function autoincrement_asset($model_id=null, $category_prefix=null)
+    public static function autoincrement_asset($category_prefix=null)
     {
         $settings = \App\Models\Setting::getSettings();
-
-        if ($model_id) {
-            $asset_model = new AssetModelsController();
-
-            $cat_prefix = $asset_model->getCatPrefix($model_id);
-            $category_prefix = $cat_prefix;
-        }
-
 
         if ($settings->auto_increment_assets == '1') {
             $temp_asset_tag = \DB::table('assets')
                 ->where('physical', '=', '1')
                 ->where('asset_type', '=', $category_prefix)
                 ->max('asset_tag');
+
+            Debugbar::addMessage('cat_prefix', $category_prefix);
 
             Debugbar::addMessage('temp', $temp_asset_tag);
             $asset_tag_digits = preg_replace('/\D/', '', $temp_asset_tag);

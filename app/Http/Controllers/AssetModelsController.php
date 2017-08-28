@@ -403,20 +403,7 @@ class AssetModelsController extends Controller
         return View::make("models.custom_fields_form")->with("model", $model);
     }
 
-    /**
-     * get Category prefix based on model id
-     * @param $modelId
-     * @return String
-     */
-    public function getCatTag($modelId)
-    {
-        Debugbar::addMessage('in getCatTag', $modelId);
-        return Asset::autoincrement_asset($modelId);
 
-        return $cat_prefix;
-
-
-    }
 
     /**
      * Get the JSON response to populate the data tables on the

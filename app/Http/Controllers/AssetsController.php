@@ -10,6 +10,7 @@ use App\Models\Actionlog;
 use App\Models\Asset;
 use App\Models\AssetMaintenance;
 use App\Models\AssetModel;
+use App\Models\Category;
 use App\Models\Company;
 use App\Models\CustomField;
 use App\Models\Depreciation;
@@ -1963,14 +1964,18 @@ class AssetsController extends Controller
         }
 
         // Redirect to the asset management page with error
-        return redirect()->to("hardware/bulk-checkout")->with('error', trans('admin/hardware/message.checkout.error'))->withErrors($errors);
+        return redirect()->to("hardware/BULK-checkout")->with('error', trans('admin/hardware/message.checkout.error'))->withErrors($errors);
     }
 
     /**
-     * get Asset tag when static function cannot be used
+     * get next Asset tag when model_id is provided
      */
     public function getAssetTag($model_id){
-        return Asset::autoincrement_asset($model_id);
+        $category_prefix = AssetModel::find($model_id)->category->category_prefix;
+
+        Debugbar::addMessage('in getAssetTag', $category_prefix);
+
+        return Asset::autoincrement_asset($category_prefix);
     }
 
 }

@@ -172,10 +172,7 @@
                 $.get("{{config('app.url') }}/hardware/models/"+modelid+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
                     $("#asset_tag").val(tag);
                 });
-
-                $.get("{{config('app.url') }}/hardware/models/"+modelid+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
-                    $("#asset_tag").val(tag);
-                });
+                
 
             }
         }
