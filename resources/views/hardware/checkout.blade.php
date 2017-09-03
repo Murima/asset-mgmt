@@ -73,6 +73,25 @@
                     </div>
 
 
+                    <!-- Manager -->
+                    <div class="form-group {{ $errors->has('manager_id') ? 'has-error' : '' }}">
+                        <label class="col-md-3 control-label" for="manager_id">{{ trans('admin/users/table.manager') }}</label>
+                        <div class="col-md-8">
+                            {{ Form::select('manager_id', $manager_list , Input::old('manager_id', $user->manager_id), array('class'=>'select2', 'style'=>'width:350px')) }}
+                            {!! $errors->first('manager_id', '<span class="alert-msg">:message</span>') !!}
+                        </div>
+                    </div>
+
+                    {{--<!-- Manager -->
+                    <div id="manager" class="form-group{{$errors->has('assigned_manager') ? ' has-error' : '' }}">
+
+                        {{ Form::label('assigned_manager', trans('admin/hardware/form.manager'), array('class' => 'col-md-3 control-label')) }}
+                        <div class="col-md-7">
+                            {{Form::text('manager'), array('class'=>'select2', 'id'=>'assigned_manager', 'style'=>'width:100%')}}
+
+                        </div>
+
+                    </div>--}}
 
                   <!-- Checkout/Checkin Date -->
                   <div class="form-group {{ $errors->has('checkout_at') ? 'error' : '' }}">
@@ -310,7 +329,8 @@ $(function() {
     } else {
 
       $.get("{{config('app.url') }}/api/users/"+userid+"/assets",{_token: "{{ csrf_token() }}"},function (data) {
-        // console.warn("Ajax call came back okay for user " + userid + "! " + data.length + " Data is: "+data);
+        //console.warn("Ajax call came back okay for user " + userid + "! " + data.length + " Data is: "+data);
+        //console.log(data);
         if (data.length > 0) {
             $('#current_assets_box').fadeIn();
 
@@ -333,6 +353,14 @@ $(function() {
         } else {
             $('#current_assets_box').fadeOut();
         }
+      });
+
+      //TODO set the value of manager dropdown depending on user
+      $.get("{{config('app.url')}}/api/users/"+userid+"/manager", {_token: "{{ csrf_token() }}"}, function(data){
+          //console.log(data.manager_username);
+          //console.log ($('#assigned_to').val());
+          $("#manager_id").val(data.manager_username);
+          //$("#manager_id").get(0).selectedIndex = data.manager_username;
       });
     }
   });

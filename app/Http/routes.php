@@ -94,6 +94,8 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
         Route::get('list/{status?}', [ 'as' => 'api.users.list', 'uses' => 'UsersController@getDatatable' ]);
         Route::get('{userId}/assets', [ 'as' => 'api.users.assetlist', 'uses' => 'UsersController@getAssetList' ]);
         Route::post('{userId}/upload', [ 'as' => 'upload/user', 'uses' => 'UsersController@postUpload' ]);
+        Route::get('{userId}/manager', [ 'as' => 'api.users.manager', 'uses' => 'UsersController@getManager' ]);
+
     });
 
     /*---Groups API---*/
