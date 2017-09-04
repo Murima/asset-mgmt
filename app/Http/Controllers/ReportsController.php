@@ -128,7 +128,7 @@ class ReportsController extends Controller
                     trans('admin/reports/asset_register.category'),
                     trans('admin/reports/asset_register.country'),
                     trans('admin/hardware/form.issue_location'),
-                    trans('admin/hardware/table.checkoutto'),
+                    trans('admin/hardware/table.assigned_to'),
                     trans('admin/reports/asset_register.assigned_date'),
 
                     trans('admin/reports/asset_register.description'),
@@ -168,9 +168,7 @@ class ReportsController extends Controller
 
                     trans('admin/reports/asset_register.current_asset'),
 
-                    trans('admin/hardware/table.purchase_cost'),
-                    trans('admin/hardware/form.order'),
-                    trans('general.notes'),
+                    //trans('general.notes'),
                 ];
 
            /*
@@ -203,19 +201,27 @@ class ReportsController extends Controller
                         //TODO find a better reusable method for customfields
                         ($asset->_snipeit_po_number) ? e($asset->_snipeit_po_number) :'',
                         ($asset->purchase_cost > 0) ? Helper::formatCurrencyOutput($asset->purchase_cost) : '',
-                        ($asset->assetloc) ? e(Setting::first()->default_currency): '',
+                        ($asset->defaultloc) ? Setting::first()->default_currency: '',
                         ($asset->supplier) ? e($asset->supplier->city): '',
-                        ($asset->warranty_months) ? $asset->warranry_months: '',
+                        ($asset->supplier) ? e($asset->supplier->name): '',
+                        ($asset->warranty_months) ? e($asset->warranty_months): 'NULL',
 
                         'Null',
 
-                        ($asset->order_number) ? e($asset->order_number) : '',
-                        ($asset->supplier) ? e($asset->supplier->name) : '',
-                        ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
+                        ($asset->_snipeit_sof) ? e($asset->_snipeit_sof) : '',
+                        ($asset->_snipeit_cost_centre) ? e($asset->_snipeit_cost_centre) : '',
+                        ($asset->_snipeit_project_code) ? e($asset->_snipeit_project_code) : '',
+                        ($asset->_snipeit_dea) ? e($asset->_snipeit_dea) : '',
+                        ($asset->_snipeit_account_code) ? e($asset->_snipeit_account_code) : '',
+                        ($asset->_snipeit_award_end_date) ? e($asset->_snipeit_award_end_date) : '',
+                        ($asset->_snipeit_donor_name) ? e($asset->_snipeit_donor_name) : '',
+                        ($asset->_snipeit_plan_after_award_ends) ? e($asset->_snipeit_plan_after_award_ends) : '',
+
+                        /*($asset->assigneduser && $asset->assigneduser->userloc!='') ?
                             e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
                         ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
-                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
-                        ($asset->notes) ? e($asset->notes) : '',
+                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),*/
+                        //($asset->notes) ? e($asset->notes) : '',
                     ];
                     /*dont want to mess with custom fields too lazy
                      * foreach($customfields as $field) {

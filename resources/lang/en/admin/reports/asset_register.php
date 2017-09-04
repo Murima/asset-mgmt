@@ -1,13 +1,14 @@
 <?php
 
 return array(
+    'assigned_to'   => 'Assigned To',
     'description'   => 'Asset Description',
     'category'      => 'Category',
     'country'       => 'Country',
     'accessories'   => 'Accessories',
     'assigned_date' => 'Assigned Date',
     'other_reference'=> 'Other Reference Number',
-    'po_number'     => 'PO Numeber',
+    'po_number'     => 'PO Number',
     'price'         => 'Purchase Price',
     'currency'      => 'Purchase Currency',
     'purchase_location'   => 'Purchase Location',
@@ -22,7 +23,7 @@ return array(
     'donor_name'    => 'Donor Name',
     'plan_after'    => 'Plan After Award',
     'date_carried'  => 'Date Carried Over',
-    'location_carried' => 'Accessories',
+    'location_carried' => 'Location Carried',
     'date_donated'   => 'Date Donated',
     'recipient_donation'   => 'Recepient of Donation',
     'donation_cert'  => 'Donation Certificate Signed?',
