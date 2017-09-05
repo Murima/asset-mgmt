@@ -903,6 +903,16 @@ Route::group([ 'prefix' => 'account', 'middleware' => ['web', 'auth']], function
         [ 'as' => 'account/asset-accepted', 'uses' => 'ViewAssetsController@postAcceptAsset' ]
     );
 
+    #Approve Asset
+    Route::get(
+        'accept-asset/{logID}',
+        [ 'as' => 'account/accept-assets', 'uses' => 'ViewAssetsController@getApproveAsset' ]
+    );
+    Route::post(
+        'accept-asset/{logID}',
+        [ 'as' => 'account/asset-accepted', 'uses' => 'ViewAssetsController@postApproveAsset' ]
+    );
+
     # Profile
     Route::get(
         'requestable-assets',

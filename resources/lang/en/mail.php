@@ -13,6 +13,7 @@ return array(
     'assets_warrantee_expiring' => '{1} asset with warrantee expiring in the next 60 days.|[2,Inf] assets with warrantees
                                     expiring in the next 60 days.',
     'assigned_to' => 'Assigned To',
+    'Approve_asset_delivery' => 'Please approve asset from your line.',
     'best_regards' => 'Best regards,',
     'canceled' => 'Canceled:',
     'checkin_date' => 'Checkin Date:',
@@ -35,6 +36,7 @@ return array(
     'hello' => 'Hello',
     'hi' => 'Hi',
     'i_have_read' => 'I have read and agree to the terms of use, and have received this item.',
+    'i_have_confirmed' => 'I have confirmed the user received the asset and read the terms of use',
     'item' => 'Item:',
     'items_below_minimum' => '{1} item that is below minimum inventory or will soon be low.|[2,Inf] items that are below minimum
                               inventory or will soon be low.',
@@ -45,6 +47,8 @@ return array(
     'login_first_admin' => 'Login to your new Snipe-IT installation using the credentials below:',
     'login' => 'Login:',
     'Low_Inventory_Report' => 'Low Inventory Report',
+    'manager_approve' => 'A new item has been assigned to a user you manage, details are below. Please confirm that 
+                          the user actually received the item then follow link to approve',
     'min_QTY' => 'Min QTY',
     'name' => 'Name',
     'new_item_checked' => 'A new item has been checked out under your name, details are below.',
