@@ -40,6 +40,16 @@
                     <div class="col-md-4 col-xs-12"><label for="modal-city">{{ trans('general.city') }}:</label></div>
                     <div class="col-md-8 col-xs-12 required"><input type='text' id='modal-city' class="form-control"></div>
                 </div>
+                <div class="dynamic-form-row">
+                    <div class="col-md-4 col-xs-12"><label for="modal-specific_category">{{ trans('general.specific_category') }}:</label></div>
+                    <div class="col-md-8 col-xs-12 required"><input type='text' id='modal-specific_category' class="form-control"></div>
+                </div>
+
+                <div class="dynamic-form-row">
+                    <div class="col-md-4 col-xs-12"><label for="modal-accessory_category">{{ trans('general.accessory_category') }}:</label></div>
+                    <div class="col-md-8 col-xs-12 required"><input type='text' id='modal-accessory_category' class="form-control"></div>
+                </div>
+
 
                 <div class="dynamic-form-row">
                     <div class="col-md-4 col-xs-12 country"><label for="modal-country">{{ trans('general.country') }}:</label></div>
