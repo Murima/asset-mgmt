@@ -560,7 +560,12 @@ class AssetsController extends Controller
         // Get the dropdown of users and then pass it to the checkout view
         $users_list = Helper::usersList();
 
-        return View::make('hardware/checkout', compact('asset'))->with('users_list', $users_list);
+        //Get the drowpdown of managers then pass it to the checkout view
+        $manager_list = Helper::managerList();
+
+        return View::make('hardware/checkout', compact('asset'))
+            ->with('users_list', $users_list)
+            ->with('manager_list', $manager_list);
 
     }
 
@@ -586,6 +591,14 @@ class AssetsController extends Controller
 
         $user = User::find(e(Input::get('assigned_to')));
         $admin = Auth::user();
+        //get the manager
+        $manager = User::find(e(Input::get('manager_id')));
+
+        //give the user a manager if it does not exist
+        if(!$user->manager){
+            $user->manager_id = $manager->id;
+            $user->save();
+        }
 
         if ((Input::has('checkout_at')) && (Input::get('checkout_at')!= date("Y-m-d"))) {
             $checkout_at = e(Input::get('checkout_at'));
@@ -600,7 +613,7 @@ class AssetsController extends Controller
         }
 
 
-        if ($asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')))) {
+        if ($asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager)) {
             // Redirect to the new asset page
             return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
         }
@@ -727,7 +740,7 @@ class AssetsController extends Controller
 
             if ((($asset->checkin_email()=='1')) && ($user) && (!config('app.lock_passwords'))) {
                 Mail::send('emails.checkin-asset', $data, function ($m) use ($user) {
-                    $m->to($user->email, $user->first_name . ' ' . $user->last_name);
+                    $m->to($user->getEmailAddress(), $user->first_name . ' ' . $user->last_name);
                     $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
                     $m->subject(trans('mail.Confirm_Asset_Checkin'));
                 });

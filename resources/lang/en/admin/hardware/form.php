@@ -30,6 +30,7 @@ return array(
     'help_issue_location'=> 'Select the office where the asset was issued',
     'issue_location'     => 'Issue office',
     'keyboard'          => 'Keyboard',
+    'manager'           => 'Manager',
     'mac_address'		=> 'MAC Address',
     'manufacturer'		=> 'Manufacturer',
     'model'				=> 'Model',

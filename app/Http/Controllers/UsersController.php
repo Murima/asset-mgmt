@@ -14,6 +14,7 @@ use App\Models\Setting;
 use App\Models\Statuslabel;
 use App\Http\Requests\SaveUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Barryvdh\Debugbar\Middleware\Debugbar;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\User;
 use App\Models\Ldap;
@@ -1409,6 +1410,22 @@ class UsersController extends Controller
             return response()->json(['message' => trans('admin/settings/general.two_factor_reset_success')], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => trans('admin/settings/general.two_factor_reset_error')], 500);
+        }
+
+    }
+
+    /**
+     * Return JSON containing the manager of the assigned to a user.
+     */
+    public function getManager($userId)
+    {
+        $manager= User::find($userId)->manager;
+        if ($manager){
+            \Debugbar::addMessage('in getManager');
+            return response()->json(['manager_username'=> $manager->id]);
+        }
+        else{
+            return response()->json(['manager_username'=> 'No manager']);
         }
 
     }

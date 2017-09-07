@@ -404,4 +404,18 @@ class ViewAssetsController extends Controller
             return redirect()->to('account/view-assets')->with('error', 'Something went wrong ');
         }
     }
+
+    /*
+     * get page for managers to approve assets
+     */
+    public function getApproveAsset(){
+
+    }
+
+    /*
+     * process the decision of the user
+     */
+    public function postApproveAsset(){
+
+    }
 }

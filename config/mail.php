@@ -91,7 +91,8 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    //TODO ENABLE ENCRYPTION ON PRODUCTION SERVER
+    'encryption' => env('MAIL_ENCRYPTION', ''),
 
     /*
     |--------------------------------------------------------------------------

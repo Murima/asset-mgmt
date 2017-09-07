@@ -25,6 +25,8 @@ class AssetCheckoutRequest extends Request
     {
         return [
             "assigned_to"   => 'required',
+            "manager_id"    => 'required',
+            "checkout_at"   => 'required',
         ];
     }
 }

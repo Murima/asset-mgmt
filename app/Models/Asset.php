@@ -91,7 +91,7 @@ class Asset extends Depreciable
     /**
      * Checkout asset
      */
-    public function checkOutToUser($user, $admin, $checkout_at = null, $expected_checkin = null, $note = null, $name = null)
+    public function checkOutToUser($user, $admin, $checkout_at = null, $expected_checkin = null, $note = null, $name = null, $manager)
     {
         if (!$user) {
             return false;
@@ -123,8 +123,13 @@ class Asset extends Depreciable
             // $action, $admin, $user, $expected_checkin = null, $note = null, $checkout_at = null
             $log = $this->createLogRecord('checkout', $this, $admin, $user, $expected_checkin, $note, $checkout_at);
 
+            //save email address of user before sending email
+            if ($user->email==''){
+                $user->email = $user->getEmailAddress();
+                $user->save();
+            }
             if ((($this->requireAcceptance()=='1')  || ($this->getEula())) && ($user->email!='')) {
-                $this->checkOutNotifyMail($log->id, $user, $checkout_at, $expected_checkin, $note);
+                $this->checkOutNotifyMail($log->id, $user, $checkout_at, $expected_checkin, $note, $manager);
             }
 
             if ($settings->slack_endpoint) {
@@ -137,7 +142,7 @@ class Asset extends Depreciable
 
     }
 
-    public function checkOutNotifyMail($log_id, $user, $checkout_at, $expected_checkin, $note)
+    public function checkOutNotifyMail($log_id, $user, $checkout_at, $expected_checkin, $note, $manager)
     {
         $data['log_id'] = $log_id;
         $data['eula'] = $this->getEula();
@@ -151,13 +156,26 @@ class Asset extends Depreciable
         $data['require_acceptance'] = $this->requireAcceptance();
 
         if ((($this->requireAcceptance()=='1')  || ($this->getEula())) && (!config('app.lock_passwords'))) {
+            try{
 
-            \Mail::send('emails.accept-asset', $data, function ($m) use ($user) {
-                //DebugBar::addMessage($user->getEmailAddress(), 'send');
-                $m->to($user->getEmailAddress(), $user->first_name . ' ' . $user->last_name);
-                $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
-                $m->subject(trans('mail.Confirm_asset_delivery'));
-            });
+                \Mail::send('emails.accept-asset', $data, function ($m) use ($user) {
+                    //\Debugbar::addMessage($user->email, 'send');
+                    $m->to($user->email, $user->first_name . ' ' . $user->last_name);
+                    $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
+                    $m->subject(trans('mail.Confirm_asset_delivery'));
+                });
+
+                \Mail::send('emails.manager-approve', $data, function ($m) use ($manager) {
+                    //\Debugbar::addMessage($user->email, 'send');
+                    $m->to($manager->email, $manager->first_name . ' ' . $manager->last_name);
+                    $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
+                    $m->subject(trans('mail.Approve_asset_delivery'));
+                });
+            }
+            catch (\Exception $e){
+                dd($e->getMessage());
+            }
+
         }
 
     }
