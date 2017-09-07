@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 use App\Helpers\Helper;
 use App\Models\Accessory;
 use App\Models\Actionlog;
+use App\Models\AssetModel;
 use App\Models\Company;
+use App\Models\GeneralAccessory;
 use App\Models\Setting;
 use App\Models\User;
 use Auth;
@@ -694,4 +696,24 @@ class AccessoriesController extends Controller
 
         return $data;
     }
+
+    /*
+     * get the general accessories to display on asset creation
+     * as checkboxes
+     * @return json
+     */
+    public function getGeneralAccessories($modelId){
+
+        //TODO use relationships here to make this easier
+        $model = AssetModel::find($modelId);
+        $category_id = $model->category->id;
+        if ($category_id){
+            $accessories = GeneralAccessory::where('category_id', '=', $category_id)->get();
+            return json_encode($accessories);
+        }
+        else{
+            return null; //fix this
+        }
+    }
+
 }
