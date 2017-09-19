@@ -549,6 +549,8 @@ class AssetsController extends Controller
      */
     public function getCheckout($assetId)
     {
+        //TODO add accessories to checkout
+        //TODO add issuing locaiton to checkout
         // Check if the asset exists
         if (is_null($asset = Asset::find(e($assetId)))) {
             // Redirect to the asset management page with error

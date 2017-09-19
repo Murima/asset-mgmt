@@ -47,6 +47,7 @@ return array(
     'login_first_admin' => 'Login to your new Snipe-IT installation using the credentials below:',
     'login' => 'Login:',
     'Low_Inventory_Report' => 'Low Inventory Report',
+    'managee' => 'Managee',
     'manager_approve' => 'A new item has been assigned to a user you manage, details are below. Please confirm that 
                           the user actually received the item then follow link to approve',
     'min_QTY' => 'Min QTY',
@@ -58,6 +59,7 @@ return array(
     'read_the_terms' => 'Please read the terms of use below.',
     'read_the_terms_and_click' => 'Please read the terms of use below, and click on the link at the bottom to confirm that you read
                          and agree to the terms of use, and have received the asset.',
+    'read_the_terms_and_approve' => 'Please read the terms of use and approve or decline the asset',
     'requested' => 'Requested:',
     'reset_link' => 'Your Password Reset Link',
     'reset_password' => 'Click here to reset your password:',

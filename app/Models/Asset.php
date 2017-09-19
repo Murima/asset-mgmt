@@ -158,6 +158,7 @@ class Asset extends Depreciable
         if ((($this->requireAcceptance()=='1')  || ($this->getEula())) && (!config('app.lock_passwords'))) {
             try{
 
+                //TODO use a better method instead of calling this facade twice
                 \Mail::send('emails.accept-asset', $data, function ($m) use ($user) {
                     //\Debugbar::addMessage($user->email, 'send');
                     $m->to($user->email, $user->first_name . ' ' . $user->last_name);

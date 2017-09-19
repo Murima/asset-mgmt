@@ -295,7 +295,7 @@ class ViewAssetsController extends Controller
             //return redirect()->to('account')->with('error', trans('admin/hardware/message.does_not_exist'));
         }
 
-        if ($findlog->accepted_id!='') {
+        if ($findlog->approved_id!='') {
             return redirect()->to('account/view-assets')->with('error', trans('admin/users/message.error.asset_already_accepted'));
         }
 
@@ -408,7 +408,33 @@ class ViewAssetsController extends Controller
     /*
      * get page for managers to approve assets
      */
-    public function getApproveAsset(){
+    public function getApproveAsset($logID=null)
+    {
+        if (!$findlog = Actionlog::where('id', $logID)->first()) {
+            echo 'no record';
+            //return redirect()->to('account')->with('error', trans('admin/hardware/message.does_not_exist'));
+        }
+        if ($findlog->approved_id!='') { //check if already approved
+            return redirect()->to('account/view-assets')->with('error', trans('admin/users/message.error.asset_already_approved'));
+        }
+        $manager = Auth::user();
+
+
+        if ($manager->id != User::find($findlog->item->assigned_to)->manager_id) {
+            return redirect()->to('account/view-assets')->with('error', trans('admin/users/message.error.incorrect_user_approved'));
+        }
+
+        $item = $findlog->item;
+
+        // Check if the asset exists
+        if (is_null($item)) {
+            // Redirect to the asset management page
+            return redirect()->to('account')->with('error', trans('admin/hardware/message.does_not_exist'));
+        } elseif (!Company::isCurrentUserHasAccess($item)) {
+            return redirect()->route('requestable-assets')->with('error', trans('general.insufficient_permissions'));
+        } else {
+            return View::make('account/approve-asset', compact('item'))->with('findlog', $findlog)->with('item',$item);
+        }
 
     }
 
