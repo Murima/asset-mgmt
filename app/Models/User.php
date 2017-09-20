@@ -229,6 +229,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->belongsTo('\App\Models\User', 'manager_id')->withTrashed();
     }
 
+
     /**
      * Get user groups
      */

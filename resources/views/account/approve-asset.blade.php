@@ -2,8 +2,8 @@
 
 {{-- Page title --}}
 @section('title')
-    Approve {{ $item->showAssetName() }} <br>
-    Managee {{ $item->assignedTo }}
+    <strong>Approve:</strong> {{ $item->showAssetName() }} <br>
+    <strong>Managee:</strong> {{ $item->assigneduser->getFullNameAttribute() }}<br>
     @parent
 @stop
 
@@ -29,7 +29,7 @@
     </style>
 
 
-    <!-- TODO find out how this form is sent in accept-asset.blade for now use explicit action-->
+    <!-- TODO how is this form working???-->
     <form class="form-horizontal" method="post" action="" autocomplete="off">
         <!-- CSRF Token -->
         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
@@ -54,7 +54,7 @@
                             <div class="radio">
                                 <label>
                                     <input type="radio" name="asset_acceptance" id="declined" value="declined">
-                                    I decline
+                                    I reject
                                 </label>
                             </div>
 

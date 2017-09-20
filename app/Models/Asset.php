@@ -114,6 +114,7 @@ class Asset extends Depreciable
 
         if ($this->requireAcceptance()) {
             $this->accepted="pending";
+            $this->approved="pending";
         }
 
 
