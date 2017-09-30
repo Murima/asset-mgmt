@@ -147,6 +147,9 @@
 {{--
     @include ('partials.forms.edit.requestable', ['requestable_text' => trans('admin/hardware/general.requestable')])
 --}}
+    @include('partials.forms.edit.capital_non_capital', ['requestable_text' => trans('admin/hardware/general.capital'),
+    'capital_asset_text' => trans('admin/hardware/general.capital_help')])
+
 
     <!-- Image -->
     @if ($item->image)
@@ -474,6 +477,10 @@
 
 
         $(document).ready(function(){
+
+            $(function () {//initialize popovers
+                $('[data-toggle="popover"]').popover()
+            });
 
             $('#checkbox').hide();// hide checkbox inputs
             $('#genPassword').pGenerator({

@@ -318,7 +318,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             ->orWhere('username', '=', $user_email);
     }
 
-    public static function generateEmailFromFullName($name) {
+    public static function generateEmailFromFullName($name) {//TODO use this method instead of the one written
         $username = User::generateFormattedNameFromFullName(Setting::getSettings()->email_format, $name);
         return $username['username'].'@'.Setting::getSettings()->email_domain;
     }

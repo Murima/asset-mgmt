@@ -6,6 +6,8 @@ return array(
 	'archived'  				=> 'Archived',
     'asset'  					=> 'Asset',
     'bulk_checkout'             => 'Allocate Assets to User',
+    'capital'                   => 'Capital asset',
+    'capital_help'              => 'Capital assets are generally assets NOT bought by grant',
     'checkin'  					=> 'Return Asset',
     'checkout'  				=> 'Allocate Asset to User',
     'clone'  					=> 'Clone Asset',
