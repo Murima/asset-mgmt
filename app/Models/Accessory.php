@@ -26,7 +26,7 @@ class Accessory extends SnipeModel
     */
     public $rules = array(
         'name'              => 'required|min:3|max:255',
-        'qty'               => 'required|integer|min:1',
+        'qty'               => 'integer|min:1',
         'category_id'       => 'required|integer',
         'company_id'        => 'integer',
         'min_amt'           => 'integer|min:0',
@@ -49,7 +49,7 @@ class Accessory extends SnipeModel
      *
      * @var array
      */
-    protected $fillable = ['name','qty','category_id'];
+    protected $fillable = ['name','qty','category_id','asset_id'];
 
     public function company()
     {

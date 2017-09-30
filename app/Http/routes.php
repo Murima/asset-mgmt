@@ -2,6 +2,7 @@
 use App\Models\CheckoutRequest;
 use App\Models\Location;
 use App\Models\Statuslabel;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -217,6 +218,7 @@ Route::group(
                 'middleware' => 'authorize:assets.create',
                 'uses' => 'AssetsController@postCreate'
             ]);
+
 
         Route::get('{assetId}/edit', [
                 'as'   => 'update/hardware',
