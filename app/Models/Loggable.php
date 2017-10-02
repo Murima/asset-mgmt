@@ -43,8 +43,8 @@ trait Loggable
         $log->user_id = Auth::user()->id;
 
         if (!is_null($this->asset_id) || isset($target)) {
-            $log->target_type = Asset::class;
-            $log->target_id = $this->asset_id;
+            $log->target_type = User::class;
+            $log->target_id = $this->assigned_to;
         } else if (!is_null($this->assigned_to)) {
             $log->target_type = User::class;
             $log->target_id = $this->assigned_to;

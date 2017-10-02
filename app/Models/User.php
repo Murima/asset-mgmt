@@ -229,6 +229,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->belongsTo('\App\Models\User', 'manager_id')->withTrashed();
     }
 
+
     /**
      * Get user groups
      */
@@ -318,7 +319,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             ->orWhere('username', '=', $user_email);
     }
 
-    public static function generateEmailFromFullName($name) {//TODO use this method instead of the one written
+    public static function generateEmailFromFullName($name) {//TODO reuse this method instead of getEmailAddress().
         $username = User::generateFormattedNameFromFullName(Setting::getSettings()->email_format, $name);
         return $username['username'].'@'.Setting::getSettings()->email_domain;
     }

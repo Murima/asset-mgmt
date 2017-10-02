@@ -3,12 +3,14 @@
 return array(
 
     'accepted'                  => 'You have successfully accepted this asset.',
+    'approved'                  => 'You have successfully approved this asset',
     'declined'                  => 'You have successfully declined this asset.',
     'user_exists'               => 'User already exists!',
     'user_not_found'            => 'User [:id] does not exist.',
     'user_login_required'       => 'The login field is required',
     'user_password_required'    => 'The password is required.',
     'insufficient_permissions'  => 'Insufficient Permissions.',
+    'rejected'                  => 'You have successfully approved this asset',
     'user_deleted_warning'      => 'This user has been deleted. You will have to restore this user to edit them or assign them new assets.',
     'ldap_not_configured'        => 'LDAP integration has not been configured for this installation.',
 
@@ -32,8 +34,10 @@ return array(
         'unsuspend' => 'There was an issue unsuspending the user. Please try again.',
         'import'    => 'There was an issue importing users. Please try again.',
         'asset_already_accepted' => 'This asset has already been accepted.',
+        'asset_already_approved' => 'This asset has already been approved',
         'accept_or_decline' => 'You must either accept or decline this asset.',
         'incorrect_user_accepted' => 'The asset you have attempted to accept was not checked out to you.',
+        'incorrect_user_approved' => 'The asset you have attempted to approve is not in your line',
         'ldap_could_not_connect' => 'Could not connect to the LDAP server. Please check your LDAP server configuration in the LDAP config file. <br>Error from LDAP Server:',
         'ldap_could_not_bind' => 'Could not bind to the LDAP server. Please check your LDAP server configuration in the LDAP config file. <br>Error from LDAP Server: ',
         'ldap_could_not_search' => 'Could not search the LDAP server. Please check your LDAP server configuration in the LDAP config file. <br>Error from LDAP Server:',

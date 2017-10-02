@@ -7,6 +7,17 @@
     <p>{{ trans('mail.manager_approve') }}</p>
 
     <table>
+        @if (isset($item->assigned_to))
+            <tr>
+                <td>
+                    {{trans('mail.managee')}}
+                </td>
+                <td>
+                    <strong>{{$item->assigned_to}}</strong>
+                </td>
+            </tr>
+        @endif
+
         <tr>
             <td>
                 {{ trans('mail.asset_name') }}
@@ -66,7 +77,7 @@
 
         @elseif (($require_acceptance==0) && ($eula!=''))
 
-            {{ trans('mail.read_the_terms') }}
+            {{ trans('mail.read_the_terms_and_approve') }}
 
         @endif
 
@@ -75,7 +86,7 @@
     <p><blockquote>{!! $eula !!}</blockquote></p>
 
     @if ($require_acceptance==1)
-        <p><strong><a href="{{ config('app.url') }}/account/accept-asset/{{ $log_id }}">{{ trans('mail.i_have_confirmed') }}</a></strong></p>
+        <p><strong><a href="{{ config('app.url') }}/account/approve-asset/{{ $log_id }}">{{ trans('mail.i_have_confirmed') }}</a></strong></p>
     @endif
 
     <p>{{ $snipeSettings->site_name }}</p>

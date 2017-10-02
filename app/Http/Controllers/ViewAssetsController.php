@@ -15,6 +15,7 @@ use App\Models\User;
 use Auth;
 use Config;
 use DB;
+use Illuminate\Support\Facades\Log;
 use Input;
 use Lang;
 use Mail;
@@ -295,7 +296,7 @@ class ViewAssetsController extends Controller
             //return redirect()->to('account')->with('error', trans('admin/hardware/message.does_not_exist'));
         }
 
-        if ($findlog->accepted_id!='') {
+        if ($findlog->approved_id!='') {
             return redirect()->to('account/view-assets')->with('error', trans('admin/users/message.error.asset_already_accepted'));
         }
 
@@ -408,14 +409,123 @@ class ViewAssetsController extends Controller
     /*
      * get page for managers to approve assets
      */
-    public function getApproveAsset(){
+    public function getApproveAsset($logID=null)
+    {
+        if (!$findlog = Actionlog::where('id', $logID)->first()) {
+            echo 'no record';
+            //return redirect()->to('account')->with('error', trans('admin/hardware/message.does_not_exist'));
+        }
+        if ($findlog->approved_id!='') { //check if already approved
+            return redirect()->to('account/view-assets')->with('error', trans('admin/users/message.error.asset_already_approved'));
+        }
+        $manager = Auth::user();
+
+
+        if ($manager->id != User::find($findlog->item->assigned_to)->manager_id) {
+            return redirect()->to('account/view-assets')->with('error', trans('admin/users/message.error.incorrect_user_approved'));
+        }
+
+        $item = $findlog->item;
+
+        // Check if the asset exists
+        if (is_null($item)) {
+            // Redirect to the asset management page
+            return redirect()->to('account')->with('error', trans('admin/hardware/message.does_not_exist'));
+        } elseif (!Company::isCurrentUserHasAccess($item)) {
+            return redirect()->route('requestable-assets')->with('error', trans('general.insufficient_permissions'));
+        } else {
+            return View::make('account/approve-asset', compact('item'))->with('findlog', $findlog)->with('item',$item);
+        }
 
     }
 
     /*
      * process the decision of the user
      */
-    public function postApproveAsset(){
+    public function postApproveAsset(Request $request,$logID = null){
+        //Log::info('in postApproveAsset');
 
+        // Check if the asset exists
+        if (is_null($findlog = Actionlog::where('id', $logID)->first())) {
+            // Redirect to the asset management page
+            return redirect()->to('account/view-assets')->with('error', trans('admin/hardware/message.does_not_exist'));
+        }
+
+        if ($findlog->approved_id!='') {
+            // Redirect to the asset management page
+            return redirect()->to('account/view-assets')->with('error', trans('admin/users/message.error.asset_already_approved'));
+        }
+
+        if (!Input::has('asset_acceptance')) {
+            return redirect()->back()->with('error', trans('admin/users/message.error.accept_or_decline'));
+        }
+
+        $manager = Auth::user();
+
+        if ($manager->id != User::find($findlog->item->assigned_to)->manager_id) {
+
+            return redirect()->to('account/view-assets')->with('error', trans('admin/users/message.error.incorrect_user_approved'));
+        }
+
+        if ($request->has('signature_output')) {
+            $path = config('app.private_uploads').'/signatures';
+            $sig_filename = "siglog-".$findlog->id.'-'.date('Y-m-d-his').".png";
+            $data_uri = e($request->get('signature_output'));
+            $encoded_image = explode(",", $data_uri);
+            $decoded_image = base64_decode($encoded_image[1]);
+            file_put_contents($path."/".$sig_filename, $decoded_image);
+        }
+
+        $logaction = new Actionlog();
+
+        if (Input::get('asset_acceptance')=='accepted') {
+            $logaction_msg  = 'approved';
+            $approved="approved";
+            $return_msg = trans('admin/users/message.approved');
+        } else {
+            $logaction_msg = 'rejected';
+            $approved="rejected";
+            $return_msg = trans('admin/users/message.rejected');
+        }
+        $logaction->item_id      = $findlog->item_id;
+        $logaction->item_type    = $findlog->item_type;
+
+        // Asset
+        if (($findlog->item_id!='') && ($findlog->item_type==Asset::class)) {
+            if (Input::get('asset_acceptance')!='accepted') {
+                //TODO check if user already accepted then send an email if was accepted
+                //very cool if not accepted its not assigned
+                DB::table('assets')
+                    ->where('id', $findlog->item_id)
+                    ->update(array('assigned_to' => null));
+            }
+        }
+
+        $logaction->target_id = $findlog->target_id;
+        $logaction->target_type = User::class;
+        $logaction->note = e(Input::get('note'));
+        $logaction->updated_at = date("Y-m-d H:i:s");
+
+
+        if (isset($sig_filename)) {
+            $logaction->accept_signature = $sig_filename;
+        }
+        $log = $logaction->logaction($logaction_msg);
+
+        $update_checkout = DB::table('action_logs')
+            ->where('id', $findlog->id)
+            ->update(array('approved_id' => $logaction->id));
+
+        $affected_asset = $logaction->item;
+        $affected_asset->approved = $approved;
+        $affected_asset->save();
+
+        if ($update_checkout) {
+            //TODO fix this view to reflect managees assets
+            return redirect()->to('account/view-assets')->with('success', $return_msg);
+
+        } else {
+            return redirect()->to('account/view-assets')->with('error', 'Something went wrong ');
+        }
     }
 }

@@ -911,12 +911,12 @@ Route::group([ 'prefix' => 'account', 'middleware' => ['web', 'auth']], function
 
     #Approve Asset
     Route::get(
-        'accept-asset/{logID}',
-        [ 'as' => 'account/accept-assets', 'uses' => 'ViewAssetsController@getApproveAsset' ]
+        'approve-asset/{logID}',
+        [ 'as' => 'account/approve-assets', 'uses' => 'ViewAssetsController@getApproveAsset' ]
     );
     Route::post(
-        'accept-asset/{logID}',
-        [ 'as' => 'account/asset-accepted', 'uses' => 'ViewAssetsController@postApproveAsset' ]
+        'approve-asset/{logID}',
+        [ 'as' => 'account/asset-approved', 'uses' => 'ViewAssetsController@postApproveAsset' ]
     );
 
     # Profile

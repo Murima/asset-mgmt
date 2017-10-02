@@ -53,13 +53,14 @@
 
 
         <!-- Asset Name -->
+          {{-- dont really need this
           <div class="form-group {{ $errors->has('name') ? 'error' : '' }}">
               {{ Form::label('name', trans('admin/hardware/form.name'), array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-8">
               <input class="form-control" type="text" name="name" id="name" value="{{ Input::old('name', $asset->name) }}" />
               {!! $errors->first('name', '<span class="alert-msg"><i class="fa fa-times"></i> :message</span>') !!}
             </div>
-          </div>
+          </div>--}}
 
         <!-- Status -->
         <div class="form-group {{ $errors->has('status_id') ? 'error' : '' }}">

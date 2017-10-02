@@ -140,7 +140,9 @@
                     </div><!-- /.box-header -->
                 @endif
 
-                <div class="box-body">
+
+               {{-- NOT USING THIS FOR NOW
+               <div class="box-body">
                     <!-- checked out consumables table -->
                     @if (count($user->consumables) > 0)
                         <div class="table-responsive">
@@ -169,7 +171,7 @@
                         </div>
                     @endif
 
-                </div>
+                </div>--}}
             </div>
         </div>
     </div>
