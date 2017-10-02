@@ -2,6 +2,7 @@
 use App\Models\CheckoutRequest;
 use App\Models\Location;
 use App\Models\Statuslabel;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,11 +43,15 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
 
     /*---Accessories API---*/
     Route::group([ 'prefix' => 'accessories' ], function () {
+        Route::resource('/', 'GeneralAccessoriesController');
 
         Route::get('list', [ 'as' => 'api.accessories.list', 'uses' => 'AccessoriesController@getDatatable' ]);
         Route::get(
             '{accessoryID}/view',
             [ 'as' => 'api.accessories.view', 'uses' => 'AccessoriesController@getDataView' ]
+        );
+        //get general accessories
+        Route::get('{modelId}/general', ['as' => 'api.accessories.general', 'uses' =>'AccessoriesController@getGeneralAccessories']
         );
     });
 
@@ -216,6 +221,7 @@ Route::group(
                 'uses' => 'AssetsController@postCreate'
             ]);
 
+
         Route::get('{assetId}/edit', [
                 'as'   => 'update/hardware',
                 'middleware' => 'authorize:assets.edit',
@@ -370,7 +376,7 @@ Route::group(
             Route::get('{modelID}/restore', [ 'as' => 'restore/model', 'uses' => 'AssetModelsController@getRestore', 'middleware' => ['authorize:superuser'] ]);
             Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);            Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);
 
-            Route::get('{modelId}/cat_prefix', ['as' => 'cat_prefix/model','uses' => 'AssetsController@getAssetTag']);
+            Route::get('{modelId}/cat_prefix', ['as' => 'cat_prefix/model','uses' => 'AssetsController@getAssetTag']);//get category
 
             Route::get('/', [ 'as' => 'models', 'uses' => 'AssetModelsController@getIndex' ,'middleware' => ['authorize:superuser'] ]);
         });

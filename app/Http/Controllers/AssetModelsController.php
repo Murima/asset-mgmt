@@ -148,6 +148,7 @@ class AssetModelsController extends Controller
         $model->manufacturer_id = e(Input::get('manufacturer_id'));
         $model->category_id = e(Input::get('category_id'));
         $model->model_number = e(Input::get('model_number'));
+        $model->specific_category = e(Input::get('specific_category'));
         $model->user_id = Auth::user()->id;
         $model->notes            = e(Input::get('notes'));
         $model->eol= null;

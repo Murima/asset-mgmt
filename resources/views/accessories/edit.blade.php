@@ -9,7 +9,7 @@
 {{-- Page content --}}
 @section('inputFields')
 
-@include ('partials.forms.edit.company')
+{{--@include ('partials.forms.edit.company')--}}
 @include ('partials.forms.edit.name', ['translated_name' => trans('admin/accessories/general.accessory_name')])
 @include ('partials.forms.edit.category')
 @include ('partials.forms.edit.manufacturer')

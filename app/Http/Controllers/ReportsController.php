@@ -123,53 +123,111 @@ class ReportsController extends Controller
 
             Asset::with('assigneduser', 'assetloc','defaultLoc','assigneduser.userloc','model','supplier','assetstatus','model.manufacturer')->orderBy('created_at', 'DESC')->chunk(500, function($assets) use($handle, $customfields) {
                 $headers=[
-                    trans('general.company'),
+                    //trans('general.company'),
                     trans('admin/hardware/table.asset_tag'),
+                    trans('admin/reports/asset_register.category'),
+                    trans('admin/reports/asset_register.country'),
+                    trans('admin/hardware/form.issue_location'),
+                    trans('admin/hardware/table.assigned_to'),
+                    trans('admin/reports/asset_register.assigned_date'),
+
+                    trans('admin/reports/asset_register.description'),
+                    trans('admin/reports/asset_register.accessories'),
                     trans('admin/hardware/form.manufacturer'),
                     trans('admin/hardware/form.model'),
                     trans('general.model_no'),
-                    trans('admin/reports/asset_register.description'),
                     trans('admin/hardware/table.serial'),
+                    trans('admin/reports/asset_register.other_reference'),
+
                     trans('admin/hardware/table.purchase_date'),
-                    trans('admin/hardware/table.purchase_cost'),
-                    trans('admin/hardware/form.order'),
+                    trans('admin/reports/asset_register.po_number'),
+                    trans('admin/reports/asset_register.price'),
+                    trans('admin/reports/asset_register.currency'),
+                    trans('admin/reports/asset_register.purchase_location'),
                     trans('admin/hardware/form.supplier'),
-                    trans('admin/hardware/table.checkoutto'),
-                    trans('admin/hardware/table.checkout_date'),
-                    trans('admin/hardware/table.location'),
-                    trans('admin/hardware/form.issue_location'),
-                    trans('general.notes'),
+                    trans('admin/reports/asset_register.warranty_end'),
+
+                    trans('admin/reports/asset_register.capital_non_capital'),
+                    trans('admin/reports/asset_register.sof'),
+                    trans('admin/reports/asset_register.cost_center'),
+                    trans('admin/reports/asset_register.project_code'),
+                    trans('admin/reports/asset_register.dea'),
+                    trans('admin/reports/asset_register.account_code'),
+                    trans('admin/reports/asset_register.award_end'),
+                    trans('admin/reports/asset_register.donor_name'),
+                    trans('admin/reports/asset_register.plan_after'),
+
+                    trans('admin/reports/asset_register.date_carried'),
+                    trans('admin/reports/asset_register.location_carried'),
+                    trans('admin/reports/asset_register.date_donated'),
+                    trans('admin/reports/asset_register.recipient_donation'),
+                    trans('admin/reports/asset_register.donation_cert'),
+                    trans('admin/reports/asset_register.date_disposed'),
+                    trans('admin/reports/asset_register.reason_disposed'),
+                    trans('admin/reports/asset_register.disposal_cert'),
+
+                    trans('admin/reports/asset_register.current_asset'),
+
+                    //trans('general.notes'),
                 ];
-                foreach($customfields as $field) {
+
+           /*
+            * dont need this since the fields are explicitly named
+               foreach($customfields as $field) {
                     $headers[]=$field->name;
-                }
+                }*/
                 fputcsv($handle, $headers);
 
                 foreach ($assets as $asset) {
                     // Add a new row with data
                     $values=[
-                        ($asset->company) ? $asset->company->name : '',
+                        //($asset->company) ? $asset->company->name : '', dont need this for now
                         $asset->asset_tag,
+                        ($asset->asset_type) ? $asset->asset_type : '',
+                        ($asset->defaultloc) ? $asset->defaultLoc->country : '',
+                        ($asset->defaultLoc->name)  ? $asset->defaultLoc->name : '',
+                        ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
+                        ($asset->last_checkout!='') ? e($asset->last_checkout) : '',
+
+                        ($asset->model->category_id) ? e($asset->model->category->name.",".$asset->model->name) : '',
+                        'NULL',
                         ($asset->model->manufacturer) ? $asset->model->manufacturer->name : '',
                         ($asset->model) ? $asset->model->name : '',
                         ($asset->model->model_number) ? $asset->model->model_number : '',
-                        ($asset->model->category_id) ? e($asset->model->category->name.",".$asset->model->name) : '',
                         ($asset->serial) ? $asset->serial : '',
+                        'NULL',
+
                         ($asset->purchase_date) ? e($asset->purchase_date) : '',
+                        //TODO find a better reusable method for customfields
+                        ($asset->_snipeit_po_number) ? e($asset->_snipeit_po_number) :'',
                         ($asset->purchase_cost > 0) ? Helper::formatCurrencyOutput($asset->purchase_cost) : '',
-                        ($asset->order_number) ? e($asset->order_number) : '',
-                        ($asset->supplier) ? e($asset->supplier->name) : '',
-                        ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
-                        ($asset->last_checkout!='') ? e($asset->last_checkout) : '',
-                        ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
+                        ($asset->defaultloc) ? Setting::first()->default_currency: '',
+                        ($asset->supplier) ? e($asset->supplier->city): '',
+                        ($asset->supplier) ? e($asset->supplier->name): '',
+                        ($asset->warranty_months) ? e($asset->warranty_months): 'NULL',
+
+                        'Null',
+
+                        ($asset->_snipeit_sof) ? e($asset->_snipeit_sof) : '',
+                        ($asset->_snipeit_cost_centre) ? e($asset->_snipeit_cost_centre) : '',
+                        ($asset->_snipeit_project_code) ? e($asset->_snipeit_project_code) : '',
+                        ($asset->_snipeit_dea) ? e($asset->_snipeit_dea) : '',
+                        ($asset->_snipeit_account_code) ? e($asset->_snipeit_account_code) : '',
+                        ($asset->_snipeit_award_end_date) ? e($asset->_snipeit_award_end_date) : '',
+                        ($asset->_snipeit_donor_name) ? e($asset->_snipeit_donor_name) : '',
+                        ($asset->_snipeit_plan_after_award_ends) ? e($asset->_snipeit_plan_after_award_ends) : '',
+
+                        /*($asset->assigneduser && $asset->assigneduser->userloc!='') ?
                             e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
                         ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
-                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
-                        ($asset->notes) ? e($asset->notes) : '',
+                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),*/
+                        //($asset->notes) ? e($asset->notes) : '',
                     ];
-                    foreach($customfields as $field) {
+                    /*dont want to mess with custom fields too lazy
+                     * foreach($customfields as $field) {
                         $values[]=$asset->{$field->db_column_name()};
-                    }
+                    }*/
+
                     fputcsv($handle, $values);
                 }
             });

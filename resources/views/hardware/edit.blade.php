@@ -20,7 +20,7 @@
             @if  ($item->id)
                 <input class="form-control" type="text" name="asset_tag" id="asset_tag" value="{{ Input::old('asset_tag', $item->asset_tag) }}" readonly />
             @else
-                <input class="form-control" type="text" name="asset_tag" id="asset_tag" value="{{ Input::old('asset_tag', \App\Models\Asset::autoincrement_asset()) }} " readonly>
+                <input class="form-control" type="text" name="asset_tag" id="asset_tag" value="{{ Input::old('asset_tag') }} " readonly>
             @endif
 
             {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fa fa-times"></i> :message</span>') !!}
@@ -67,7 +67,20 @@
     </div>
 
     @include ('partials.forms.edit.status')
+{{--
     @include('partials.forms.accessories_checkbox')
+--}}
+    <div id="checkbox"  class="form-group">
+        <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.accessories') }}
+        </label>
+        <div id="dynamic_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
+
+        </div>
+
+        <div class="col-md-1 col-sm-1 text-left" style="margin-left: -7px; padding-top: 3px">
+            <a href='#' data-toggle="modal"  data-target="#createModal" data-dependency="accessorie" data-select='modal-category_id' class="btn btn-sm btn-default">New</a>
+        </div>
+    </div>
 
     @if (!$item->id)
         <!-- Assigned To -->
@@ -131,7 +144,12 @@
         </div>
     </div>
 
+{{--
     @include ('partials.forms.edit.requestable', ['requestable_text' => trans('admin/hardware/general.requestable')])
+--}}
+    @include('partials.forms.edit.capital_non_capital', ['requestable_text' => trans('admin/hardware/general.capital'),
+    'capital_asset_text' => trans('admin/hardware/general.capital_help')])
+
 
     <!-- Image -->
     @if ($item->image)
@@ -161,6 +179,27 @@
 
     <script>
 
+        function displayCheckboxes(modelid){
+            //display checkboxes from database
+
+            $('#checkbox').show(); //show the checkbox div
+            $('#dynamic_checkbox').empty(); //empty the dynamic div
+
+            $.get("{{config('app.url') }}/api/accessories/"+modelid+"/general",{_token: "{{ csrf_token() }}"},function (data) {
+                //console.log(data);
+                data = $.parseJSON(data);
+
+                //console.log(data);
+                $.each(data, function (key,value)
+                {
+                    console.log(value.id);
+                    let CH=$("<input/>",{type:"checkbox", name:"accessories[]",value:value.id });
+                    let LB=$("<lable/>",{text:value.accessory_name });
+                    $('#dynamic_checkbox').append(CH).append(LB).append('<br>');
+                });
+            });
+        }
+
         function fetchCustomFields() {
             var modelid=$('#model_select_id').val();
             if(modelid=='') {
@@ -172,8 +211,8 @@
                 $.get("{{config('app.url') }}/hardware/models/"+modelid+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
                     $("#asset_tag").val(tag);
                 });
-                
 
+                displayCheckboxes(modelid);
             }
         }
 
@@ -221,7 +260,7 @@
                 var modal = $(this);
                 modal.find('.modal-title').text('Add a new ' + model);
 
-                $('.dynamic-form-row').hide();
+                $('.dynamic-form-row').hide(); //shows empty modal
                 function show_er(selector) {
                     //$(selector).show().parent().show();
                     $(selector).parent().parent().show();
@@ -233,6 +272,8 @@
                         show_er('#modal-category_id');
                         show_er('#modal-model_number');
                         show_er('#modal-fieldset_id');
+                        show_er('#modal-specific_category');
+
                         break;
 
                     case 'user':
@@ -254,8 +295,14 @@
                         break;
 
                     case 'supplier':
-
                     //do nothing, they just need 'name'
+                        break;
+
+                    case 'accessorie':
+                        //show_er("#modal-accessory_category");
+                        show_er('#modal-category_id');
+
+
                 }
 
                 //console.warn("The Model is: "+model+" and the select is: "+select);
@@ -358,6 +405,7 @@
                 var form = $("#create-form").get(0);
                 var formData = $('#create-form').serializeArray();
                 formData.push({name:'image', value:imageData});
+                console.log(form.action);
                 $.ajax({
                     type: 'POST',
                     url: form.action,
@@ -384,9 +432,9 @@
 
             $('#modal-save').on('click',function () {
                 var data={};
-                //console.warn("We are about to SAVE!!! for model: "+model+" and select ID: "+select);
+                console.warn("We are about to SAVE!!! for model: "+model+" and select ID: "+select);
                 $('.modal-body input:visible').each(function (index,elem) {
-                    //console.warn("["+index+"]: "+elem.id+" = "+$(elem).val());
+                    console.warn("["+index+"]: "+elem.id+" = "+$(elem).val());
                     var bits=elem.id.split("-");
                     if(bits[0]==="modal") {
                         data[bits[1]]=$(elem).val();
@@ -398,7 +446,7 @@
                 });
 
                 data._token =  '{{ csrf_token() }}',
-                    //console.dir(data);
+                    console.dir(data);
 
                     $.post("{{config('app.url') }}/api/"+model+"s",data,function (result) {
                         var id=result.id;
@@ -430,6 +478,11 @@
 
         $(document).ready(function(){
 
+            $(function () {//initialize popovers
+                $('[data-toggle="popover"]').popover()
+            });
+
+            $('#checkbox').hide();// hide checkbox inputs
             $('#genPassword').pGenerator({
                 'bind': 'click',
                 'passwordElement': '#modal-password',
