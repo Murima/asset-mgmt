@@ -63,7 +63,7 @@ class Accessory extends SnipeModel
 
     public function category()
     {
-        return $this->belongsTo('\App\Models\Category', 'category_id')->where('category_type', '=', 'accessory');
+        return $this->belongsTo('\App\Models\Category', 'category_id');
     }
 
     /**

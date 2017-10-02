@@ -493,6 +493,7 @@ class ViewAssetsController extends Controller
         // Asset
         if (($findlog->item_id!='') && ($findlog->item_type==Asset::class)) {
             if (Input::get('asset_acceptance')!='accepted') {
+                //TODO check if user already accepted then send an email if was accepted
                 //very cool if not accepted its not assigned
                 DB::table('assets')
                     ->where('id', $findlog->item_id)
