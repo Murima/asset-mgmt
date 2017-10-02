@@ -73,7 +73,7 @@
     <div id="checkbox"  class="form-group">
         <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.accessories') }}
         </label>
-        <div id="dynamic_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey;">
+        <div id="dynamic_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
 
         </div>
 
@@ -147,6 +147,9 @@
 {{--
     @include ('partials.forms.edit.requestable', ['requestable_text' => trans('admin/hardware/general.requestable')])
 --}}
+    @include('partials.forms.edit.capital_non_capital', ['requestable_text' => trans('admin/hardware/general.capital'),
+    'capital_asset_text' => trans('admin/hardware/general.capital_help')])
+
 
     <!-- Image -->
     @if ($item->image)
@@ -183,12 +186,14 @@
             $('#dynamic_checkbox').empty(); //empty the dynamic div
 
             $.get("{{config('app.url') }}/api/accessories/"+modelid+"/general",{_token: "{{ csrf_token() }}"},function (data) {
-                console.log(data);
+                //console.log(data);
                 data = $.parseJSON(data);
 
+                //console.log(data);
                 $.each(data, function (key,value)
                 {
-                    let CH=$("<input/>",{type:"checkbox", name:"accesories",value:value.id });
+                    console.log(value.id);
+                    let CH=$("<input/>",{type:"checkbox", name:"accessories[]",value:value.id });
                     let LB=$("<lable/>",{text:value.accessory_name });
                     $('#dynamic_checkbox').append(CH).append(LB).append('<br>');
                 });
@@ -472,6 +477,10 @@
 
 
         $(document).ready(function(){
+
+            $(function () {//initialize popovers
+                $('[data-toggle="popover"]').popover()
+            });
 
             $('#checkbox').hide();// hide checkbox inputs
             $('#genPassword').pGenerator({

@@ -57,7 +57,7 @@ class AccessoriesController extends Controller
         // Show the page
         return View::make('accessories/edit')
           ->with('item', new Accessory)
-          ->with('category_list', Helper::categoryList('accessory'))
+          ->with('category_list', Helper::categoryList())
           ->with('company_list', Helper::companyList())
           ->with('location_list', Helper::locationsList())
           ->with('manufacturer_list', Helper::manufacturerList());
@@ -130,7 +130,7 @@ class AccessoriesController extends Controller
         }
 
         return View::make('accessories/edit', compact('item'))
-          ->with('category_list', Helper::categoryList('accessory'))
+          ->with('category_list', Helper::categoryList())
           ->with('company_list', Helper::companyList())
           ->with('location_list', Helper::locationsList())
           ->with('manufacturer_list', Helper::manufacturerList());
@@ -715,5 +715,7 @@ class AccessoriesController extends Controller
             return null; //fix this
         }
     }
+
+
 
 }

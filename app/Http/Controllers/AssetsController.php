@@ -14,6 +14,7 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\CustomField;
 use App\Models\Depreciation;
+use App\Models\GeneralAccessory;
 use App\Models\Location;
 use App\Models\Manufacturer; //for embedded-create
 use App\Models\Setting;
@@ -222,15 +223,7 @@ class AssetsController extends Controller
             $asset->iss_location_id     = e(Input::get('iss_location_id'));
         }
 
-        if (e(Input::get('accessory'))){
-            Debugbar::addMessage('in accessory');
-            dd(Input::get('accessory'));
 
-            if ($request->has('mouse')){
-
-            }
-
-        }
 
         // Create the image (if one was chosen.)
         if (Input::has('image')) {
@@ -285,6 +278,16 @@ class AssetsController extends Controller
 
         // Was the asset created?
         if ($asset->save()) {
+
+            if ($request->input('accessories')){
+                $accessory_details = array();
+                $accessory_details['asset_id']= $asset->id;
+                $accessories = $request->input('accessories');
+                $accessory_details['accessory_id']= $accessories;
+
+                $general_accessories = new GeneralAccessoriesController();
+                $general_accessories->postCreateFromAsset($accessory_details);
+            }
 
             $asset->logCreate();
             if (Input::get('assigned_to')!='') {
@@ -549,6 +552,8 @@ class AssetsController extends Controller
      */
     public function getCheckout($assetId)
     {
+        //TODO add accessories to checkout
+        //TODO add issuing locaiton to checkout
         // Check if the asset exists
         if (is_null($asset = Asset::find(e($assetId)))) {
             // Redirect to the asset management page with error
