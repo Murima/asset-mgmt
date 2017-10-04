@@ -128,7 +128,7 @@ class ReportsController extends Controller
                     trans('admin/reports/asset_register.category'),
                     trans('admin/reports/asset_register.country'),
                     trans('admin/hardware/form.issue_location'),
-                    trans('admin/hardware/table.assigned_to'),
+                    //trans('admin/hardware/table.assigned_to'),
                     trans('admin/reports/asset_register.assigned_date'),
 
                     trans('admin/reports/asset_register.description'),
@@ -185,8 +185,8 @@ class ReportsController extends Controller
                         $asset->asset_tag,
                         ($asset->asset_type) ? $asset->asset_type : '',
                         ($asset->defaultloc) ? $asset->defaultLoc->country : '',
-                        ($asset->defaultLoc->name)  ? $asset->defaultLoc->name : '',
-                        ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
+                        ($asset->defaultloc)  ? $asset->defaultloc->name : '',
+                        //($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
                         ($asset->last_checkout!='') ? e($asset->last_checkout) : '',
 
                         ($asset->model->category_id) ? e($asset->model->category->name.",".$asset->model->name) : '',
