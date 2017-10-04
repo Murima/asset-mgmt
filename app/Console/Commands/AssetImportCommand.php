@@ -108,6 +108,13 @@ class AssetImportCommand extends Command
                 $user_asset_category = '';
             }
 
+            // Asset Category
+            if (array_key_exists('5', $row)) {
+                $user_asset_category_description = trim($row[4]);
+            } else {
+                $user_asset_category_description = '';
+            }
+
             // Asset Name
             if (array_key_exists('5', $row)) {
                 $user_asset_name = trim($row[5]);
@@ -260,6 +267,7 @@ class AssetImportCommand extends Command
                     $user->permissions = '{user":1}';
                     $user->password = bcrypt($password);
                     $user->activated = 1;
+                    $user->notes = "Created from import";
                     if ($user->save()) {
                         $this->comment('User '.$first_name.' created');
                     } else {
@@ -353,6 +361,7 @@ class AssetImportCommand extends Command
                 $asset_model = new AssetModel();
                 $asset_model->name = e($user_asset_name);
                 $asset_model->manufacturer_id = $manufacturer->id;
+                $asset_model->specific_category = $user_asset_category_description;
                 $asset_model->modelno = e($user_asset_modelno);
                 $asset_model->category_id = $category->id;
                 $asset_model->user_id = 1;
