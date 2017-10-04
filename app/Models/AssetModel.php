@@ -28,7 +28,7 @@ class AssetModel extends SnipeModel
         'manufacturer_id'   => 'required|integer',
         'eol'   => 'integer:min:0|max:240',
         'user_id' => 'integer',
-        'specific_category' => 'required|string',
+/*        'specific_category' => 'required|string',*/
     );
 
     /**
