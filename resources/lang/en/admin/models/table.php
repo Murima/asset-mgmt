@@ -13,5 +13,5 @@ return array(
     'view'					=> 'View Asset Model',
     'clone'				=> 'Clone Model',
     'edit'				=> 'Edit Model',
-    'specific_category' => 'Specific Category',
+    'specific_category' => 'Description',
 );
