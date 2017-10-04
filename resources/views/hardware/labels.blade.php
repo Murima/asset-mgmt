@@ -104,10 +104,15 @@
   <div class="label"{!!  ($count % $settings->labels_per_page == 0) ? ' style="margin-bottom: 0px;"' : '' !!}>
 
       @if ($settings->qr_code=='1')
-    <div class="qr_img">
-      <img src="./{{ $asset->id }}/qr_code" class="qr_img">
-    </div>
+          <div class="qr_img">
+              <img src="./{{ $asset->id }}/qr_code" class="qr_img">
+          </div>
+      @else<!-- add image to the tag -->
+      <div class="qr_img">
+          <img src="{{ config('app.url') }}/uploads/{{ $settings->logo }}" style="margin-left: 10px"> <!--TODO this is wrong -->
+      </div>
       @endif
+
 
     <div class="qr_text">
         <div class="pull-left">
