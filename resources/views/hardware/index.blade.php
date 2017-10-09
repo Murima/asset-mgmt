@@ -17,6 +17,8 @@
             {{ trans('general.archived') }}
         @elseif (Input::get('status')=='Deleted')
             {{ trans('general.deleted') }}
+        @elseif (Input::get('status')=='Disposable')
+            {{ trans('general.disposable') }}
         @endif
     @else
         {{ trans('general.all') }}
@@ -52,6 +54,7 @@
                                     <select name="bulk_actions" class="form-control select2">
                                         <option value="edit">Edit</option>
                                         <option value="delete">Delete</option>
+                                        <option value="dispose">Dispose</option>
                                         <option value="labels">Generate Labels</option>
                                     </select>
                                     <button class="btn btn-default" id="bulkEdit" disabled>Go</button>
@@ -65,7 +68,7 @@
                                     data-toolbar="#toolbar"
                                     class="table table-striped snipe-table"
                                     id="table"
-                                    @if(Request::url('/byTag'))
+                                    @if(Request::url('/byTag')){{--TODO remove this its already implemented--}}
                                     data-url="{{route('api.hardware.list', array(''=>e(Input::get('status')),'order_number'=>e(Input::get('order_number')), 'status_id'=>e(Input::get('status_id')),
                                     'search_term'=>Input::get('assetTag')))}}"
                                     @else

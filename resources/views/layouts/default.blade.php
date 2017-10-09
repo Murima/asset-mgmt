@@ -439,6 +439,7 @@
                             <li{!! (Request::query('status') == 'Undeployable' ? ' class="active"' : '') !!} ><a href="{{ URL::to('hardware?status=Undeployable') }}">@lang('general.undeployable')</a></li>
                             <li{!! (Request::query('status') == 'Archived' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Archived') }}">@lang('admin/hardware/general.archived')</a></li>
                             <li{!! (Request::query('status') == 'Requestable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Requestable') }}">@lang('admin/hardware/general.requestable')</a></li>
+                            <li{!! (Request::query('status') == 'Disposable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Disposable') }}">@lang('admin/hardware/general.disposable')</a></li>
 
                             <li class="divider">&nbsp;</li>
                             @can('assets.checkout')
