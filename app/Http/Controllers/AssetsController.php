@@ -1510,6 +1510,12 @@ class AssetsController extends Controller
                     ->with('models_list', $models_list)
                     ->with('companies_list', $companies_list);
 
+              //Bulk dispose
+            } elseif (Input::get('bulk_actions')== 'dispose'){
+
+                $users_list = Helper::usersList();
+                $assets = Asset::with('assigneduser', 'assetloc')->find($asset_ids);
+                return View::make('hardware/bulk-dispose')->with('assets', $assets)->with('users_list', $users_list );
 
             }
 

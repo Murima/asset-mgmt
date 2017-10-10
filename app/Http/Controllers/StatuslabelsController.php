@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *
  * @version    v1.0
  */
-class StatuslabelsController extends Controller
+class   StatuslabelsController extends Controller
 {
     /**
      * Show a list of all the statuslabels.

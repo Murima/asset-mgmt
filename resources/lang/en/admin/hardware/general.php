@@ -12,6 +12,7 @@ return array(
     'checkout'  				=> 'Allocate Asset to User',
     'checkout_accessory'        => 'Allocate Accessory to User',
     'clone'  					=> 'Clone Asset',
+    'disposable'  				=> 'Disposable',
     'deployable'  				=> 'Deployable',
     'deleted'  					=> 'This asset has been deleted. <a href="/hardware/:asset_id/restore">Click here to restore it</a>.',
     'edit'  					=> 'Edit Asset',
