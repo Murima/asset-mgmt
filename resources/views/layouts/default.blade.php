@@ -115,16 +115,16 @@
 
                         <p style="font-size: 20px; margin-left: 15px"> {{ $snipeSettings->site_name }}</p>
 
-                @elseif ($snipeSettings->brand == '2')
-                    <a class="logo navbar-brand no-hover" href="{{ config('app.url') }}">
-                        <img class="navbar-brand-img" src="{{ config('app.url') }}/uploads/{{ $snipeSettings->logo }}">
-                    </a>
-                @else
-                    <a class="logo no-hover" href="{{ config('app.url') }}">
-                        {{ $snipeSettings->site_name }}
-                    </a>
+                    @elseif ($snipeSettings->brand == '2')
+                        <a class="logo navbar-brand no-hover" href="{{ config('app.url') }}">
+                            <img class="navbar-brand-img" src="{{ config('app.url') }}/uploads/{{ $snipeSettings->logo }}">
+                        </a>
+                    @else
+                        <a class="logo no-hover" href="{{ config('app.url') }}">
+                            {{ $snipeSettings->site_name }}
+                        </a>
                     @endif
-                    </li>
+                </li>
             </ul>
 
             <!-- Navbar Right Menu -->
@@ -190,18 +190,18 @@
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
+                                @can('users.create')
+                                    <li {!! (Request::is('admin/users/create') ? 'class="active"' : '') !!}>
+                                        <a href="{{ route('create/user') }}">
+                                            <i class="fa fa-user fa-fw"></i>
+                                            @lang('general.user')</a>
+                                    </li>
+                                @endcan
                                 @can('assets.create')
                                     <li {!! (Request::is('hardware/create') ? 'class="active>"' : '') !!}>
                                         <a href="{{ route('create/hardware') }}">
                                             <i class="fa fa-barcode fa-fw"></i>
                                             @lang('general.asset')</a>
-                                    </li>
-                                @endcan
-                                @can('licenses.create')
-                                    <li {!! (Request::is('admin/licenses/create') ? 'class="active"' : '') !!}>
-                                        <a href="{{ route('create/licenses') }}">
-                                            <i class="fa fa-floppy-o fa-fw"></i>
-                                            @lang('general.license')</a>
                                     </li>
                                 @endcan
                                 @can('accessories.create')
@@ -211,18 +211,18 @@
                                             @lang('general.accessory')</a>
                                     </li>
                                 @endcan
+                                @can('licenses.create')
+                                    <li {!! (Request::is('admin/licenses/create') ? 'class="active"' : '') !!}>
+                                        <a href="{{ route('create/licenses') }}">
+                                            <i class="fa fa-floppy-o fa-fw"></i>
+                                            @lang('general.license')</a>
+                                    </li>
+                                @endcan
                                 @can('consumables.create')
                                     <li {!! (Request::is('admin/consumables/create') ? 'class="active"' : '') !!}>
                                         <a href="{{ route('create/consumable') }}">
                                             <i class="fa fa-tint fa-fw"></i>
                                             @lang('general.consumable')</a>
-                                    </li>
-                                @endcan
-                                @can('users.create')
-                                    <li {!! (Request::is('admin/users/create') ? 'class="active"' : '') !!}>
-                                        <a href="{{ route('create/user') }}">
-                                            <i class="fa fa-user fa-fw"></i>
-                                            @lang('general.user')</a>
                                     </li>
                                 @endcan
                                 @can('components.create')
@@ -514,19 +514,19 @@
                             <li><a href="{{ URL::to('reports/activity') }}" {{ (Request::is('reports/activity') ? ' class="active"' : '') }} >@lang('general.activity_report')</a></li>
 
                             <li><a href="{{ URL::to('reports/depreciation') }}" {{ (Request::is('reports/depreciation') ? ' class="active"' : '') }} >@lang('general.depreciation_report')</a></li>
-{{--
-                            <li><a href="{{ URL::to('reports/licenses') }}" {{ (Request::is('reports/licenses') ? ' class="active"' : '') }} >@lang('general.license_report')</a></li>
---}}
-{{--
-                            <li><a href="{{ URL::to('reports/asset_maintenances') }}" {{ (Request::is('reports/asset_maintenances') ? ' class="active"' : '') }} >@lang('general.asset_maintenance_report')</a></li>
---}}
+                            {{--
+                                                        <li><a href="{{ URL::to('reports/licenses') }}" {{ (Request::is('reports/licenses') ? ' class="active"' : '') }} >@lang('general.license_report')</a></li>
+                            --}}
+                            {{--
+                                                        <li><a href="{{ URL::to('reports/asset_maintenances') }}" {{ (Request::is('reports/asset_maintenances') ? ' class="active"' : '') }} >@lang('general.asset_maintenance_report')</a></li>
+                            --}}
                             <li><a href="{{ URL::to('reports/assets') }}" {{ (Request::is('reports/assets') ? ' class="active"' : '') }} >@lang('general.asset_report')</a></li>
-{{--
-                            <li><a href="{{ URL::to('reports/unaccepted_assets') }}" {{ (Request::is('reports/unaccepted_assets') ? ' class="active"' : '') }} >@lang('general.unaccepted_asset_report')</a></li>
---}}
-{{--
-                            <li><a href="{{ URL::to('reports/accessories') }}" {{ (Request::is('reports/accessories') ? ' class="active"' : '') }} >@lang('general.accessory_report')</a></li>
---}}
+                            {{--
+                                                        <li><a href="{{ URL::to('reports/unaccepted_assets') }}" {{ (Request::is('reports/unaccepted_assets') ? ' class="active"' : '') }} >@lang('general.unaccepted_asset_report')</a></li>
+                            --}}
+                            {{--
+                                                        <li><a href="{{ URL::to('reports/accessories') }}" {{ (Request::is('reports/accessories') ? ' class="active"' : '') }} >@lang('general.accessory_report')</a></li>
+                            --}}
                             <li><a href="{{ URL::to('reports/custom') }}" {{ (Request::is('reports/custom') ? ' class="active"' : '') }}>@lang('general.custom_report')</a></li>
                         </ul>
                     </li>
@@ -597,7 +597,7 @@
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-           {{-- <b>Version</b> {{ config('version.app_version') }}  build {{ config('version.build_version') }} ({{ config('version.hash_version') }})--}}
+            {{-- <b>Version</b> {{ config('version.app_version') }}  build {{ config('version.build_version') }} ({{ config('version.hash_version') }})--}}
         </div>
     </footer>
 
