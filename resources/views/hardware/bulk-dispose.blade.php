@@ -25,7 +25,7 @@
 
             <p>{{ trans('admin/hardware/form.bulk_dispose_help') }}</p>
 
-            <form class="form-horizontal" method="post" action="{{ route('hardware/bulkdelete') }}" autocomplete="off" role="form">
+            <form class="form-horizontal" method="post" action="{{ route('hardware/bulkdispose') }}" autocomplete="off" role="form">
                 <div class="box box-default">
                     <div class="box-header with-border">
                         <h3 class="box-title" style="color: red">{{ trans('admin/hardware/form.bulk_dispose_warn', ['asset_count' => count($assets)]) }}</h3>
@@ -33,10 +33,11 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
                     <div class="box-body col-md-8 col-md-offset-2">
+
                         <div class="form-group">
-                            <label for="name" class="col-md-3 control-label">{{ trans('admin/hardware/form.reason') }}</label>
+                            <label for="reason" class="col-md-3 control-label">{{ trans('admin/hardware/form.reason') }}</label>
                             <div class="col-md-7 col-sm-12">
-                                <input class="form-control" type="text" name="name" id="name" value="" />
+                                <input class="form-control" type="text" name="reason" id="reason" value="" />
                             </div>
                         </div>
 
@@ -45,16 +46,16 @@
                             <div class="col-md-7 col-sm-12">
 
                                 <select name="bulk_actions" class="select2" style="width: 100%;">
-                                    <option value="edit">Scrapping</option>
-                                    <option value="delete">Sale</option>
-                                    <option value="dispose">Donation</option>
-                                    <option value="labels">Transfer</option>
+                                    <option value="scrapping">Scrapping</option>
+                                    <option value="sale">Sale</option>
+                                    <option value="donation">Donation</option>
+                                    <option value="transfer">Transfer</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="disposal_methods" class="col-md-3 control-label">{{ trans('admin/hardware/form.requested_by') }}</label>
+                            <label for="requested_by" class="col-md-3 control-label">{{ trans('admin/hardware/form.requested_by') }}</label>
                             <div class="col-md-7 col-sm-12">
                                 {{ Form::select('requested_by', $users_list , array('class'=>'select2', 'id'=>'requested_by', 'style'=>'width:100%')) }}
 
@@ -62,16 +63,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="disposal_methods" class="col-md-3 control-label">{{ trans('admin/hardware/form.budget_holder') }}</label>
+                            <label for="budget_holder" class="col-md-3 control-label">{{ trans('admin/hardware/form.budget_holder') }}</label>
                             <div class="col-md-7 col-sm-12">
-                                {{ Form::select('requested_by', $users_list , array('class'=>'select2', 'id'=>'requested_by', 'style'=>'width:100%')) }}
+                                {{ Form::select('budget_holder', $users_list , array('class'=>'select2', 'id'=>'budget_holder', 'style'=>'width:100%')) }}
 
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="disposal_methods" class="col-md-3 control-label">{{ trans('admin/hardware/form.cd') }}</label>
+                            <label for="country_director" class="col-md-3 control-label">{{ trans('admin/hardware/form.cd') }}</label>
                             <div class="col-md-7 col-sm-12">
-                                {{ Form::select('requested_by', $users_list , array('class'=>'select2', 'id'=>'requested_by', 'style'=>'width:100%')) }}
+                                {{ Form::select('country_director', $users_list , array('class'=>'select2', 'id'=>'country_director', 'style'=>'width:100%')) }}
 
                             </div>
                         </div>

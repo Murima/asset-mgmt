@@ -50,6 +50,11 @@ return array(
         'error'   		=> 'There was an issue deleting the asset. Please try again.',
         'success' 		=> 'The asset was deleted successfully.'
     ),
+    'dispose' => array(
+        'confirm'   	=> 'Are you sure you wish to dispose this asset?',
+        'error'   		=> 'There was an issue disposing the asset. Please try again.',
+        'initiated' 		=> 'The asset disposal process was initiated.'
+    ),
 
     'checkout' => array(
         'error'   		=> 'Asset was not checked out, please try again',

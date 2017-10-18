@@ -116,7 +116,6 @@ class ReportsController extends Controller
          \Debugbar::disable();
 
         $customfields = CustomField::get();
-
         $response = new StreamedResponse(function() use ($customfields) {
             // Open output stream
             $handle = fopen('php://output', 'w');

@@ -59,6 +59,7 @@ return [
     'depreciation_report'	=> 'Depreciation Report',
     'disposable'            => 'Disposable',
     'dispose'               => 'Dispose',
+    'dispose_in_progress'    => 'Dispose in progress',
     'download'				=> 'Download',
     'depreciation'			=> 'Depreciation',
     'editprofile'  			=> 'Edit Your Profile',

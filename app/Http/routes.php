@@ -163,6 +163,8 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
             '{categoryID}/component/view',
             [ 'as' => 'api.categories.component.view', 'uses' => 'CategoriesController@getDataViewComponent' ]
         );
+        Route::get('assets', [ 'as' => 'api.categories.assets', 'uses' => 'CategoriesController@getAssetCountByCategory' ]);
+
     });
 
     /*-- Suppliers API (mostly for creating new ones in-line while creating an asset) --*/
@@ -339,6 +341,14 @@ Route::group(
                 'as'   => 'hardware/bulkdelete',
                 'middleware' => 'authorize:assets.delete',
                 'uses' => 'AssetsController@postBulkDelete'
+            ]
+        );
+        Route::post(
+            'bulkdispose',
+            [
+                'as'   => 'hardware/bulkdispose',
+                'middleware' => 'authorize:assets.delete',
+                'uses' => 'AssetsController@postBulkDispose'
             ]
         );
         Route::post(
