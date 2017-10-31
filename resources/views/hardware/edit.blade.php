@@ -11,7 +11,7 @@
 
 @section('inputFields')
 
-    {{--@include ('partials.forms.edit.company')--}}
+    @include ('partials.forms.edit.company')
 
     <!-- Asset Tag -->
     <div class="form-group {{ $errors->has('asset_tag') ? ' has-error' : '' }}">
@@ -67,9 +67,11 @@
     </div>
 
     @include ('partials.forms.edit.status')
-{{--
-    @include('partials.forms.accessories_checkbox')
---}}
+
+    @include('partials.forms.edit.accessories_checkbox', ['accessories_text' => trans('admin/hardware/form.accessories'),
+    'accessories_help_text' => trans('admin/hardware/general.accessories_help')])
+
+
     <div id="checkbox"  class="form-group">
         <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.accessories') }}
         </label>
@@ -99,7 +101,7 @@
     @endif
 
     @include ('partials.forms.edit.serial', ['translated_serial' => trans('admin/hardware/form.serial')])
-   {{-- @include ('partials.forms.edit.name', ['translated_name' => trans('admin/hardware/form.name')])--}}
+    {{-- @include ('partials.forms.edit.name', ['translated_name' => trans('admin/hardware/form.name')])--}}
     @include ('partials.forms.edit.purchase_date')
     @include ('partials.forms.edit.supplier')
     {{--@include ('partials.forms.edit.order_number')--}}
@@ -144,9 +146,9 @@
         </div>
     </div>
 
-{{--
-    @include ('partials.forms.edit.requestable', ['requestable_text' => trans('admin/hardware/general.requestable')])
---}}
+    {{--
+        @include ('partials.forms.edit.requestable', ['requestable_text' => trans('admin/hardware/general.requestable')])
+    --}}
     @include('partials.forms.edit.capital_non_capital', ['requestable_text' => trans('admin/hardware/general.capital'),
     'capital_asset_text' => trans('admin/hardware/general.capital_help')])
 
@@ -179,25 +181,32 @@
 
     <script>
 
-        function displayCheckboxes(modelid){
+        function displayCheckboxes(){
             //display checkboxes from database
+            var modelid=$('#model_select_id').val();
 
-            $('#checkbox').show(); //show the checkbox div
-            $('#dynamic_checkbox').empty(); //empty the dynamic div
+            if (modelid) {
+                $('#acc_label').hide();
+                $('#checkbox').show(); //show the checkbox div
+                $('#dynamic_checkbox').empty(); //empty the dynamic div
 
-            $.get("{{config('app.url') }}/api/accessories/"+modelid+"/general",{_token: "{{ csrf_token() }}"},function (data) {
-                //console.log(data);
-                data = $.parseJSON(data);
+                $.get("{{config('app.url') }}/api/accessories/"+modelid+"/general",{_token: "{{ csrf_token() }}"},function (data) {
+                    console.log(data);
+                    data = $.parseJSON(data);
 
-                //console.log(data);
-                $.each(data, function (key,value)
-                {
-                    console.log(value.id);
-                    let CH=$("<input/>",{type:"checkbox", name:"accessories[]",value:value.id });
-                    let LB=$("<lable/>",{text:value.accessory_name });
-                    $('#dynamic_checkbox').append(CH).append(LB).append('<br>');
+                    //console.log(data);
+                    $.each(data, function (key,value)
+                    {
+                        console.log(value.id);
+                        let CH=$("<input/>",{type:"checkbox", name:"accessories[]",value:value.id });
+                        let LB=$("<lable/>",{text:value.accessory_name });
+                        $('#dynamic_checkbox').append(CH).append(LB).append('<br>');
+                    });
                 });
-            });
+            } else {
+                console.log('No modelid');
+            }
+
         }
 
         function fetchCustomFields() {
@@ -212,7 +221,7 @@
                     $("#asset_tag").val(tag);
                 });
 
-                displayCheckboxes(modelid);
+                //displayCheckboxes(modelid);
             }
         }
 
@@ -220,6 +229,25 @@
 
             $('#model_select_id').on("change",fetchCustomFields);
         });
+
+        $('#accessories').change(function(){
+            if( $('#accessories').is(":checked") ){
+                console.log('checked');
+                displayCheckboxes();
+            }
+            else{
+                console.log('not checked');
+            }
+        });
+        /*$(function() {//checkbox to show accessories
+
+            if($("#accessories").is(':checked')){
+                console.log('checked');
+                displayCheckboxes();
+            }
+            else {
+            }
+        });*/
 
         $(function() {
             user_add($(".status_id option:selected").val());
@@ -295,7 +323,7 @@
                         break;
 
                     case 'supplier':
-                    //do nothing, they just need 'name'
+                        //do nothing, they just need 'name'
                         break;
 
                     case 'accessorie':
@@ -448,24 +476,24 @@
                 data._token =  '{{ csrf_token() }}',
                     console.dir(data);
 
-                    $.post("{{config('app.url') }}/api/"+model+"s",data,function (result) {
-                        var id=result.id;
-                        var name=result.name || (result.first_name+" "+result.last_name);
-                        $('.modal-body input:visible').val("");
-                        $('#createModal').modal('hide');
+                $.post("{{config('app.url') }}/api/"+model+"s",data,function (result) {
+                    var id=result.id;
+                    var name=result.name || (result.first_name+" "+result.last_name);
+                    $('.modal-body input:visible').val("");
+                    $('#createModal').modal('hide');
 
-                        //console.warn("The select ID thing we're going for is: "+select);
-                        var selector=document.getElementById(select);
-                        selector.options[selector.length]=new Option(name,id);
-                        selector.selectedIndex=selector.length-1;
-                        $(selector).trigger("change");
-                        fetchCustomFields();
+                    //console.warn("The select ID thing we're going for is: "+select);
+                    var selector=document.getElementById(select);
+                    selector.options[selector.length]=new Option(name,id);
+                    selector.selectedIndex=selector.length-1;
+                    $(selector).trigger("change");
+                    fetchCustomFields();
 
-                    }).fail(function (result) {
-                        //console.dir(result.responseJSON);
-                        msg=result.responseJSON.error.message || result.responseJSON.error;
-                        window.alert("Unable to add new "+model+" - error: "+msg);
-                    });
+                }).fail(function (result) {
+                    //console.dir(result.responseJSON);
+                    msg=result.responseJSON.error.message || result.responseJSON.error;
+                    window.alert("Unable to add new "+model+" - error: "+msg);
+                });
 
             });
         });

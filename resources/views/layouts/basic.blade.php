@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Snipe-IT</title>
+    <title>SCI AMS</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
@@ -45,9 +45,12 @@
         .skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a {
         border-left-color: {{ $snipeSettings->header_color }};
         }
+        .login-page{
+            background-color: {{$snipeSettings->header_color}};
+        }
 
         .btn-primary {
-        background-color: {{ $snipeSettings->header_color }};
+        background-color: #b81900;
         border-color: {{ $snipeSettings->header_color }};
         }
         </style>
