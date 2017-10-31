@@ -1022,16 +1022,17 @@ class AssetsController extends Controller
         $importOptions =    ['filename'=> config('app.private_uploads').'/imports/assets/'.$filename,
             '--email_format'=>'firstname.lastname',
             '--username_format'=>'firstname.lastname',
-            '--web-importer' => true,
-            '--user_id' => Auth::user()->id,
-            '--item-type' => $itemType,
+            //'--web-importer' => true,
+            //'--user_id' => Auth::user()->id,
+            //'--item-type' => $itemType,
         ];
         if ($updateItems) {
             $importOptions['--update'] = true;
         }
 
-        $return = Artisan::call('snipeit:import', $importOptions);
+        $return = Artisan::call('snipeit:asset-import', $importOptions);
         $display_output =  Artisan::output();
+
         $file = config('app.private_uploads').'/imports/assets/'.str_replace('.csv', '', $filename).'-output-'.date("Y-m-d-his").'.txt';
         file_put_contents($file, $display_output);
         // We use hardware instead of asset in the url

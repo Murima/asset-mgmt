@@ -229,6 +229,7 @@ class AssetModelsController extends Controller
         $model->model_number        = e(Input::get('model_number'));
         $model->manufacturer_id     = e(Input::get('manufacturer_id'));
         $model->category_id         = e(Input::get('category_id'));
+        $model->specific_category   = e(Input::get('specific_category'));
         $model->notes               = e(Input::get('notes'));
 
         $model->requestable = Input::has('requestable');
