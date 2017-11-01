@@ -32,7 +32,7 @@ class GeneralAccessoriesController extends Controller
 
     /**
      * creates accessories based on what user checked in asset creation page
-     * check performance of this
+     *
      */
     public function postCreateFromAsset($accessory_details){
         $save_details = array();

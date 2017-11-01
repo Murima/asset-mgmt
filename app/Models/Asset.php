@@ -473,8 +473,25 @@ class Asset extends Depreciable
         return $this->belongsTo('\App\Models\Supplier', 'supplier_id');
     }
 
-    public function months_until_eol()
+    public function accessories()
     {
+        return $this->hasMany('\App\Models\Accessory', 'asset_id');
+    }
+
+    /**
+     * Get this assets accessories
+     * @return array
+     */
+    public function getAccessories(){ //TODO show all accessories
+        $acc_array= array();
+        foreach ($this->accessories as $accessory){
+            return $acc_array = $accessory->name;
+        }
+        //return $acc_array;
+    }
+
+    public function months_until_eol()
+    {//TODO use daily jobs or commands to change asset to disposable
 
         $today = date("Y-m-d");
         $d1    = new DateTime($today);
