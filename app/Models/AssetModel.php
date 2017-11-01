@@ -94,7 +94,7 @@ class AssetModel extends SnipeModel
 
     public function displayModelName()
     {
-        $name = $this->manufacturer->name.' '.$this->name;
+        $name = $this->specific_category.' '.$this->manufacturer->name.' '.$this->name;
         if ($this->model_number) {
             $name .=" / ".$this->model_number;
         }

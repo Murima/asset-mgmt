@@ -456,8 +456,12 @@
                             @can('assets.create')
                                 <li{!! (Request::query('Deleted') ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Deleted') }}">@lang('general.deleted')</a></li>
                                 <li><a href="{{ URL::to('admin/asset_maintenances') }}"  >@lang('general.asset_maintenances') </a></li>
+{{--
                                 <li><a href="{{ URL::to('hardware/import') }}">@lang('general.import') </a></li>
+--}}
+{{-- //TODO deliberate functionality import history
                                 <li><a href="{{ URL::to('hardware/history') }}">@lang('general.import-history') </a></li>
+--}}
                             @endcan
                         </ul>
                     </li>
@@ -513,7 +517,10 @@
                         <ul class="treeview-menu">
                             <li><a href="{{ URL::to('reports/activity') }}" {{ (Request::is('reports/activity') ? ' class="active"' : '') }} >@lang('general.activity_report')</a></li>
 
-                            <li><a href="{{ URL::to('reports/depreciation') }}" {{ (Request::is('reports/depreciation') ? ' class="active"' : '') }} >@lang('general.depreciation_report')</a></li>
+                            {{--
+                                                        <li><a href="{{ URL::to('reports/depreciation') }}" {{ (Request::is('reports/depreciation') ? ' class="active"' : '') }} >@lang('general.depreciation_report')</a></li>
+                            --}}
+
                             {{--
                                                         <li><a href="{{ URL::to('reports/licenses') }}" {{ (Request::is('reports/licenses') ? ' class="active"' : '') }} >@lang('general.license_report')</a></li>
                             --}}
@@ -531,14 +538,32 @@
                         </ul>
                     </li>
                 @endcan
-                @can('assets.view.requestable')
+
+                @can('assets.create')
+                    {{--  <li{!! (Request::is('hardware/import') ? ' class="active"' : '') !!}>
+                          <a href="{{ URL::to('hardware/import') }}">
+                              <i class="fa cloud-upload"></i>
+                              <span>{{ trans('general.import') }}</span>
+                          </a>
+                      </li>--}}
+                    @can('create', \App\Models\Asset::class)
+                        <li{!! (Request::is('import/*') ? ' class="active"' : '') !!}>
+                            <a href="{{ URL::to('hardware/import') }}">
+                                <i class="fa fa-cloud-download"></i>
+                                <span>@lang('general.import')</span>
+                            </a>
+                        </li>
+                    @endcan
+                @endcan
+
+               {{-- @can('assets.view.requestable') //TODO deliberate functionality requestable
                     <li{!! (Request::is('account/requestable-assets') ? ' class="active"' : '') !!}>
                         <a href="{{ route('requestable-assets') }}">
                             <i class="fa fa-laptop"></i>
                             <span>{{ trans('admin/hardware/general.requestable') }}</span>
                         </a>
                     </li>
-                @endcan
+                @endcan--}}
             </ul>
         </section>
         <!-- /.sidebar -->

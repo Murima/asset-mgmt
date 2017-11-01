@@ -73,6 +73,13 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
         Route::get('{locationID}/view', array('as'=>'api.locations.view', 'uses'=>'LocationsController@getDataView'));
         Route::get('{locationID}/users', array('as'=>'api.locations.viewusers', 'uses'=>'LocationsController@getDataViewUsers'));
         Route::get('{locationID}/assets', array('as'=>'api.locations.viewassets', 'uses'=>'LocationsController@getDataViewAssets'));
+        Route::resource('/', 'LocationsController');
+        Route::get('{locationID}/check', function ($locationID) {
+
+            $location = Location::find($locationID);
+
+            return $location;
+        });
     });
 
     /*---Depreciations API---*/
@@ -112,18 +119,6 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
     Route::group([ 'prefix' => 'licenses' ], function () {
 
         Route::get('list', [ 'as' => 'api.licenses.list', 'uses' => 'LicensesController@getDatatable' ]);
-    });
-
-    /*---Locations API---*/
-    Route::group([ 'prefix' => 'locations' ], function () {
-
-        Route::resource('/', 'LocationsController');
-        Route::get('{locationID}/check', function ($locationID) {
-
-            $location = Location::find($locationID);
-
-            return $location;
-        });
     });
 
     /*---Improvements API---*/

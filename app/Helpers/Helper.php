@@ -170,8 +170,8 @@ class Helper
     public static function categoryList($category_type = null)
     {
         $categories = Category::orderBy('name', 'asc')
-                ->whereNull('deleted_at')
-                ->orderBy('name', 'asc');
+            ->whereNull('deleted_at')
+            ->orderBy('name', 'asc');
         if(!empty($category_type))
             $categories = $categories->where('category_type', '=', $category_type);
         $category_list = array('' => trans('general.select_category')) + $categories->pluck('name', 'id')->toArray();
@@ -262,10 +262,10 @@ class Helper
     public static function managerList()
     {
         $manager_list = array('' => trans('general.select_user')) +
-                        User::where('deleted_at', '=', null)
-                        ->orderBy('last_name', 'asc')
-                        ->orderBy('first_name', 'asc')->get()
-                        ->lists('complete_name', 'id')->toArray();
+            User::where('deleted_at', '=', null)
+                ->orderBy('last_name', 'asc')
+                ->orderBy('first_name', 'asc')->get()
+                ->lists('complete_name', 'id')->toArray();
 
         return $manager_list;
     }
@@ -307,11 +307,11 @@ class Helper
     public static function usersList()
     {
         $users_list =   array( '' => trans('general.select_user')) +
-                        Company::scopeCompanyables(User::where('deleted_at', '=', null))
-                        ->where('show_in_list','=',1)
-                        ->orderBy('last_name', 'asc')
-                        ->orderBy('first_name', 'asc')->get()
-                        ->lists('complete_name', 'id')->toArray();
+            Company::scopeCompanyables(User::where('deleted_at', '=', null))
+                ->where('show_in_list','=',1)
+                ->orderBy('last_name', 'asc')
+                ->orderBy('first_name', 'asc')->get()
+                ->lists('complete_name', 'id')->toArray();
 
         return $users_list;
     }
@@ -611,7 +611,7 @@ class Helper
      */
     public static function array_smart_fetch(array $array, $key, $default = '')
     {
-       array_change_key_case($array, CASE_LOWER);
+        array_change_key_case($array, CASE_LOWER);
         return array_key_exists(strtolower($key), array_change_key_case($array)) ? e(trim($array[ $key ])) : $default;
     }
 
@@ -683,6 +683,47 @@ class Helper
         return $clean_array;
 
     }
+
+    /**
+     * Matches category prefix with proper name
+     * @param String
+     * @return String
+     */
+    public static function getCategoryName($prefix){
+        $categoryName = array(
+            'CMP'      => 'Computer',
+            'ELE'      => 'Electronics',
+            'VEH'      => 'Vehicles',
+            'GEN'      => 'Generator',
+            'IT'       => 'IT Equipment',
+            'SAT'      => 'Satellite Comms',
+            'TEL'      => 'Phone systems',
+            'OTH'      => 'Other',
+        );
+        if ($name = $categoryName[$prefix]){
+            return $name;
+        }
+        else{
+            return $categoryName['OTH'];
+        }
+    }
+
+    /**
+     * Get Country code from country name
+     */
+    public static function getCountryCode($country_name){
+        $code = array(
+            'Somalia'  => 'SO',
+            'Unknown'  => 'Unknown',
+        );
+        if ($_code = $code[$country_name]){
+            return $_code;
+        }
+        else {
+            return $code['Unknown'];
+        }
+    }
+
 
 
 
