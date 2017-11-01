@@ -190,18 +190,18 @@
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
+                                @can('users.create')
+                                    <li {!! (Request::is('admin/users/create') ? 'class="active"' : '') !!}>
+                                        <a href="{{ route('create/user') }}">
+                                            <i class="fa fa-user fa-fw"></i>
+                                            @lang('general.user')</a>
+                                    </li>
+                                @endcan
                                 @can('assets.create')
                                     <li {!! (Request::is('hardware/create') ? 'class="active>"' : '') !!}>
                                         <a href="{{ route('create/hardware') }}">
                                             <i class="fa fa-barcode fa-fw"></i>
                                             @lang('general.asset')</a>
-                                    </li>
-                                @endcan
-                                @can('licenses.create')
-                                    <li {!! (Request::is('admin/licenses/create') ? 'class="active"' : '') !!}>
-                                        <a href="{{ route('create/licenses') }}">
-                                            <i class="fa fa-floppy-o fa-fw"></i>
-                                            @lang('general.license')</a>
                                     </li>
                                 @endcan
                                 @can('accessories.create')
@@ -211,18 +211,18 @@
                                             @lang('general.accessory')</a>
                                     </li>
                                 @endcan
+                                @can('licenses.create')
+                                    <li {!! (Request::is('admin/licenses/create') ? 'class="active"' : '') !!}>
+                                        <a href="{{ route('create/licenses') }}">
+                                            <i class="fa fa-floppy-o fa-fw"></i>
+                                            @lang('general.license')</a>
+                                    </li>
+                                @endcan
                                 @can('consumables.create')
                                     <li {!! (Request::is('admin/consumables/create') ? 'class="active"' : '') !!}>
                                         <a href="{{ route('create/consumable') }}">
                                             <i class="fa fa-tint fa-fw"></i>
                                             @lang('general.consumable')</a>
-                                    </li>
-                                @endcan
-                                @can('users.create')
-                                    <li {!! (Request::is('admin/users/create') ? 'class="active"' : '') !!}>
-                                        <a href="{{ route('create/user') }}">
-                                            <i class="fa fa-user fa-fw"></i>
-                                            @lang('general.user')</a>
                                     </li>
                                 @endcan
                                 @can('components.create')
@@ -439,6 +439,7 @@
                             <li{!! (Request::query('status') == 'Undeployable' ? ' class="active"' : '') !!} ><a href="{{ URL::to('hardware?status=Undeployable') }}">@lang('general.undeployable')</a></li>
                             <li{!! (Request::query('status') == 'Archived' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Archived') }}">@lang('admin/hardware/general.archived')</a></li>
                             <li{!! (Request::query('status') == 'Requestable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Requestable') }}">@lang('admin/hardware/general.requestable')</a></li>
+                            <li{!! (Request::query('status') == 'Disposable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Disposable') }}">@lang('admin/hardware/general.disposable')</a></li>
 
                             <li class="divider">&nbsp;</li>
                             @can('assets.checkout')
@@ -519,6 +520,7 @@
                             {{--
                                                         <li><a href="{{ URL::to('reports/depreciation') }}" {{ (Request::is('reports/depreciation') ? ' class="active"' : '') }} >@lang('general.depreciation_report')</a></li>
                             --}}
+
                             {{--
                                                         <li><a href="{{ URL::to('reports/licenses') }}" {{ (Request::is('reports/licenses') ? ' class="active"' : '') }} >@lang('general.license_report')</a></li>
                             --}}

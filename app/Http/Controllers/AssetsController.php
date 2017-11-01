@@ -23,6 +23,7 @@ use App\Models\Supplier;
 use App\Models\User;
 use Codeception\Util\Debug;
 use Debugbar;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Validator;
 use Artisan;
 use Auth;
@@ -1511,6 +1512,12 @@ class AssetsController extends Controller
                     ->with('models_list', $models_list)
                     ->with('companies_list', $companies_list);
 
+                //Bulk dispose
+            } elseif (Input::get('bulk_actions')== 'dispose'){
+
+                $users_list = Helper::usersList();
+                $assets = Asset::with('assigneduser', 'assetloc')->find($asset_ids);
+                return View::make('hardware/bulk-dispose')->with('assets', $assets)->with('users_list', $users_list );
 
             }
 
@@ -1652,8 +1659,8 @@ class AssetsController extends Controller
                 $update_array['deleted_at'] = date('Y-m-d H:i:s');
                 $update_array['assigned_to'] = null;
 
-                if (DB::table('assets')
-                    ->where('id', $asset->id)
+                if (DB::table('assets') //if exists and updated
+                ->where('id', $asset->id)
                     ->update($update_array)) {
 
                     $logaction = new Actionlog();
@@ -1680,7 +1687,162 @@ class AssetsController extends Controller
     }
 
 
+    /**
+     * bulk dispose assets selected
+     */
+    public function postBulkDispose(Request $request)
+    {
+        if (!Company::isCurrentUserAuthorized()) {
+            return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
+        } elseif (Input::has('bulk_edit')) {
+            //$asset_id = Input::get('bulk_edit');
+            $assets = Asset::find(Input::get('bulk_edit'));
+            //print_r($assets);
 
+
+            foreach ($assets as $asset) {
+                //echo '<li>'.$asset;
+                $update_array['deleted_at'] = date('Y-m-d H:i:s');
+                $update_array['assigned_to'] = null;
+
+                if (DB::table('assets')
+                    ->where('id', $asset->id)
+                    ->update($update_array)) {
+                    $logaction = new Actionlog();
+                    $logaction->item_type = Asset::class;
+                    $logaction->item_id = $asset->id;
+                    $logaction->created_at = date("Y-m-d H:i:s");
+                    $logaction->user_id = Auth::user()->id;
+                    $log = $logaction->logaction('dispose in progress');
+                }
+            }
+            \Debugbar::disable();
+
+            $customfields = CustomField::get();
+            $response = new StreamedResponse(function () use ($customfields, $assets) {
+
+                // Open output stream
+                $handle = fopen('php://output', 'w');
+                /* Asset::with('assigneduser', 'assetloc', 'defaultLoc', 'assigneduser.userloc', 'model', 'supplier', 'assetstatus', 'model.manufacturer')->orderBy('created_at', 'DESC')->chunk(500, function ($asset) use ($handle, $customfields) {
+
+                 });*/
+
+                $headers=[
+                    //trans('general.company'),
+                    trans('admin/hardware/table.asset_tag'),
+                    trans('admin/reports/asset_register.category'),
+                    trans('admin/reports/asset_register.country'),
+                    trans('admin/hardware/form.issue_location'),
+                    //trans('admin/hardware/table.assigned_to'),
+
+                    trans('admin/reports/asset_register.description'),
+                    trans('admin/reports/asset_register.accessories'),
+                    trans('admin/hardware/form.manufacturer'),
+                    trans('admin/hardware/form.model'),
+                    trans('general.model_no'),
+                    trans('admin/hardware/table.serial'),
+                    trans('admin/reports/asset_register.other_reference'),
+
+                    trans('admin/hardware/table.purchase_date'),
+                    trans('admin/reports/asset_register.po_number'),
+                    trans('admin/reports/asset_register.price'),
+                    trans('admin/reports/asset_register.currency'),
+                    trans('admin/reports/asset_register.purchase_location'),
+                    trans('admin/hardware/form.supplier'),
+                    trans('admin/reports/asset_register.warranty_end'),
+
+                    trans('admin/reports/asset_register.capital_non_capital'),
+                    trans('admin/reports/asset_register.sof'),
+                    trans('admin/reports/asset_register.cost_center'),
+                    trans('admin/reports/asset_register.project_code'),
+                    trans('admin/reports/asset_register.dea'),
+                    trans('admin/reports/asset_register.account_code'),
+                    trans('admin/reports/asset_register.award_end'),
+                    trans('admin/reports/asset_register.donor_name'),
+                    trans('admin/reports/asset_register.plan_after'),
+
+                    trans('admin/reports/asset_register.date_carried'),
+                    trans('admin/reports/asset_register.location_carried'),
+                    trans('admin/reports/asset_register.date_donated'),
+                    trans('admin/reports/asset_register.recipient_donation'),
+                    trans('admin/reports/asset_register.donation_cert'),
+                    trans('admin/reports/asset_register.date_disposed'),
+                    trans('admin/reports/asset_register.reason_disposed'),
+                    trans('admin/reports/asset_register.disposal_cert'),
+
+                    trans('admin/reports/asset_register.current_asset'),
+
+                    //trans('general.notes'),
+                ];
+                fputcsv($handle, $headers);
+
+                foreach ($assets as $asset) {
+
+                    $values = [
+
+                        //($asset->company) ? $asset->company->name : '', dont need this for now
+                        $asset->asset_tag,
+                        ($asset->asset_type) ? $asset->asset_type : '',
+                        ($asset->defaultloc) ? $asset->defaultLoc->country : '',
+                        ($asset->defaultloc) ? $asset->defaultloc->name : '',
+                        //($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
+
+                        ($asset->model->category_id) ? e($asset->model->category->name . "," . $asset->model->name) : '',
+                        'NULL',
+                        ($asset->model->manufacturer) ? $asset->model->manufacturer->name : '',
+                        ($asset->model) ? $asset->model->name : '',
+                        ($asset->model->model_number) ? $asset->model->model_number : '',
+                        ($asset->serial) ? $asset->serial : '',
+                        'NULL',
+
+                        ($asset->purchase_date) ? e($asset->purchase_date) : '',
+                        //TODO find a better reusable method for customfields
+                        ($asset->_snipeit_po_number) ? e($asset->_snipeit_po_number) : '',
+                        ($asset->purchase_cost > 0) ? Helper::formatCurrencyOutput($asset->purchase_cost) : '',
+                        ($asset->defaultloc) ? Setting::first()->default_currency : '',
+                        ($asset->supplier) ? e($asset->supplier->city) : '',
+                        ($asset->supplier) ? e($asset->supplier->name) : '',
+                        ($asset->warranty_months) ? e($asset->warranty_months) : 'NULL',
+
+                        'Null',
+
+                        ($asset->_snipeit_sof) ? e($asset->_snipeit_sof) : '',
+                        ($asset->_snipeit_cost_centre) ? e($asset->_snipeit_cost_centre) : '',
+                        ($asset->_snipeit_project_code) ? e($asset->_snipeit_project_code) : '',
+                        ($asset->_snipeit_dea) ? e($asset->_snipeit_dea) : '',
+                        ($asset->_snipeit_account_code) ? e($asset->_snipeit_account_code) : '',
+                        ($asset->_snipeit_award_end_date) ? e($asset->_snipeit_award_end_date) : '',
+                        ($asset->_snipeit_donor_name) ? e($asset->_snipeit_donor_name) : '',
+                        ($asset->_snipeit_plan_after_award_ends) ? e($asset->_snipeit_plan_after_award_ends) : '',
+
+                        /*($asset->assigneduser && $asset->assigneduser->userloc!='') ?
+                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
+                        ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
+                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),*/
+                        //($asset->notes) ? e($asset->notes) : '',
+                    ];
+                    fputcsv($handle, $values);
+                }
+                // Close the output stream
+                fclose($handle);
+            }, 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="SCI-asset-disposal-'.date('Y-m-d-his').'.csv"',
+            ]);
+
+            return $response;
+
+            // return redirect()->to("hardware")->with('success', trans('admin/hardware/message.dispose.initiated'));
+        }
+        else {
+            return redirect()->to("hardware")->with('info', trans('admin/hardware/message.delete.nothing_updated'));
+
+        }
+
+        // Something weird happened here - default to hardware
+        return redirect()->to("hardware");
+
+    }
     /**
      * Generates the JSON used to display the asset listing.
      *

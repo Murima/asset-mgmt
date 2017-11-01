@@ -533,4 +533,11 @@ class CategoriesController extends Controller
         $data = array('total' => $count, 'rows' => $rows);
         return $data;
     }
+
+    /**
+     * get dataset for assets by category
+     */
+    public function getAssetCountByCategory(){
+
+    }
 }

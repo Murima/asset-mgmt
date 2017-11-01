@@ -1,9 +1,10 @@
 <?php
 
 return array(
-    'about_assets_title'           => 'About Assets',
-    'about_assets_text'            => 'Assets are items tracked by serial number or asset tag.  They tend to be higher value items where identifying a specific item matters.',
-	'archived'  				=> 'Archived',
+    'about_assets_title'        => 'About Assets',
+    'about_assets_text'         => 'Assets are items tracked by serial number or asset tag.  They tend to be higher value items where identifying a specific item matters.',
+    'accessories_help'  		=> 'Click if the asset has accessories',
+    'archived'  				=> 'Archived',
     'asset'  					=> 'Asset',
     'bulk_checkout'             => 'Allocate Assets to User',
     'capital'                   => 'Capital asset',
@@ -12,6 +13,7 @@ return array(
     'checkout'  				=> 'Allocate Asset to User',
     'checkout_accessory'        => 'Allocate Accessory to User',
     'clone'  					=> 'Clone Asset',
+    'disposable'  				=> 'Disposable',
     'deployable'  				=> 'Deployable',
     'deleted'  					=> 'This asset has been deleted. <a href="/hardware/:asset_id/restore">Click here to restore it</a>.',
     'edit'  					=> 'Edit Asset',

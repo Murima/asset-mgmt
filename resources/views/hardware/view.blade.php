@@ -52,9 +52,9 @@
         <li>
           <a href="#software" data-toggle="tab"><span class="hidden-lg hidden-md"><i class="fa fa-floppy-o"></i></span> <span class="hidden-xs hidden-sm">Licenses</span></a>
         </li>
-        <li>
-          <a href="#components" data-toggle="tab"><span class="hidden-lg hidden-md"><i class="fa fa-hdd-o"></i></span> <span class="hidden-xs hidden-sm">Components</span></a>
-        </li>
+          <li>
+              <a href="#components" data-toggle="tab"><span class="hidden-lg hidden-md"><i class="fa fa-hdd-o"></i></span> <span class="hidden-xs hidden-sm">Components</span></a>
+          </li>
         <li>
           <a href="#maintenances" data-toggle="tab"><span class="hidden-lg hidden-md"><i class="fa fa-wrench"></i></span> <span class="hidden-xs hidden-sm">Maintenances</span></a>
         </li>
@@ -287,7 +287,7 @@
                             {{ trans('general.months') }}
                             )
                           @endif
-                            
+
                         </td>
                       </tr>
                     @endif
@@ -489,7 +489,7 @@
                     {{ trans('general.no_results') }}
                   </div>
                 @endif
-  
+
               </div>
           </div>
         </div> <!-- /.tab-pane components -->
@@ -612,7 +612,7 @@
                               @else
                                 <del>{{ $log->target->fullName() }}</del>
                               @endif
-                            @elseif($log->target instanceof \App\Models\Asset) 
+                            @elseif($log->target instanceof \App\Models\Asset)
                               @if ($log->target->deleted_at=='')
                                 <a href="{{ route('view/hardware', $log->target_id) }}">
                                 {{ $log->target->showAssetName() }}

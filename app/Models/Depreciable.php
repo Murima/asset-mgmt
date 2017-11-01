@@ -60,6 +60,10 @@ class Depreciable extends SnipeModel
         return $current_value;
     }
 
+    /**
+     * returns difference between depreciation date and now
+     * @return bool|\DateInterval
+     */
     public function time_until_depreciated()
     {
         // @link http://www.php.net/manual/en/class.datetime.php
@@ -75,7 +79,12 @@ class Depreciable extends SnipeModel
         }
     }
 
+    /**
+     * Adds the end of life or depreciation date and the purchase date
+     * @Return date
+     */
     public function depreciated_date()
+
     {
         $date = date_create($this->purchase_date);
         date_add($date, date_interval_create_from_date_string($this->get_depreciation()->months . ' months'));
