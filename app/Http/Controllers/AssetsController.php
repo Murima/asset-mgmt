@@ -23,6 +23,9 @@ use App\Models\Supplier;
 use App\Models\User;
 use Codeception\Util\Debug;
 use Debugbar;
+use function foo\func;
+use Hamcrest\Core\Set;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Validator;
 use Artisan;
@@ -1728,29 +1731,33 @@ class AssetsController extends Controller
 
                 $headers=[
                     //trans('general.company'),
-                    trans('admin/hardware/table.asset_tag'),
-                    trans('admin/reports/asset_register.category'),
                     trans('admin/reports/asset_register.country'),
+                    trans('admin/reports/asset_register.date_disposed'),
+                    trans('admin/reports/asset_register.category'),
+                    trans('admin/hardware/table.asset_tag'),
                     trans('admin/hardware/form.issue_location'),
-                    //trans('admin/hardware/table.assigned_to'),
 
-                    trans('admin/reports/asset_register.description'),
-                    trans('admin/reports/asset_register.accessories'),
+
                     trans('admin/hardware/form.manufacturer'),
                     trans('admin/hardware/form.model'),
                     trans('general.model_no'),
+                    trans('admin/reports/asset_register.description'),
+                    trans('admin/reports/asset_register.accessories'),
+                    trans('admin/hardware/table.assigned_to'),
+
                     trans('admin/hardware/table.serial'),
                     trans('admin/reports/asset_register.other_reference'),
 
                     trans('admin/hardware/table.purchase_date'),
-                    trans('admin/reports/asset_register.po_number'),
+                    //trans('admin/reports/asset_disposal.donor_approval'),
                     trans('admin/reports/asset_register.price'),
                     trans('admin/reports/asset_register.currency'),
+                    trans('admin/reports/asset_register.po_number'),
                     trans('admin/reports/asset_register.purchase_location'),
                     trans('admin/hardware/form.supplier'),
                     trans('admin/reports/asset_register.warranty_end'),
 
-                    trans('admin/reports/asset_register.capital_non_capital'),
+                    /*trans('admin/reports/asset_register.capital_non_capital'),
                     trans('admin/reports/asset_register.sof'),
                     trans('admin/reports/asset_register.cost_center'),
                     trans('admin/reports/asset_register.project_code'),
@@ -1765,11 +1772,10 @@ class AssetsController extends Controller
                     trans('admin/reports/asset_register.date_donated'),
                     trans('admin/reports/asset_register.recipient_donation'),
                     trans('admin/reports/asset_register.donation_cert'),
-                    trans('admin/reports/asset_register.date_disposed'),
                     trans('admin/reports/asset_register.reason_disposed'),
                     trans('admin/reports/asset_register.disposal_cert'),
 
-                    trans('admin/reports/asset_register.current_asset'),
+                    trans('admin/reports/asset_register.current_asset'),*/
 
                     //trans('general.notes'),
                 ];
@@ -1780,39 +1786,41 @@ class AssetsController extends Controller
                     $values = [
 
                         //($asset->company) ? $asset->company->name : '', dont need this for now
-                        $asset->asset_tag,
-                        ($asset->asset_type) ? $asset->asset_type : '',
                         ($asset->defaultloc) ? $asset->defaultLoc->country : '',
+                        '',
+                        ($asset->asset_type) ? $asset->asset_type : '',
+                        $asset->asset_tag,
                         ($asset->defaultloc) ? $asset->defaultloc->name : '',
-                        //($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
-
-                        ($asset->model->category_id) ? e($asset->model->category->name . "," . $asset->model->name) : '',
-                        'NULL',
                         ($asset->model->manufacturer) ? $asset->model->manufacturer->name : '',
                         ($asset->model) ? $asset->model->name : '',
                         ($asset->model->model_number) ? $asset->model->model_number : '',
+                        ($asset->model->category_id) ? e($asset->model->category->name . "," . $asset->model->name) : '',
+
+                        'NULL',//accessories
+                        ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
                         ($asset->serial) ? $asset->serial : '',
                         'NULL',
 
                         ($asset->purchase_date) ? e($asset->purchase_date) : '',
-                        //TODO find a better reusable method for customfields
-                        ($asset->_snipeit_po_number) ? e($asset->_snipeit_po_number) : '',
                         ($asset->purchase_cost > 0) ? Helper::formatCurrencyOutput($asset->purchase_cost) : '',
                         ($asset->defaultloc) ? Setting::first()->default_currency : '',
+                        ($asset->_snipeit_po_number) ? e($asset->_snipeit_po_number) : '',
                         ($asset->supplier) ? e($asset->supplier->city) : '',
+
+                        //TODO find a better reusable method for customfields
                         ($asset->supplier) ? e($asset->supplier->name) : '',
                         ($asset->warranty_months) ? e($asset->warranty_months) : 'NULL',
 
                         'Null',
 
-                        ($asset->_snipeit_sof) ? e($asset->_snipeit_sof) : '',
+                        /*($asset->_snipeit_sof) ? e($asset->_snipeit_sof) : '',
                         ($asset->_snipeit_cost_centre) ? e($asset->_snipeit_cost_centre) : '',
                         ($asset->_snipeit_project_code) ? e($asset->_snipeit_project_code) : '',
                         ($asset->_snipeit_dea) ? e($asset->_snipeit_dea) : '',
                         ($asset->_snipeit_account_code) ? e($asset->_snipeit_account_code) : '',
                         ($asset->_snipeit_award_end_date) ? e($asset->_snipeit_award_end_date) : '',
                         ($asset->_snipeit_donor_name) ? e($asset->_snipeit_donor_name) : '',
-                        ($asset->_snipeit_plan_after_award_ends) ? e($asset->_snipeit_plan_after_award_ends) : '',
+                        ($asset->_snipeit_plan_after_award_ends) ? e($asset->_snipeit_plan_after_award_ends) : '',*/
 
                         /*($asset->assigneduser && $asset->assigneduser->userloc!='') ?
                             e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
@@ -1840,6 +1848,19 @@ class AssetsController extends Controller
 
         // Something weird happened here - default to hardware
         return redirect()->to("hardware");
+
+    }
+
+    public function testExcel(){
+
+        //dd('heeeeey');
+        $snipeSettings = Setting::getSettings();
+
+        Excel::create('Disposal form', function ($excel) use($snipeSettings){
+            $excel->sheet('Disposal', function ($sheet) use($snipeSettings){
+                $sheet->loadview('reports.disposal_form')->with('snipeSettings', $snipeSettings);
+            });
+        })->download('xls');
 
     }
     /**

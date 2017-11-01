@@ -351,6 +351,15 @@ Route::group(
                 'uses' => 'AssetsController@postBulkDispose'
             ]
         );
+        Route::get(
+            'testdispose',
+            [
+                'as' => 'hardware/testdispose',
+                'middleware' => 'authorize:assets.edit',
+                'uses' => 'AssetsController@testExcel'
+            ]
+        );
+
         Route::post(
             'bulksave',
             [

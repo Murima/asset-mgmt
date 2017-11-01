@@ -215,6 +215,7 @@ return [
         MisterPhilip\MaintenanceMode\MaintenanceCommandServiceProvider::class,
         PragmaRX\Google2FA\Vendor\Laravel\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
         /*
          * Custom service provider
@@ -273,6 +274,7 @@ return [
         'Form'      => 'Collective\Html\FormFacade',
         'Html'      => 'Collective\Html\HtmlFacade',
         'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
+        'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];
