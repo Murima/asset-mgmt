@@ -9,7 +9,7 @@
             {{ trans('general.ready_to_deploy') }}
         @elseif (Input::get('status')=='Undeployable')
             {{ trans('general.undeployable') }}
-        @elseif (Input::get('status')=='Deployable')
+        @elseif (Input::get('status')=='Deployed')
             {{ trans('general.deployed') }}
         @elseif (Input::get('status')=='Requestable')
             {{ trans('admin/hardware/general.requestable') }}
