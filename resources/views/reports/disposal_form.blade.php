@@ -19,7 +19,7 @@
         </tr>
         <tr>
             <th>Date:</th>
-            <td>878</td>
+            <td>{{date("Y-m-d")}}</td>
         </tr>
         <tr>
             <th>Means of disposal:</th>
@@ -31,9 +31,10 @@
     <table border="1">
         <tr >
             <th>Requested by:</th>
-            <td>Gemo</td>
+            <td>{{$user->first_name}}</td>
+            <td>{{$user->last_name}}</td>
             <th>Position:</th>
-            <td >Officer</td>
+            <td >Logistics Officer</td>
             <th>Signature</th>
             <td style="height: 50px;"></td>
         </tr>
@@ -42,7 +43,8 @@
     <table border="1">
         <tr>
             <th>Budget Holder:</th>
-            <td>Gemo</td>
+            <td>{{$user->first_name}}</td>
+            <td>{{$user->last_name}}</td>
             <th>Position:</th>
             <td >Logs</td>
             <th>Signature</th>
@@ -50,7 +52,8 @@
         </tr>
         <tr>
             <th>Donor approval:</th>
-            <td>Gemo</td>
+            <td>ECHO</td>
+            <td></td>
             <th>Position:</th>
             <td ></td>
             <th>Signature</th>
@@ -58,9 +61,10 @@
         </tr>
         <tr>
             <th>CD approval:</th>
+            <td>Timothy</td>
             <td>Bishop</td>
             <th>Position:</th>
-            <td ></td>
+            <td >Country Director</td>
             <th>Signature</th>
             <td style="height: 40px;"></td>
         </tr>
@@ -71,14 +75,32 @@
     <div style="display: table; bottom:0;width:100%; ">
         <table>
             <tr style="width: 30px;">
-                <th>Name</th>
+                <th>Category</th>
                 <th>Asset tag</th>
                 <th>Model</th>
+                <th>Purchase cost</th>
+                <th>Purchase date</th>
+                <th>Order number</th>
+                <th>End of life</th>
             </tr>
             <tr>
-                <td style="background-color: #413f28; color: #FFFFFF;">Bill Gates</td>
-                <td style="background-color: #413f28; color: #FFFFFF">555 77 854</td>
-                <td style="background-color: #413f28; color: #FFFFFF">555 77 855</td>
+                {{-- @foreach($assets as $asset)--}}
+                <td style="background-color: #413f28; color: #FFFFFF;">CMP</td>
+                <td style="background-color: #413f28; color: #FFFFFF;">SOM-NRB-CMP-0033</td>
+                <td style="background-color: #413f28; color: #FFFFFF;">1600</td>
+                <td style="background-color: #413f28; color: #FFFFFF;">2017-08-01</td>
+                <td style="background-color: #413f28; color: #FFFFFF;">po/op/9098</td>
+                <td style="background-color: #413f28; color: #FFFFFF;"></td>
+                <td style="background-color: #413f28; color: #FFFFFF;"></td>
+                {{--<td style="background-color: #413f28; color: #FFFFFF;">{{$assets->asset_tag}}</td>
+                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->model->name}}</td>
+                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->purchase_cost}}</td>
+                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->purchase_date}}</td>
+                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->_snipeit_po_number}}</td>
+                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->eol_date}}</td>--}}
+                {{--@endforeach--}}
+                <td style="background-color: #413f28; color: #FFFFFF"></td>
+                <td style="background-color: #413f28; color: #FFFFFF"></td>
             </tr>
         </table>
     </div>

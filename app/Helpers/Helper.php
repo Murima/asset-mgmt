@@ -692,12 +692,14 @@ class Helper
     public static function getCategoryName($prefix){
         $categoryName = array(
             'CMP'      => 'Computer',
+            'BUI'      => 'Building',
+            'CMS'      => 'Radio Comms',
             'ELE'      => 'Electronics',
             'VEH'      => 'Vehicles',
             'GEN'      => 'Generator',
-            'IT'       => 'IT Equipment',
+            'IT'       => 'Office IT Equipment',
             'SAT'      => 'Satellite Comms',
-            'TEL'      => 'Phone systems',
+            'TEL'      => 'Phone system',
             'OTH'      => 'Other',
         );
         if ($name = $categoryName[$prefix]){

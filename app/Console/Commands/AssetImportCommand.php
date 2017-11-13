@@ -237,7 +237,8 @@ class AssetImportCommand extends Command
 
             //Warranty period
             if (array_key_exists('22', $row)) {
-                $asset_warranty = trim($row[22]);
+                //$asset_warranty = trim($row[22]);//TODO subtract from purchase date
+                $asset_warranty=12;
             } else {
                 $asset_warranty = '';
             }
@@ -427,7 +428,14 @@ class AssetImportCommand extends Command
             $tag_array = explode("-", $user_asset_tag);
             $user_asset_company_name= $tag_array[1];  //TODO use COMPANY to generate tags later
 
-            $user_asset_name = explode(" ", trim($asset_description));
+            //$user_asset_name = explode(" ", trim($asset_description));
+
+            if(strpos ($asset_assigned_to, '-')!==false){
+                $user_details = explode("-", $asset_assigned_to);
+                $user_position = trim($user_details[0]);
+                $asset_assigned_to = trim($user_details[1]);
+            }
+
             // A number was given instead of a name
             if (is_numeric($asset_assigned_to)) {
                 $this->comment('User '.$asset_assigned_to.' is not a name - assume this user already exists');
@@ -442,6 +450,11 @@ class AssetImportCommand extends Command
                 $last_name = '';
                 //$user_username = '';
 
+            }
+            else if($asset_assigned_to=='Not Allocated'){
+                $this->comment('No user data provided - skipping user creation, just adding asset');
+                $first_name = '';
+                $last_name = '';
             }
             else {
                 $user_email_array = User::generateFormattedNameFromFullName($this->option('email_format'), $asset_assigned_to);
@@ -470,7 +483,7 @@ class AssetImportCommand extends Command
             $this->comment('Username: '.$user_username);
             $this->comment('Email: '.$user_email);
             $this->comment('Category Name: '.$asset_category_prefix);
-            $this->comment('Model Name: '.$user_asset_name[2]);
+            $this->comment('Model Name: '.$asset_description);
             $this->comment('Manufacturer ID: '.$user_asset_mfgr);
             $this->comment('Model No: '.$user_asset_modelno);
             $this->comment('Serial No: '.$user_asset_serial);
@@ -673,10 +686,17 @@ class AssetImportCommand extends Command
                 $asset->serial = e($user_asset_serial);
                 $asset->asset_tag = e($user_asset_tag);
                 $asset->model_id = $asset_model->id;
-                $asset->assigned_to = $user->id;
+                if ($user){
+                    $asset->assigned_to = $user->id;
+                    $asset->status_id =6; //TODO check status proper labels
+                }
+                else{
+                    $asset->assigned_to = null;
+                    $asset->status_id =3;
+
+                }
                 $asset->rtd_location_id = $location->id;
                 $asset->user_id = 1;
-                $asset->status_id = $status_id;
                 $asset->company_id = $company->id;
                 $asset->supplier_id = $supplier->id;
 
@@ -706,9 +726,9 @@ class AssetImportCommand extends Command
                 }
 
                 if (e($cost_center)!='') {
-                    $asset->_snipeit_cost_center = $cost_center;
+                    $asset->_snipeit_cost_centre = $cost_center;
                 } else {
-                    $asset->_sipeit_cost_center = null;
+                    $asset->_snipeit_cost_centre = null;
                 }
 
                /* if (e($asset_other_no)!=''){ //TODO add this to assets
@@ -761,7 +781,7 @@ class AssetImportCommand extends Command
             }
 
             //save accessories associated with the asset
-            $accessories_array = explode(" ", e(trim($asset_accessories)));
+            $accessories_array = explode(",", e(trim($asset_accessories)));
             foreach ($accessories_array as $accessory) {
                 if ($accessory = Accessory::where('name', $accessory)->where('asset_id', $asset->id)->first()) {
 

@@ -1852,14 +1852,23 @@ class AssetsController extends Controller
 
     }
 
+    /**
+     * test Excel plugin
+     */
     public function testExcel(){
 
         //dd('heeeeey');
         $snipeSettings = Setting::getSettings();
+        $user = User::find(44);
+        $asset_user = User::find(90);
+        $assets = Asset::find(34);
 
-        Excel::create('Disposal form', function ($excel) use($snipeSettings){
-            $excel->sheet('Disposal', function ($sheet) use($snipeSettings){
-                $sheet->loadview('reports.disposal_form')->with('snipeSettings', $snipeSettings);
+        Excel::create('Disposal form', function ($excel) use($snipeSettings, $user, $assets){
+            $excel->sheet('Disposal', function ($sheet) use($snipeSettings, $user, $assets){
+                $sheet->loadview('reports.disposal_form')
+                    ->with('snipeSettings', $snipeSettings)
+                    ->with('user', $user)
+                    ->with('assets', $assets);
             });
         })->download('xls');
 
