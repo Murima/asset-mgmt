@@ -45,7 +45,7 @@
                             <label for="disposal_methods" class="col-md-3 control-label">{{ trans('admin/hardware/form.means') }}</label>
                             <div class="col-md-7 col-sm-12">
 
-                                <select name="bulk_actions" class="select2" style="width: 100%;">
+                                <select name="disposal_methods" class="select2" style="width: 100%;">
                                     <option value="scrapping">Scrapping</option>
                                     <option value="sale">Sale</option>
                                     <option value="donation">Donation</option>

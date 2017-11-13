@@ -4,7 +4,7 @@ return array(
     'about_assets_title'        => 'About Assets',
     'about_assets_text'         => 'Assets are items tracked by serial number or asset tag.  They tend to be higher value items where identifying a specific item matters.',
     'accessories_help'  		=> 'Click if the asset has accessories',
-    'archived'  				=> 'Archived',
+    'archived'  				=> 'In Stock',
     'asset'  					=> 'Asset',
     'bulk_checkout'             => 'Allocate Assets to User',
     'capital'                   => 'Capital asset',
