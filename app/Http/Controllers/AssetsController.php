@@ -1769,7 +1769,7 @@ class AssetsController extends Controller
      * saves disposed assets in disposed assets table for the records
      */
     public function saveDisposedAssets($asset , $dispose_asset , $form_array){
-        $dispose_asset->id = $asset->id;
+        $dispose_asset->asset_id = $asset->id;
         $dispose_asset->asset_tag = $asset->asset_tag;
         $dispose_asset->reason_for_dispose = $form_array['reason'];
         $dispose_asset->means = $form_array['disposal_methods'];

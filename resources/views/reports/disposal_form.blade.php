@@ -57,7 +57,7 @@
             <td>{{$form_array['country_director']->first_name}}</td>
             <td>{{$form_array['country_director']->last_name}}</td>
             <th>Position:</th>
-            <td >{{$form_array['country_director']->jobtitle}}</td>
+            <td >{{$form_array['country_director']->jobtitle or 'NULL'}}</td>
             <th>Signature:</th>
             <td style="height: 40px;"></td>
         </tr>
