@@ -317,7 +317,7 @@ class AssetImportCommand extends Command
             $user_asset_notes='Imported from asset register';
             $user_username='';
             $tag_array = explode("-", $user_asset_tag);
-            $user_asset_company_name= $tag_array[1];  //TODO use COMPANY to generate tags later
+            $user_asset_company_name= $tag_array[1];  //TODO use COMPANY to AUTOgenerate tags later
 
             //$user_asset_name = explode(" ", trim($asset_description));
 
@@ -497,22 +497,60 @@ class AssetImportCommand extends Command
 
             }
 
-            // Check for the asset model match and create it if it doesn't exist
-            if ($asset_category_prefix == 'CMP'){
-                $model_name = $category->name." ".e($asset_model)."/".e($user_asset_modelno);
+            $search =null;
+            switch ($asset_category_prefix){
+                case 'CMP':
+                    $model_name = $category->name." ".e($asset_model)."/".e($user_asset_modelno);
+                    $search = true;
+                    break;
+                case 'IT':
+                    $model_name = $asset_description." ".e($asset_model)."/".e($user_asset_modelno);
+                    $search = false;
+                    break;
+                case 'ELE':
+                    $model_name = $asset_description." ".e($asset_model)."/".e($user_asset_modelno);
+                    $search = false;
+                    break;
+                case 'CMS':
+                    $model_name = $asset_description." ".e($asset_model)."/".e($user_asset_modelno);
+                    $search = false;
+                    break;
+                case 'GEN':
+                    $model_name = $asset_description." ".e($asset_model)."/".e($user_asset_modelno);
+                    $search = false;
+                    break;
+                default:
+                    $model_name = $asset_description." ".e($asset_model)."/".e($user_asset_modelno);
+                    $search = false;
+                    break;
             }
-            elseif ($asset_category_prefix == 'IT'){
+
+            // Check for the asset model match and create it if it doesn't exist
+           /* if ($asset_category_prefix == 'CMP'){
+                $model_name = $category->name." ".e($asset_model)."/".e($user_asset_modelno);
+            }*/
+           /* elseif ($asset_category_prefix == 'IT'){
                 $model_name = $asset_description;
             }
             else{
                 $model_name = $category->name." ".e($asset_model)."/".e($user_asset_modelno);
-            }
+            }*/
 
-            if ($asset_model = AssetModel::where('name', $model_name )
-                ->where('model_number', e($user_asset_modelno))
-                ->where('category_id', $category->id)
-                ->where('manufacturer_id', $manufacturer->id)->first()) {
+           if ($search){
+               $asset_model = AssetModel::where('name', $model_name )
+                   ->where('model_number', e($user_asset_modelno))
+                   ->where('category_id', $category->id)
+                   ->where('manufacturer_id', $manufacturer->id)->first();
+           }
+           else {
+               $asset_model = AssetModel::where('name', $model_name )
+                   ->where('model_number', e($user_asset_modelno))
+                   ->where('category_id', $category->id)->first();
+                   //->where('manufacturer_id', $manufacturer->id)->first();
+           }
+            if ($asset_model) {
                 $this->comment('The Asset Model '.$model_name.' with model number '.$user_asset_modelno.' already exists');
+
             } else {
                 $asset_model = new AssetModel();
                 $asset_model->name = $model_name;
@@ -697,11 +735,11 @@ class AssetImportCommand extends Command
                 $asset->model_id = $asset_model->id;
                 if ($user){
                     $asset->assigned_to = $user->id;
-                    $asset->status_id =6; //TODO check status proper labels
+                    $asset->status_id = $this->allocated_id;
                 }
                 else{
                     $asset->assigned_to = null;
-                    $asset->status_id =3;
+                    $asset->status_id = $this->in_stock;
 
                 }
                 $asset->rtd_location_id = $location->id;
