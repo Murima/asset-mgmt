@@ -704,7 +704,7 @@ class Helper
             'TEL'      => 'Phone system',
             'OTH'      => 'Other',
         );
-        if ($name = $categoryName[$prefix]){
+        if (!empty($name = $categoryName[$prefix])){
             return $name;
         }
         else{
@@ -721,7 +721,7 @@ class Helper
             'Somalia'  => 'SO',
             'Unknown'  => 'Unknown',
         );
-        if ($_code = $code[$country_name]){
+        if (!empty($_code = $code[$country_name])){
             return $_code;
         }
         else {

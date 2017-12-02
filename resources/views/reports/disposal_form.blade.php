@@ -92,7 +92,7 @@
             @foreach($assets as $asset)
                 <tr style="border: 1px solid white;">
 
-                    <td style="background-color: #413f28; color: #FFFFFF">{{\App\Helpers\Helper::getCategoryName($asset->asset_type)}}</td>
+                    <td style="background-color: #413f28; color: #FFFFFF">{{\App\Helpers\Helper::getCategoryName($asset->asset_type) or 'NULL'}}</td>
                     <td style="background-color: #413f28; color: #FFFFFF;">{{$asset->asset_tag}}</td>
                     <td style="background-color: #413f28; color: #FFFFFF">{{$asset->model->name or 'NULL'}}</td>
 
