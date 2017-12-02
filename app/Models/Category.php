@@ -29,7 +29,7 @@ class Category extends SnipeModel
         'user_id' => 'numeric',
         'name'   => 'required|min:1|max:255|unique_undeleted',
         'category_type'   => 'required',
-        'category_prefix' => 'required|min:3',
+        'category_prefix' => 'required|min:2',
     );
 
     /**

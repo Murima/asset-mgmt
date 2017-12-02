@@ -5,8 +5,8 @@
 @section('content')
     <table>
         <tr style="background-color: #154138; width: 50px;">
-            <td>
-                <img src="{{ public_path('uploads/'.$snipeSettings->logo)}}" style="height: 60px; width: 100px;">
+            <td colspan="3" style="margin-left: auto; margin-right: auto">
+                <img src="{{ public_path('uploads/'.$snipeSettings->logo)}}" style="height: 60px">
 
             </td>
         </tr>
@@ -15,15 +15,19 @@
     <table border="1">
         <tr>
             <th>Country:</th>
-            <td style="margin-top: 50px; width: 20px;">Somalia</td>
+            <td style="margin-top: 50px; width: 20px">Somalia</td>
         </tr>
         <tr>
             <th>Date:</th>
             <td>{{date("Y-m-d")}}</td>
         </tr>
         <tr>
+            <th>Reason of disposal:</th>
+            <td>{{$form_array['reason']}}</td>
+        </tr>
+        <tr>
             <th>Means of disposal:</th>
-            <td>Donate</td>
+            <td>{{$form_array['disposal_methods']}}</td>
         </tr>
     </table>
     <br>
@@ -31,41 +35,39 @@
     <table border="1">
         <tr >
             <th>Requested by:</th>
-            <td>{{$user->first_name}}</td>
-            <td>{{$user->last_name}}</td>
+            <td>{{$form_array['requested_by']->first_name or 'NULL'}}</td>
+            <td>{{$form_array['requested_by']->last_name or 'NULL'}}</td>
             <th>Position:</th>
-            <td >Logistics Officer</td>
-            <th>Signature</th>
+            <td >{{$form_array['requested_by']->jobtitle or 'NULL'}}</td>
+            <th>Signature:</th>
             <td style="height: 50px;"></td>
         </tr>
-    </table>
-    <br>
-    <table border="1">
         <tr>
             <th>Budget Holder:</th>
-            <td>{{$user->first_name}}</td>
-            <td>{{$user->last_name}}</td>
+            <td>{{$form_array['budget_holder']->first_name or 'NULL'}}</td>
+            <td>{{$form_array['budget_holder']->last_name or 'NULL'}}</td>
             <th>Position:</th>
-            <td >Logs</td>
-            <th>Signature</th>
+            <td >{{$form_array['budget_holder']->jobtitle or 'NULL'}}</td>
+            <th>Signature:</th>
+            <td style="height: 40px;"></td>
+        </tr>
+
+        <tr>
+            <th>CD approval:</th>
+            <td>{{$form_array['country_director']->first_name}}</td>
+            <td>{{$form_array['country_director']->last_name}}</td>
+            <th>Position:</th>
+            <td >{{$form_array['country_director']->jobtitle or 'NULL'}}</td>
+            <th>Signature:</th>
             <td style="height: 40px;"></td>
         </tr>
         <tr>
             <th>Donor approval:</th>
-            <td>ECHO</td>
+            <td></td>
             <td></td>
             <th>Position:</th>
             <td ></td>
-            <th>Signature</th>
-            <td style="height: 40px;"></td>
-        </tr>
-        <tr>
-            <th>CD approval:</th>
-            <td>Timothy</td>
-            <td>Bishop</td>
-            <th>Position:</th>
-            <td >Country Director</td>
-            <th>Signature</th>
+            <th>Signature:</th>
             <td style="height: 40px;"></td>
         </tr>
     </table>
@@ -75,33 +77,35 @@
     <div style="display: table; bottom:0;width:100%; ">
         <table>
             <tr style="width: 30px;">
-                <th>Category</th>
+                <th>Item Category</th>
                 <th>Asset tag</th>
                 <th>Model</th>
+
                 <th>Purchase cost</th>
                 <th>Purchase date</th>
-                <th>Order number</th>
-                <th>End of life</th>
+                <th>SOF</th>
+                <th>Donor name</th>
+                <th>Number</th>
+                <th>Other Number</th>
+                <th>End of Life</th>
             </tr>
-            <tr>
-                {{-- @foreach($assets as $asset)--}}
-                <td style="background-color: #413f28; color: #FFFFFF;">CMP</td>
-                <td style="background-color: #413f28; color: #FFFFFF;">SOM-NRB-CMP-0033</td>
-                <td style="background-color: #413f28; color: #FFFFFF;">1600</td>
-                <td style="background-color: #413f28; color: #FFFFFF;">2017-08-01</td>
-                <td style="background-color: #413f28; color: #FFFFFF;">po/op/9098</td>
-                <td style="background-color: #413f28; color: #FFFFFF;"></td>
-                <td style="background-color: #413f28; color: #FFFFFF;"></td>
-                {{--<td style="background-color: #413f28; color: #FFFFFF;">{{$assets->asset_tag}}</td>
-                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->model->name}}</td>
-                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->purchase_cost}}</td>
-                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->purchase_date}}</td>
-                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->_snipeit_po_number}}</td>
-                <td style="background-color: #413f28; color: #FFFFFF;">{{$assets->eol_date}}</td>--}}
-                {{--@endforeach--}}
-                <td style="background-color: #413f28; color: #FFFFFF"></td>
-                <td style="background-color: #413f28; color: #FFFFFF"></td>
-            </tr>
+            @foreach($assets as $asset)
+                <tr style="border: 1px solid white;">
+
+                    <td style="background-color: #413f28; color: #FFFFFF">{{\App\Helpers\Helper::getCategoryName($asset->asset_type) or 'NULL'}}</td>
+                    <td style="background-color: #413f28; color: #FFFFFF;">{{$asset->asset_tag}}</td>
+                    <td style="background-color: #413f28; color: #FFFFFF">{{$asset->model->name or 'NULL'}}</td>
+
+                    <td style="background-color: #413f28; color: #FFFFFF;text-align: center;">{{$asset->purchase_cost or 'NULL'}}</td>
+                    <td style="background-color: #413f28; color: #FFFFFF;text-align: center;">{{$asset->purchase_date or 'NULL'}}</td>
+                    <td style="background-color: #413f28; color: #FFFFFF;text-align: center;">{{$asset->_snipeit_sof or 'NULL'}}</td>
+                    <td style="background-color: #413f28; color: #FFFFFF;">{{$asset->_snipeit_donor_name or 'NULL'}}</td>
+                    <td style="background-color: #413f28; color: #FFFFFF">{{$asset->serial or 'NULL'}}</td>
+                    <td style="background-color: #413f28; color: #FFFFFF"></td>
+                    <td style="background-color: #413f28; color: #FFFFFF;">{{$form_array['eol']}}</td>
+                </tr>
+
+            @endforeach
         </table>
     </div>
 @stop

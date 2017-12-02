@@ -14,6 +14,7 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\CustomField;
 use App\Models\Depreciation;
+use App\Models\DisposedAsset;
 use App\Models\GeneralAccessory;
 use App\Models\Location;
 use App\Models\Manufacturer; //for embedded-create
@@ -1702,10 +1703,24 @@ class AssetsController extends Controller
             $assets = Asset::find(Input::get('bulk_edit'));
             //print_r($assets);
 
+            $form_array = array();
+            $form_array['reason']= Input::get('reason');
+            $form_array['disposal_methods']= Input::get('disposal_methods');
+            $form_array['requested_by']= User::find(Input::get('requested_by'));
+            $form_array['budget_holder']= User::find(Input::get('budget_holder'));
+            $form_array['country_director']= User::find(Input::get('country_director'));
+
+
+            $status_id = Statuslabel::where('name', 'Disposed')->first()->id;
+            $dispose_asset = new DisposedAsset();
 
             foreach ($assets as $asset) {
                 //echo '<li>'.$asset;
-                $update_array['deleted_at'] = date('Y-m-d H:i:s');
+                //$update_array['deleted_at'] = date('Y-m-d H:i:s'); delete later in the end
+
+                $this->saveDisposedAssets($asset, $dispose_asset, $form_array);
+
+                $update_array['status_id'] = $status_id;
                 $update_array['assigned_to'] = null;
 
                 if (DB::table('assets')
@@ -1718,129 +1733,27 @@ class AssetsController extends Controller
                     $logaction->user_id = Auth::user()->id;
                     $log = $logaction->logaction('dispose in progress');
                 }
+                if ($asset->eol_date()){
+                    $form_array['eol']= $asset->eol_date();
+                }
+                else{
+                    $form_array['eol']= 'Null';
+                }
             }
             \Debugbar::disable();
 
-            $customfields = CustomField::get();
-            $response = new StreamedResponse(function () use ($customfields, $assets) {
+            $snipeSettings = Setting::getSettings();
 
-                // Open output stream
-                $handle = fopen('php://output', 'w');
-                /* Asset::with('assigneduser', 'assetloc', 'defaultLoc', 'assigneduser.userloc', 'model', 'supplier', 'assetstatus', 'model.manufacturer')->orderBy('created_at', 'DESC')->chunk(500, function ($asset) use ($handle, $customfields) {
+            Excel::create('Asset Disposal form', function ($excel) use($snipeSettings, $assets, $form_array){
+                $excel->sheet('Disposal', function ($sheet) use($snipeSettings, $assets, $form_array){
+                    $sheet->loadview('reports.disposal_form')
+                        ->with('snipeSettings', $snipeSettings)
+                        ->with('form_array', $form_array)
+                        ->with('assets', $assets);
+                });
+            })->download('xls');
 
-                 });*/
-
-                $headers=[
-                    //trans('general.company'),
-                    trans('admin/reports/asset_register.country'),
-                    trans('admin/reports/asset_register.date_disposed'),
-                    trans('admin/reports/asset_register.category'),
-                    trans('admin/hardware/table.asset_tag'),
-                    trans('admin/hardware/form.issue_location'),
-
-
-                    trans('admin/hardware/form.manufacturer'),
-                    trans('admin/hardware/form.model'),
-                    trans('general.model_no'),
-                    trans('admin/reports/asset_register.description'),
-                    trans('admin/reports/asset_register.accessories'),
-                    trans('admin/hardware/table.assigned_to'),
-
-                    trans('admin/hardware/table.serial'),
-                    trans('admin/reports/asset_register.other_reference'),
-
-                    trans('admin/hardware/table.purchase_date'),
-                    //trans('admin/reports/asset_disposal.donor_approval'),
-                    trans('admin/reports/asset_register.price'),
-                    trans('admin/reports/asset_register.currency'),
-                    trans('admin/reports/asset_register.po_number'),
-                    trans('admin/reports/asset_register.purchase_location'),
-                    trans('admin/hardware/form.supplier'),
-                    trans('admin/reports/asset_register.warranty_end'),
-
-                    /*trans('admin/reports/asset_register.capital_non_capital'),
-                    trans('admin/reports/asset_register.sof'),
-                    trans('admin/reports/asset_register.cost_center'),
-                    trans('admin/reports/asset_register.project_code'),
-                    trans('admin/reports/asset_register.dea'),
-                    trans('admin/reports/asset_register.account_code'),
-                    trans('admin/reports/asset_register.award_end'),
-                    trans('admin/reports/asset_register.donor_name'),
-                    trans('admin/reports/asset_register.plan_after'),
-
-                    trans('admin/reports/asset_register.date_carried'),
-                    trans('admin/reports/asset_register.location_carried'),
-                    trans('admin/reports/asset_register.date_donated'),
-                    trans('admin/reports/asset_register.recipient_donation'),
-                    trans('admin/reports/asset_register.donation_cert'),
-                    trans('admin/reports/asset_register.reason_disposed'),
-                    trans('admin/reports/asset_register.disposal_cert'),
-
-                    trans('admin/reports/asset_register.current_asset'),*/
-
-                    //trans('general.notes'),
-                ];
-                fputcsv($handle, $headers);
-
-                foreach ($assets as $asset) {
-
-                    $values = [
-
-                        //($asset->company) ? $asset->company->name : '', dont need this for now
-                        ($asset->defaultloc) ? $asset->defaultLoc->country : '',
-                        '',
-                        ($asset->asset_type) ? $asset->asset_type : '',
-                        $asset->asset_tag,
-                        ($asset->defaultloc) ? $asset->defaultloc->name : '',
-                        ($asset->model->manufacturer) ? $asset->model->manufacturer->name : '',
-                        ($asset->model) ? $asset->model->name : '',
-                        ($asset->model->model_number) ? $asset->model->model_number : '',
-                        ($asset->model->category_id) ? e($asset->model->category->name . "," . $asset->model->name) : '',
-
-                        'NULL',//accessories
-                        ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
-                        ($asset->serial) ? $asset->serial : '',
-                        'NULL',
-
-                        ($asset->purchase_date) ? e($asset->purchase_date) : '',
-                        ($asset->purchase_cost > 0) ? Helper::formatCurrencyOutput($asset->purchase_cost) : '',
-                        ($asset->defaultloc) ? Setting::first()->default_currency : '',
-                        ($asset->_snipeit_po_number) ? e($asset->_snipeit_po_number) : '',
-                        ($asset->supplier) ? e($asset->supplier->city) : '',
-
-                        //TODO find a better reusable method for customfields
-                        ($asset->supplier) ? e($asset->supplier->name) : '',
-                        ($asset->warranty_months) ? e($asset->warranty_months) : 'NULL',
-
-                        'Null',
-
-                        /*($asset->_snipeit_sof) ? e($asset->_snipeit_sof) : '',
-                        ($asset->_snipeit_cost_centre) ? e($asset->_snipeit_cost_centre) : '',
-                        ($asset->_snipeit_project_code) ? e($asset->_snipeit_project_code) : '',
-                        ($asset->_snipeit_dea) ? e($asset->_snipeit_dea) : '',
-                        ($asset->_snipeit_account_code) ? e($asset->_snipeit_account_code) : '',
-                        ($asset->_snipeit_award_end_date) ? e($asset->_snipeit_award_end_date) : '',
-                        ($asset->_snipeit_donor_name) ? e($asset->_snipeit_donor_name) : '',
-                        ($asset->_snipeit_plan_after_award_ends) ? e($asset->_snipeit_plan_after_award_ends) : '',*/
-
-                        /*($asset->assigneduser && $asset->assigneduser->userloc!='') ?
-                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),
-                        ($asset->assigneduser && $asset->assigneduser->userloc!='') ?
-                            e($asset->assigneduser->userloc->name) : ( ($asset->defaultLoc!='') ? e($asset->defaultLoc->name) : ''),*/
-                        //($asset->notes) ? e($asset->notes) : '',
-                    ];
-                    fputcsv($handle, $values);
-                }
-                // Close the output stream
-                fclose($handle);
-            }, 200, [
-                'Content-Type' => 'text/csv',
-                'Content-Disposition' => 'attachment; filename="SCI-asset-disposal-'.date('Y-m-d-his').'.csv"',
-            ]);
-
-            return $response;
-
-            // return redirect()->to("hardware")->with('success', trans('admin/hardware/message.dispose.initiated'));
+            return redirect()->to("hardware")->with('success', trans('admin/hardware/message.dispose.initiated'));
         }
         else {
             return redirect()->to("hardware")->with('info', trans('admin/hardware/message.delete.nothing_updated'));
@@ -1853,6 +1766,21 @@ class AssetsController extends Controller
     }
 
     /**
+     * saves disposed assets in disposed assets table for the records
+     */
+    public function saveDisposedAssets($asset , $dispose_asset , $form_array){
+        $dispose_asset->asset_id = $asset->id;
+        $dispose_asset->asset_tag = $asset->asset_tag;
+        $dispose_asset->reason_for_dispose = $form_array['reason'];
+        $dispose_asset->means = $form_array['disposal_methods'];
+        $dispose_asset->requestor = $form_array['requested_by']->username;
+        $dispose_asset->location_id = $form_array['requested_by']->location_id;
+        $dispose_asset->budget_holder = $form_array['budget_holder']->username;
+        $dispose_asset->country_director = $form_array['country_director']->username;
+        $dispose_asset->save();
+    }
+
+    /**
      * test Excel plugin
      */
     public function testExcel(){
@@ -1861,7 +1789,8 @@ class AssetsController extends Controller
         $snipeSettings = Setting::getSettings();
         $user = User::find(44);
         $asset_user = User::find(90);
-        $assets = Asset::find(34);
+        $assets = Asset::where('assigned_to', $user->id)->get(); //TODO why doesn't relations work here
+        //$assets = Asset::find(34);
 
         Excel::create('Disposal form', function ($excel) use($snipeSettings, $user, $assets){
             $excel->sheet('Disposal', function ($sheet) use($snipeSettings, $user, $assets){

@@ -166,13 +166,15 @@ class Asset extends Depreciable
                     $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
                     $m->subject(trans('mail.Confirm_asset_delivery'));
                 });
+                if ($manager){
+                    \Mail::send('emails.manager-approve', $data, function ($m) use ($manager) {
+                        //\Debugbar::addMessage($user->email, 'send');
+                        $m->to($manager->email, $manager->first_name . ' ' . $manager->last_name);
+                        $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
+                        $m->subject(trans('mail.Approve_asset_delivery'));
+                    });
+                }
 
-                \Mail::send('emails.manager-approve', $data, function ($m) use ($manager) {
-                    //\Debugbar::addMessage($user->email, 'send');
-                    $m->to($manager->email, $manager->first_name . ' ' . $manager->last_name);
-                    $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
-                    $m->subject(trans('mail.Approve_asset_delivery'));
-                });
             }
             catch (\Exception $e){
                 dd($e->getMessage());

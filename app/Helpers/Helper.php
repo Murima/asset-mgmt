@@ -690,6 +690,7 @@ class Helper
      * @return String
      */
     public static function getCategoryName($prefix){
+        $prefix = strtoupper($prefix);
         $categoryName = array(
             'CMP'      => 'Computer',
             'BUI'      => 'Building',
@@ -698,11 +699,12 @@ class Helper
             'VEH'      => 'Vehicles',
             'GEN'      => 'Generator',
             'IT'       => 'Office IT Equipment',
+            'MED'      => 'Medical Equipment',
             'SAT'      => 'Satellite Comms',
             'TEL'      => 'Phone system',
             'OTH'      => 'Other',
         );
-        if ($name = $categoryName[$prefix]){
+        if (!empty($name = $categoryName[$prefix])){
             return $name;
         }
         else{
@@ -714,11 +716,12 @@ class Helper
      * Get Country code from country name
      */
     public static function getCountryCode($country_name){
+        $country_name = ucwords(strtolower($country_name));
         $code = array(
             'Somalia'  => 'SO',
             'Unknown'  => 'Unknown',
         );
-        if ($_code = $code[$country_name]){
+        if (!empty($_code = $code[$country_name])){
             return $_code;
         }
         else {
