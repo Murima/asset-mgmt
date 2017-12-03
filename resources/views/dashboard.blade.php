@@ -180,7 +180,7 @@
         </div>
 
         <!-- this will be for the piechart-->
-        {{--<div class="col-md-6">
+        <div class="col-md-6">
             <div class="box box-default">
                 <div class="box-header with-border">
                     <h3 class="box-title">{{ trans('general.assets') }}</h3>
@@ -206,7 +206,7 @@
                 </div>
             </div>
             <!-- /.box -->
-        </div>--}}
+        </div>
     @endif
 
 
@@ -223,7 +223,7 @@
 
 
         $.get('{{  route('api.statuslabels.assets') }}', function (data) {
-            console.log(data);
+            //console.log(data);
             var myPieChart = new Chart(ctx,{
 
                 type: 'doughnut',
@@ -265,19 +265,19 @@
         });
 
 
-       /* var pieCategoryCanvas = $("#categoryPieChart").get(0).getContext("2d");
+        var pieCategoryCanvas = $("#categoryPieChart").get(0).getContext("2d");
         var catPieChart = new Chart(pieCategoryCanvas);
         var ctx1 = document.getElementById("categoryPieChart");
 
 
         $.get('', function (data) {
-            console.log(data);
+            console.log("pie data",data);
             var myPieChart = new Chart(ctx1, {
                 type: 'pie',
                 data: data,
                 options: options
             });
-        });*/
+        });
 
 
     </script>

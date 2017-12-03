@@ -155,44 +155,44 @@ class AuthServiceProvider extends ServiceProvider
         # Consumables
         # -----------------------------------------
         $gate->define('consumables.view', function ($user) {
-            if (($user->hasAccess('consumables.view')) || ($user->hasAccess('admin'))) {
+            if (($user->hasAccess('consumables.view')) ) {
                 return true;
             }
         });
 
         $gate->define('consumables.create', function ($user) {
-            if (($user->hasAccess('consumables.create')) || ($user->hasAccess('admin'))) {
+            if (($user->hasAccess('consumables.create')) ) {
                 return true;
             }
         });
 
         $gate->define('consumables.edit', function ($user) {
-            if (($user->hasAccess('consumables.edit')) || ($user->hasAccess('admin'))) {
+            if (($user->hasAccess('consumables.edit')) ) {
                 return true;
             }
         });
 
         $gate->define('consumables.delete', function ($user) {
-            if (($user->hasAccess('consumables.delete')) || ($user->hasAccess('admin'))) {
+            if (($user->hasAccess('consumables.delete')) ) {
                 return true;
             }
         });
 
         $gate->define('consumables.checkout', function ($user) {
-            if (($user->hasAccess('consumables.checkout')) || ($user->hasAccess('admin'))) {
+            if (($user->hasAccess('consumables.checkout')) ) {
                 return true;
             }
         });
 
         $gate->define('consumables.checkin', function ($user) {
-            if (($user->hasAccess('consumables.checkin')) || ($user->hasAccess('admin'))) {
+            if (($user->hasAccess('consumables.checkin')) ) {
                 return true;
             }
         });
 
         // Checks for some level of management
         $gate->define('consumables.manage', function ($user) {
-            if (($user->hasAccess('consumables.checkin')) || ($user->hasAccess('consumables.edit')) || ($user->hasAccess('consumables.delete')) || ($user->hasAccess('consumables.checkout')) || ($user->hasAccess('admin'))) {
+            if (($user->hasAccess('consumables.checkin')) || ($user->hasAccess('consumables.edit')) || ($user->hasAccess('consumables.delete')) || ($user->hasAccess('consumables.checkout')) ) {
                 return true;
             }
         });
@@ -279,13 +279,13 @@ class AuthServiceProvider extends ServiceProvider
         # Licenses
         # -----------------------------------------
         $gate->define('licenses.view', function ($user) {
-            if (($user->hasAccess('licenses.view')) || ($user->hasAccess('admin'))) {
+            if (($user->hasAccess('licenses.view')) ) {
                 return true;
             }
         });
 
         $gate->define('licenses.create', function ($user) {
-            if (($user->hasAccess('licenses.create')) || ($user->hasAccess('admin'))) {
+            if (($user->hasAccess('licenses.create')) ) {
                 return true;
             }
         });
