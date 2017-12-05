@@ -729,6 +729,37 @@ class Helper
         }
     }
 
+    /**
+     * get region or company full name from abbreviation
+     * @param $company_prefix
+     */
+    public static function getCompanyName($company_abbrev){
+
+        $prefix = strtoupper($company_abbrev);
+        $locationName = array(
+            'NRB'      => 'Nairobi',
+            'HAR'      => 'Hargeisa',
+            'MOG'      => 'Mogadishu',
+            'GAL'      => 'Galkaio',
+            'GAR'      => 'Gardo',
+            'ABU'      => 'Abudwak',
+            'BDO'      => 'Baidoa',
+            'BOR'      => 'Borama',
+            'BEL'      => 'Beledweyne',
+            'BOS'      => 'Bossaso',
+            'BUR'      => 'Burao',
+            'DHO'      => 'Dhobley',
+            'GRW'      => 'Garowe',
+            'OTH'      => 'Other',
+        );
+        if (!empty($name = $locationName[$prefix])){
+            return $name;
+        }
+        else{
+            return $locationName['OTH'];
+        }
+    }
+
 
 
 

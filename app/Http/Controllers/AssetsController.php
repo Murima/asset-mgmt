@@ -2110,12 +2110,23 @@ class AssetsController extends Controller
     /**
      * get next Asset tag when model_id is provided
      */
-    public function getAssetTag($model_id){
+    public function getAssetTag($model_id=null , $company_id=null){
         $category_prefix = AssetModel::find($model_id)->category->category_prefix;
 
-        Debugbar::addMessage('in getAssetTag', $category_prefix);
+        if ($company_id == "undefined"){
+            $company_id = null;
+        }
+        if ($company_id){
+            $company_abbrev = Company::find($company_id)->name;
+        }
+        elseif(\Auth::user()->isSuperUser()){
+            $company_abbrev = 'NRB';
+        }
+        else{
+            $company_abbrev = \Auth::user()->company->name;
+        }
 
-        return Asset::autoincrement_asset($category_prefix);
+        return Asset::autoincrement_asset($category_prefix, $company_abbrev);
     }
 
 }

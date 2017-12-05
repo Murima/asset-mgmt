@@ -390,7 +390,7 @@ Route::group(
             Route::get('{modelID}/restore', [ 'as' => 'restore/model', 'uses' => 'AssetModelsController@getRestore', 'middleware' => ['authorize:superuser'] ]);
             Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);            Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);
 
-            Route::get('{modelId}/cat_prefix', ['as' => 'cat_prefix/model','uses' => 'AssetsController@getAssetTag']);//get category
+            Route::get('{modelId}/{company_id}/cat_prefix', ['as' => 'cat_prefix/model','uses' => 'AssetsController@getAssetTag']);
 
             Route::get('/', [ 'as' => 'models', 'uses' => 'AssetModelsController@getIndex' ,'middleware' => ['authorize:superuser'] ]);
         });
@@ -702,7 +702,7 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
 
 
         # Manufacturers
-        Route::group([ 'prefix' => 'manufacturers' ], function () {
+        Route::group([ 'prefix' => 'manufacturers' ,'middleware'=>'authorize:admin'], function () {
 
             Route::get('/', [ 'as' => 'manufacturers', 'uses' => 'ManufacturersController@getIndex' ]);
             Route::get(

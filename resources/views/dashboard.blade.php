@@ -62,7 +62,7 @@
             </div>
         </div><!-- ./col -->
 
-        <div class="col-lg-3 col-xs-6">
+        {{--<div class="col-lg-3 col-xs-6">
         @can('consumables.view')
 
             <!-- small box -->
@@ -75,6 +75,26 @@
                         <i class="fa fa-tint"></i>
                     </div>
                     <a href="{{ route('consumables') }}" class="small-box-footer">{{ trans('general.moreinfo') }} <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            @endcan
+
+        </div><!-- ./col -->--}}
+
+        <div class="col-lg-3 col-xs-6">
+        @can('assets.view')
+
+            <!-- small box -->
+                <div class="small-box bg-teal">
+                    <div class="inner">
+                        <h3> {{ \App\Models\Asset::getTotalCost() }}</h3>
+                        <p>{{ trans('general.total_usd') }}</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-money"></i>
+                    </div>
+                    @can('assets.view')
+                        <a href="{{ route('hardware') }}" class="small-box-footer">{{ trans('general.moreinfo') }} <i class="fa fa-arrow-circle-right"></i></a>
+                    @endcan
                 </div>
             @endcan
 
