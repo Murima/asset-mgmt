@@ -523,14 +523,18 @@ class Asset extends Depreciable
      * Get auto-increment asset tag
      * @param $model_id
      */
-    public static function autoincrement_asset($category_prefix=null)
+    public static function autoincrement_asset($category_prefix=null, $company_abbrev=null)
     {
         $settings = \App\Models\Setting::getSettings();
+
+        $company_name = Helper::getCompanyName($company_abbrev);
+        $location_id = Location::where('name', $company_name)->first()->id;
 
         if ($settings->auto_increment_assets == '1') {
             $temp_asset_tag = \DB::table('assets')
                 ->where('physical', '=', '1')
                 ->where('asset_type', '=', $category_prefix)
+                ->where('rtd_location_id', '=', $location_id)
                 ->max('asset_tag');
 
             Debugbar::addMessage('cat_prefix', $category_prefix);
@@ -540,14 +544,12 @@ class Asset extends Depreciable
             $asset_tag = preg_replace('/^0*/', '', $asset_tag_digits);
 
 
-
-
             Debugbar::addMessage('number',$asset_tag);
 
             if ($settings->zerofill_count > 0) {
 
                 $category_prefix.="-";
-                return $settings->auto_increment_prefix.$category_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);
+                return $settings->auto_increment_prefix.$company_abbrev."-".$category_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);
 
 
             }
@@ -590,6 +592,21 @@ class Asset extends Depreciable
 
     }
 
+    /**
+     * get total cost of assets by company
+     */
+    public static function getTotalCost(){
+
+        if(\Auth::user()->isSuperUser()){
+            return number_format(Asset::sum('purchase_cost'), 2);
+        }
+        else{
+            $user_location = \Auth::user()->location_id;
+
+           $total = Asset::where("rtd_location_id", $user_location)->sum('purchase_cost');
+           return number_format($total,2);
+        }
+    }
 
     /**
      * -----------------------------------------------

@@ -168,6 +168,7 @@ return [
     'submit'				=> 'Submit',
     'tag_prefix'            => 'Tag prefix',
     'total_assets'			=> 'total assets',
+    'total_usd' 			=> 'total assets : USD',
     'total_licenses'		=> 'total licenses',
     'total_accessories'		=> 'total accessories',
     'total_consumables'		=> 'total consumables',

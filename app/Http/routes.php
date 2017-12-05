@@ -390,7 +390,7 @@ Route::group(
             Route::get('{modelID}/restore', [ 'as' => 'restore/model', 'uses' => 'AssetModelsController@getRestore', 'middleware' => ['authorize:superuser'] ]);
             Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);            Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);
 
-            Route::get('{modelId}/cat_prefix', ['as' => 'cat_prefix/model','uses' => 'AssetsController@getAssetTag']);//get category
+            Route::get('{modelId}/{company_id}/cat_prefix', ['as' => 'cat_prefix/model','uses' => 'AssetsController@getAssetTag']);
 
             Route::get('/', [ 'as' => 'models', 'uses' => 'AssetModelsController@getIndex' ,'middleware' => ['authorize:superuser'] ]);
         });
@@ -645,12 +645,12 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
     });
 
     # Admin Settings Routes (for categories, maufactureres, etc)
-    Route::group([ 'prefix' => 'settings', 'middleware'=>'authorize:superuser'], function () {
+    Route::group([ 'prefix' => 'settings'], function () {
 
 
 
         # Settings
-        Route::group([ 'prefix' => 'app' ], function () {
+        Route::group([ 'prefix' => 'app' , 'middleware'=>'authorize:superuser'], function () {
 
             Route::post('purge', ['as' => 'purge', 'uses' => 'SettingsController@postPurge']);
             Route::get('edit', [ 'as' => 'edit/settings', 'uses' => 'SettingsController@getEdit' ]);
@@ -688,7 +688,7 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
         });
 
         # Companies
-        Route::group([ 'prefix' => 'companies' ], function () {
+        Route::group([ 'prefix' => 'companies' , 'middleware'=>'authorize:superuser'], function () {
 
             Route::get('{companyId}/edit', ['as' => 'update/company', 'uses' => 'CompaniesController@getEdit']);
             Route::get('create', ['as' => 'create/company', 'uses' => 'CompaniesController@getCreate']);
@@ -702,7 +702,7 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
 
 
         # Manufacturers
-        Route::group([ 'prefix' => 'manufacturers' ], function () {
+        Route::group([ 'prefix' => 'manufacturers' ,'middleware'=>'authorize:admin'], function () {
 
             Route::get('/', [ 'as' => 'manufacturers', 'uses' => 'ManufacturersController@getIndex' ]);
             Route::get(
@@ -726,7 +726,7 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
         });
 
         # Suppliers
-        Route::group([ 'prefix' => 'suppliers' ], function () {
+        Route::group([ 'prefix' => 'suppliers' ,'middleware'=>'authorize:admin'], function () {
 
             Route::get('/', [ 'as' => 'suppliers', 'uses' => 'SuppliersController@getIndex' ]);
             Route::get('create', [ 'as' => 'create/supplier', 'uses' => 'SuppliersController@getCreate' ]);
@@ -744,7 +744,7 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
         });
 
         # Categories
-        Route::group([ 'prefix' => 'categories' ], function () {
+        Route::group([ 'prefix' => 'categories' , 'middleware'=>'authorize:superuser'], function () {
 
             Route::get('create', [ 'as' => 'create/category', 'uses' => 'CategoriesController@getCreate' ]);
             Route::post('create', 'CategoriesController@postCreate');
@@ -765,7 +765,7 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
         });
 
         # Depreciations
-        Route::group([ 'prefix' => 'depreciations' ], function () {
+        Route::group([ 'prefix' => 'depreciations' , 'middleware'=>'authorize:superuser'], function () {
 
             Route::get('/', [ 'as' => 'depreciations', 'uses' => 'DepreciationsController@getIndex' ]);
             Route::get(
@@ -785,7 +785,7 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
         });
 
         # Locations
-        Route::group([ 'prefix' => 'locations' ], function () {
+        Route::group([ 'prefix' => 'locations' , 'middleware'=>'authorize:superuser'], function () {
 
             Route::get('/', [ 'as' => 'locations', 'uses' => 'LocationsController@getIndex' ]);
             Route::get('create', [ 'as' => 'create/location', 'uses' => 'LocationsController@getCreate' ]);
@@ -803,7 +803,7 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
         });
 
         # Status Labels
-        Route::group([ 'prefix' => 'statuslabels' ], function () {
+        Route::group([ 'prefix' => 'statuslabels' , 'middleware'=>'authorize:superuser'], function () {
 
             Route::get('/', [ 'as' => 'statuslabels', 'uses' => 'StatuslabelsController@getIndex' ]);
             Route::get('create', [ 'as' => 'create/statuslabel', 'uses' => 'StatuslabelsController@getCreate' ]);

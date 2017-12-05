@@ -224,17 +224,17 @@
           </div>
           @endif
 
-          <!-- language -->
-          <div class="form-group {{ $errors->has('locale') ? 'has-error' : '' }}">
+          <!-- language // Dont nee this now-->
+          {{--<div class="form-group {{ $errors->has('locale') ? 'has-error' : '' }}">
             <label class="col-md-3 control-label" for="locale">{{ trans('general.language') }}</label>
             <div class="col-md-8">
               {!! Form::locales('locale', Input::old('locale', $user->locale), 'select2') !!}
               {!! $errors->first('locale', '<span class="alert-msg">:message</span>') !!}
             </div>
-          </div>
+          </div>--}}
 
-          <!-- Employee Number -->
-          <div class="form-group {{ $errors->has('employee_num') ? 'has-error' : '' }}">
+          <!-- Employee Number //Dont need this now-->
+          {{--<div class="form-group {{ $errors->has('employee_num') ? 'has-error' : '' }}">
             <label class="col-md-3 control-label" for="employee_num">{{ trans('admin/users/table.employee_num') }}</label>
             <div class="col-md-8">
               <input
@@ -246,7 +246,7 @@
               />
               {!! $errors->first('employee_num', '<span class="alert-msg">:message</span>') !!}
             </div>
-          </div>
+          </div>--}}
 
 
           <!-- Jobtitle -->

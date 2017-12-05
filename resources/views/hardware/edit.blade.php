@@ -11,6 +11,7 @@
 
 @section('inputFields')
 
+    {{--company displays as region--}}
     @include ('partials.forms.edit.company')
 
     <!-- Asset Tag -->
@@ -211,13 +212,16 @@
 
         function fetchCustomFields() {
             var modelid=$('#model_select_id').val();
+            var company_id = $('#company_id').val();
+
+
             if(modelid=='') {
                 $('#custom_fields_content').html("");
             } else {
                 $.get("{{config('app.url') }}/hardware/models/"+modelid+"/custom_fields",{_token: "{{ csrf_token() }}"},function (data) {
                     $('#custom_fields_content').html(data);
                 });
-                $.get("{{config('app.url') }}/hardware/models/"+modelid+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
+                $.get("{{config('app.url') }}/hardware/models/"+modelid+"/"+company_id+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
                     $("#asset_tag").val(tag);
                 });
 

@@ -436,16 +436,16 @@
                                     @lang('general.ready_to_deploy')</a>
                             </li>
                             <li{!! (Request::query('status') == 'Pending' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Pending') }}">@lang('general.pending')</a></li>
-{{--
-                            <li{!! (Request::query('status') == 'Undeployable' ? ' class="active"' : '') !!} ><a href="{{ URL::to('hardware?status=Undeployable') }}">@lang('general.undeployable')</a></li>
---}}
+                            {{--
+                                                        <li{!! (Request::query('status') == 'Undeployable' ? ' class="active"' : '') !!} ><a href="{{ URL::to('hardware?status=Undeployable') }}">@lang('general.undeployable')</a></li>
+                            --}}
                             <li{!! (Request::query('status') == 'Archived' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Archived') }}">@lang('admin/hardware/general.archived')</a></li>
-{{-- Dont need this for now
-                            <li{!! (Request::query('status') == 'Requestable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Requestable') }}">@lang('admin/hardware/general.requestable')</a></li>
---}}
-{{--
-                            <li{!! (Request::query('status') == 'Disposable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Disposable') }}">@lang('admin/hardware/general.disposable')</a></li>
---}}
+                            {{-- Dont need this for now
+                                                        <li{!! (Request::query('status') == 'Requestable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Requestable') }}">@lang('admin/hardware/general.requestable')</a></li>
+                            --}}
+                            {{--
+                                                        <li{!! (Request::query('status') == 'Disposable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Disposable') }}">@lang('admin/hardware/general.disposable')</a></li>
+                            --}}
 
                             <li class="divider">&nbsp;</li>
                             @can('assets.checkout')
@@ -455,6 +455,18 @@
                                 </li>
                             @endcan
 
+                            @can('admin')
+                                <li {!! (Request::is('admin/settings/suppliers*') ? ' class="active"' : '') !!}>
+                                    <a href="{{ URL::to('admin/settings/suppliers') }}">
+                                        {{ trans('general.suppliers') }}
+                                    </a>
+                                </li>
+                                <li {!! (Request::is('admin/settings/manufacturers*') ? ' class="active"' : '') !!}>
+                                    <a href="{{ URL::to('admin/settings/manufacturers') }}">
+                                        {{ trans('general.manufacturers') }}
+                                    </a>
+                                </li>
+                            @endcan
                             @can('superuser')
                                 <li{!! (Request::is('hardware/models*') ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware/models') }}">@lang('general.asset_models')</a></li>
                                 <li><a href="{{ URL::to('admin/settings/categories') }}" {!! (Request::is('admin/settings/categories*') ? ' class="active"' : '') !!} >@lang('general.categories')</a></li>
@@ -462,12 +474,12 @@
                             @can('assets.create')
                                 <li{!! (Request::query('Deleted') ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Deleted') }}">@lang('general.deleted')</a></li>
                                 <li><a href="{{ URL::to('admin/asset_maintenances') }}"  >@lang('general.asset_maintenances') </a></li>
-{{--
-                                <li><a href="{{ URL::to('hardware/import') }}">@lang('general.import') </a></li>
---}}
-{{-- //TODO deliberate functionality import history
-                                <li><a href="{{ URL::to('hardware/history') }}">@lang('general.import-history') </a></li>
---}}
+                                {{--
+                                                                <li><a href="{{ URL::to('hardware/import') }}">@lang('general.import') </a></li>
+                                --}}
+                                {{-- //TODO deliberate functionality import history
+                                                                <li><a href="{{ URL::to('hardware/history') }}">@lang('general.import-history') </a></li>
+                                --}}
                             @endcan
                         </ul>
                     </li>
@@ -562,14 +574,14 @@
                     @endcan
                 @endcan
 
-               {{-- @can('assets.view.requestable') //TODO deliberate functionality requestable
-                    <li{!! (Request::is('account/requestable-assets') ? ' class="active"' : '') !!}>
-                        <a href="{{ route('requestable-assets') }}">
-                            <i class="fa fa-laptop"></i>
-                            <span>{{ trans('admin/hardware/general.requestable') }}</span>
-                        </a>
-                    </li>
-                @endcan--}}
+                {{-- @can('assets.view.requestable') //TODO deliberate functionality requestable
+                     <li{!! (Request::is('account/requestable-assets') ? ' class="active"' : '') !!}>
+                         <a href="{{ route('requestable-assets') }}">
+                             <i class="fa fa-laptop"></i>
+                             <span>{{ trans('admin/hardware/general.requestable') }}</span>
+                         </a>
+                     </li>
+                 @endcan--}}
             </ul>
         </section>
         <!-- /.sidebar -->

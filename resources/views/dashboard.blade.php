@@ -62,7 +62,7 @@
             </div>
         </div><!-- ./col -->
 
-        <div class="col-lg-3 col-xs-6">
+        {{--<div class="col-lg-3 col-xs-6">
         @can('consumables.view')
 
             <!-- small box -->
@@ -75,6 +75,26 @@
                         <i class="fa fa-tint"></i>
                     </div>
                     <a href="{{ route('consumables') }}" class="small-box-footer">{{ trans('general.moreinfo') }} <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            @endcan
+
+        </div><!-- ./col -->--}}
+
+        <div class="col-lg-3 col-xs-6">
+        @can('assets.view')
+
+            <!-- small box -->
+                <div class="small-box bg-teal">
+                    <div class="inner">
+                        <h3> {{ \App\Models\Asset::getTotalCost() }}</h3>
+                        <p>{{ trans('general.total_usd') }}</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-money"></i>
+                    </div>
+                    @can('assets.view')
+                        <a href="{{ route('hardware') }}" class="small-box-footer">{{ trans('general.moreinfo') }} <i class="fa fa-arrow-circle-right"></i></a>
+                    @endcan
                 </div>
             @endcan
 
@@ -180,7 +200,7 @@
         </div>
 
         <!-- this will be for the piechart-->
-        {{--<div class="col-md-6">
+        <div class="col-md-6">
             <div class="box box-default">
                 <div class="box-header with-border">
                     <h3 class="box-title">{{ trans('general.assets') }}</h3>
@@ -206,7 +226,7 @@
                 </div>
             </div>
             <!-- /.box -->
-        </div>--}}
+        </div>
     @endif
 
 
@@ -223,7 +243,7 @@
 
 
         $.get('{{  route('api.statuslabels.assets') }}', function (data) {
-            console.log(data);
+            //console.log(data);
             var myPieChart = new Chart(ctx,{
 
                 type: 'doughnut',
@@ -265,19 +285,19 @@
         });
 
 
-       /* var pieCategoryCanvas = $("#categoryPieChart").get(0).getContext("2d");
+        var pieCategoryCanvas = $("#categoryPieChart").get(0).getContext("2d");
         var catPieChart = new Chart(pieCategoryCanvas);
         var ctx1 = document.getElementById("categoryPieChart");
 
 
         $.get('', function (data) {
-            console.log(data);
+            console.log("pie data",data);
             var myPieChart = new Chart(ctx1, {
                 type: 'pie',
                 data: data,
                 options: options
             });
-        });*/
+        });
 
 
     </script>
