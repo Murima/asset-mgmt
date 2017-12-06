@@ -203,7 +203,7 @@ class ReportsController extends Controller
                         'NULL', //Other reference number
 
                         $asset->asset_tag,
-                        'NULL', //Finance aggresso
+                        //'NULL', //Finance aggresso
 
                         ($asset->purchase_date) ? e($asset->purchase_date) : '',
                         ($asset->_snipeit_po_number) ? e($asset->_snipeit_po_number) :'',
