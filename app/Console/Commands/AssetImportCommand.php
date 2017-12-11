@@ -739,7 +739,7 @@ class AssetImportCommand extends Command
             } else {
                 $asset = new Asset();
                 //$asset->name = e($user_asset_asset_name);
-                if ($user_asset_purchase_date!='') {
+                if (!empty($user_asset_purchase_date)) {
                     $asset->purchase_date = $user_asset_purchase_date;
                 } else {
                     $asset->purchase_date = null;
@@ -771,12 +771,6 @@ class AssetImportCommand extends Command
                     $asset->warranty_months = e($asset_warranty);
                 } else {
                     $asset->warranty_months = '';
-                }
-
-                if ($user_asset_purchase_date!='') {
-                    $asset->purchase_date = $user_asset_purchase_date;
-                } else {
-                    $asset->purchase_date = null;
                 }
 
                 if (e($account_code)!='') {
@@ -829,6 +823,12 @@ class AssetImportCommand extends Command
                     $asset->_snipeit_donor_name = $donor_name;
                 } else {
                     $asset->_snipeit_donor_name = null;
+                }
+
+                if (e($donor_name)!=''){
+                    $asset->_snipeit_po_number = $asset_po_no;
+                } else {
+                    $asset->_snipeit_po_number = null;
                 }
 
                 if (e($capital_non_capital)!=''){
