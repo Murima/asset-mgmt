@@ -15,6 +15,7 @@ use App\Models\Manufacturer;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use DateTime;
 
 use Illuminate\Console\Command;
 use League\Csv\Reader;
@@ -193,8 +194,12 @@ class AssetImportCommand extends Command
             }
 
             //Purchase date
+            $user_asset_purchase_date = null;
             if (array_key_exists('15', $row)) {
-                $user_asset_purchase_date = date("Y-m-d 00:00:01", strtotime($row[15]));
+                $date_obj = date_create_from_format('d/m/Y', $row[15]);
+                if (!empty($date_obj)){
+                    $user_asset_purchase_date = $date_obj->format('d-m-Y');
+                }
             } else {
                 $user_asset_purchase_date = '';
             }
@@ -242,9 +247,24 @@ class AssetImportCommand extends Command
             }
 
             //Warranty period
+
             if (array_key_exists('22', $row)) {
-                //$asset_warranty = trim($row[22]);//TODO subtract from purchase date
-                $asset_warranty=12;
+                $asset_warranty = trim($row[22]);
+                if (!empty($user_asset_purchase_date && $asset_warranty)){
+                    $date_obj = date_create_from_format('d/m/Y', $asset_warranty);
+                    if (!empty($date_obj)){
+                        $asset_warranty = $date_obj->format('d-m-Y');
+                    }
+
+                    $d1 = new DateTime($asset_warranty);
+                    $d2 = new DateTime($user_asset_purchase_date);
+
+                    $df= date_diff($d1,$d2);
+                    $asset_warranty = $df->m + ($df->y * 12);
+                }
+                else {
+                    $asset_warranty=12;
+                }
             } else {
                 $asset_warranty = '';
             }
@@ -317,7 +337,7 @@ class AssetImportCommand extends Command
             $user_asset_notes='Imported from asset register';
             $user_username='';
             $tag_array = explode("-", $user_asset_tag);
-            $user_asset_company_name= $tag_array[1];  //TODO use COMPANY to AUTOgenerate tags later
+            $user_asset_company_name= $tag_array[1];
 
             //$user_asset_name = explode(" ", trim($asset_description));
 
@@ -614,7 +634,7 @@ class AssetImportCommand extends Command
                     if ($user_asset_purchase_date!='') {
                         $asset->purchase_date = $user_asset_purchase_date;
                     } else {
-                        $asset->purchase_date = null;
+                        $asset->purchase_date = "";
                     }
                     if ($user_asset_purchase_cost!='') {
                         $asset->purchase_cost = Helper::ParseFloat(e($user_asset_purchase_cost));
@@ -643,12 +663,6 @@ class AssetImportCommand extends Command
                         $asset->warranty_months = e($asset_warranty);
                     } else {
                         $asset->warranty_months = '';
-                    }
-
-                    if ($user_asset_purchase_date!='') {
-                        $asset->purchase_date = $user_asset_purchase_date;
-                    } else {
-                        $asset->purchase_date = null;
                     }
 
                     if (e($account_code)!='') {
@@ -701,6 +715,11 @@ class AssetImportCommand extends Command
                         $asset->_snipeit_donor_name = $donor_name;
                     } else {
                         $asset->_snipeit_donor_name = null;
+                    }
+                    if (e($donor_name)!=''){
+                        $asset->_snipeit_po_number = $asset_po_no;
+                    } else {
+                        $asset->_snipeit_po_number = null;
                     }
 
                     if (e($capital_non_capital)!=''){
@@ -839,6 +858,7 @@ class AssetImportCommand extends Command
                     $_accessory->name = $accessory;
                     $_accessory->asset_id = $asset->id;
                     $_accessory->category_id = $category->id;
+                    $_accessory->company_name = $company->id;
                     $_accessory->save();
                 }
             }
