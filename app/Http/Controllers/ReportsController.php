@@ -209,7 +209,7 @@ class ReportsController extends Controller
                         ($asset->_snipeit_po_number) ? e($asset->_snipeit_po_number) :'',
                         ($asset->purchase_cost > 0) ? Helper::formatCurrencyOutput($asset->purchase_cost) : '',
                         ($asset->defaultloc) ? Setting::first()->default_currency: '',
-                        '',
+                        '', //in USD
                         ($asset->supplier) ? e($asset->supplier->city): '',
                         ($asset->supplier) ? e($asset->supplier->name): '',
                         ($asset->warranty_months) ? e($asset->warranty_months): 'NULL',

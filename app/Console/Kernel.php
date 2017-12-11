@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
         Commands\Purge::class,
         Commands\LdapSync::class,
         Commands\AssetImportCommand::class,
+        Commands\ChangeAssetDisposable::class,
     ];
 
     /**
@@ -40,5 +41,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('snipeit:expiring-alerts')->daily();
         $schedule->command('snipeit:backup')->weekly();
         $schedule->command('backup:clean')->daily();
+        $schedule->command('asset:disposable')->daily();
     }
 }

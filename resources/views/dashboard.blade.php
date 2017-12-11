@@ -258,6 +258,7 @@
                     //get specific label by index
                     var status = myPieChart.data.labels[clickedElementindex];
                     console.log(status);
+
                     switch (status){ //TODO this is so wrong im cryiiiing
                         case "Ready to Allocate":
                             window.location= "{{ URL::to('hardware?status=RTD') }}";
@@ -271,14 +272,11 @@
                         case "Disposable":
                             window.location= "{{ URL::to('hardware?status=Disposable') }}";
                             break;
-                        case "Deployed":
+                        case "Allocated":
                             window.location= "{{ URL::to('hardware?status=Deployed') }}";
                             break;
 
                     }
-                    // window.location= "http://localhost/asset-mgmt/asset-mgmt/public/hardware?status="+label;
-                    /* var url = "http://example.com/?label=" + activePoints[0].label + "&value=" + activePoints[0].value;
-                     alert(url);*/
                 }
             );
             // document.getElementById('my-doughnut-legend').innerHTML = myPieChart.generateLegend();

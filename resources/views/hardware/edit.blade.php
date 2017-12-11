@@ -243,15 +243,6 @@
                 console.log('not checked');
             }
         });
-        /*$(function() {//checkbox to show accessories
-
-            if($("#accessories").is(':checked')){
-                console.log('checked');
-                displayCheckboxes();
-            }
-            else {
-            }
-        });*/
 
         $(function() {
             user_add($(".status_id option:selected").val());
