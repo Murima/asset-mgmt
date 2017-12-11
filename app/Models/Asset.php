@@ -484,7 +484,7 @@ class Asset extends Depreciable
      * Get this assets accessories
      * @return array
      */
-    public function getAccessories(){ //TODO show all accessories
+    public function getAccessories(){ //TODO show all accessories for asset
         $acc_array= array();
         foreach ($this->accessories as $accessory){
             return $acc_array = $accessory->name;
@@ -493,7 +493,7 @@ class Asset extends Depreciable
     }
 
     public function months_until_eol()
-    {//TODO use daily jobs or commands to change asset to disposable
+    {
 
         $today = date("Y-m-d");
         $d1    = new DateTime($today);
@@ -603,8 +603,8 @@ class Asset extends Depreciable
         else{
             $user_location = \Auth::user()->location_id;
 
-           $total = Asset::where("rtd_location_id", $user_location)->sum('purchase_cost');
-           return number_format($total,2);
+            $total = Asset::where("rtd_location_id", $user_location)->sum('purchase_cost');
+            return number_format($total,2);
         }
     }
 
