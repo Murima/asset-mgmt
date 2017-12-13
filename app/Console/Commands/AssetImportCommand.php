@@ -194,7 +194,7 @@ class AssetImportCommand extends Command
             }
 
             //Purchase date
-            $user_asset_purchase_date = null;
+            $user_asset_purchase_date ='';
             if (array_key_exists('15', $row)) {
                 $date_obj = date_create_from_format('d/m/Y', $row[15]);
                 if (!empty($date_obj)){
@@ -212,7 +212,7 @@ class AssetImportCommand extends Command
             }
 
             //Purchase price
-            if (array_key_exists('17', $row)) {
+            if (array_key_exists('17', $row)) {//TODO convert to USD
                 $user_asset_purchase_cost = trim($row[17]);
             } else {
                 $user_asset_purchase_cost = '';
@@ -716,7 +716,7 @@ class AssetImportCommand extends Command
                     } else {
                         $asset->_snipeit_donor_name = null;
                     }
-                    if (e($donor_name)!=''){
+                    if (e($asset_po_no)!=''){
                         $asset->_snipeit_po_number = $asset_po_no;
                     } else {
                         $asset->_snipeit_po_number = null;

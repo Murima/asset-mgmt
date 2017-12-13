@@ -740,7 +740,7 @@ class Helper
             'NRB'      => 'Nairobi',
             'HAR'      => 'Hargeisa',
             'MOG'      => 'Mogadishu',
-            'GAL'      => 'Galkaio',
+            'GAL'      => 'Galkaio', //TODO proper spelling
             'GAR'      => 'Gardo',
             'ABU'      => 'Abudwak',
             'BDO'      => 'Baidoa',

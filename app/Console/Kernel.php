@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
         Commands\LdapSync::class,
         Commands\AssetImportCommand::class,
         Commands\ChangeAssetDisposable::class,
+        Commands\ImportUserCommand::class,
     ];
 
     /**
