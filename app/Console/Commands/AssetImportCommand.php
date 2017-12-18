@@ -194,11 +194,11 @@ class AssetImportCommand extends Command
             }
 
             //Purchase date
-            $user_asset_purchase_date ='';
             if (array_key_exists('15', $row)) {
+                $user_asset_purchase_date =$row[15];
                 $date_obj = date_create_from_format('d/m/Y', $row[15]);
                 if (!empty($date_obj)){
-                    $user_asset_purchase_date = $date_obj->format('d-m-Y');
+                    $user_asset_purchase_date = $date_obj->format('Y-m-d');
                 }
             } else {
                 $user_asset_purchase_date = '';
@@ -251,16 +251,22 @@ class AssetImportCommand extends Command
             if (array_key_exists('22', $row)) {
                 $asset_warranty = trim($row[22]);
                 if (!empty($user_asset_purchase_date && $asset_warranty)){
-                    $date_obj = date_create_from_format('d/m/Y', $asset_warranty);
-                    if (!empty($date_obj)){
-                        $asset_warranty = $date_obj->format('d-m-Y');
+
+                    if (date_create_from_format('d/m/Y', $asset_warranty)!==FALSE){
+                        $date_obj = date_create_from_format('d/m/Y', $asset_warranty);
+                        if (!empty($date_obj)){
+                            $asset_warranty = $date_obj->format('d-m-Y');
+                        }
+                        $d1 = new DateTime($asset_warranty);
+                        $d2 = new DateTime($user_asset_purchase_date);
+
+                        $df= date_diff($d1,$d2);
+                        $asset_warranty = $df->m + ($df->y * 12);
+                    }
+                    else{
+                        $asset_warranty="";
                     }
 
-                    $d1 = new DateTime($asset_warranty);
-                    $d2 = new DateTime($user_asset_purchase_date);
-
-                    $df= date_diff($d1,$d2);
-                    $asset_warranty = $df->m + ($df->y * 12);
                 }
                 else {
                     $asset_warranty=12;
@@ -365,7 +371,7 @@ class AssetImportCommand extends Command
 
             }
             else if($asset_assigned_to=='Not Allocated'){
-                $this->comment('No user data provided - skipping user creation, just adding asset');
+                $this->comment('No user data provided - adding asset');
                 $first_name = '';
                 $last_name = '';
             }
@@ -409,14 +415,14 @@ class AssetImportCommand extends Command
 
             $this->comment('------------- Action Summary ----------------');
 
-            if ($user_username!='') {
+            if (!empty($user_username)) {
                 if ($user = User::MatchEmailOrUsername($user_username, $user_email)
                     ->whereNotNull('username')->first()) {
                     $this->comment('User '.$user_username.' already exists');
                 } else {
                     $this->comment('User '.$user_username.' does not exist');
 
-                    //users handled by local AD
+                    //users handled by local AD or import
                     /*$user = new \App\Models\User;
                     $password  = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 20);
 
@@ -437,7 +443,7 @@ class AssetImportCommand extends Command
 
                 }
             } else {
-                $user = new User;
+                $user = null;
             }
 
             // Check for the location match and create it if it doesn't exist
@@ -546,28 +552,28 @@ class AssetImportCommand extends Command
             }
 
             // Check for the asset model match and create it if it doesn't exist
-           /* if ($asset_category_prefix == 'CMP'){
-                $model_name = $category->name." ".e($asset_model)."/".e($user_asset_modelno);
-            }*/
-           /* elseif ($asset_category_prefix == 'IT'){
-                $model_name = $asset_description;
-            }
-            else{
-                $model_name = $category->name." ".e($asset_model)."/".e($user_asset_modelno);
-            }*/
+            /* if ($asset_category_prefix == 'CMP'){
+                 $model_name = $category->name." ".e($asset_model)."/".e($user_asset_modelno);
+             }*/
+            /* elseif ($asset_category_prefix == 'IT'){
+                 $model_name = $asset_description;
+             }
+             else{
+                 $model_name = $category->name." ".e($asset_model)."/".e($user_asset_modelno);
+             }*/
 
-           if ($search){
-               $asset_model = AssetModel::where('name', $model_name )
-                   ->where('model_number', e($user_asset_modelno))
-                   ->where('category_id', $category->id)
-                   ->where('manufacturer_id', $manufacturer->id)->first();
-           }
-           else {
-               $asset_model = AssetModel::where('name', $model_name )
-                   ->where('model_number', e($user_asset_modelno))
-                   ->where('category_id', $category->id)->first();
-                   //->where('manufacturer_id', $manufacturer->id)->first();
-           }
+            if ($search){
+                $asset_model = AssetModel::where('name', $model_name )
+                    ->where('model_number', e($user_asset_modelno))
+                    ->where('category_id', $category->id)
+                    ->where('manufacturer_id', $manufacturer->id)->first();
+            }
+            else {
+                $asset_model = AssetModel::where('name', $model_name )
+                    ->where('model_number', e($user_asset_modelno))
+                    ->where('category_id', $category->id)->first();
+                //->where('manufacturer_id', $manufacturer->id)->first();
+            }
             if ($asset_model) {
                 $this->comment('The Asset Model '.$model_name.' with model number '.$user_asset_modelno.' already exists');
 
@@ -637,7 +643,8 @@ class AssetImportCommand extends Command
                         $asset->purchase_date = "";
                     }
                     if ($user_asset_purchase_cost!='') {
-                        $asset->purchase_cost = Helper::ParseFloat(e($user_asset_purchase_cost));
+                        //$asset->purchase_cost = Helper::ParseFloat(e($user_asset_purchase_cost)); use USD cost
+                        $asset->purchase_cost = Helper::parseFloat(e($asset_cost_usd));
                     } else {
                         $asset->purchase_cost = 0.00;
                     }
@@ -645,8 +652,11 @@ class AssetImportCommand extends Command
                     $asset->asset_tag = e($user_asset_tag);
                     $asset->model_id = $asset_model->id;
                     if ($user){
-                        $asset->assigned_to = $user->id;
-                        $asset->status_id =$this->allocated_id;
+                        if ($user->id){
+                            $asset->assigned_to = $user->id;
+                            $asset->status_id =$this->allocated_id;
+                        }
+
                     }
                     else{
                         $asset->assigned_to = null;

@@ -830,7 +830,7 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
     Route::resource('custom_fields', 'CustomFieldsController');
 
     # User Management
-    Route::group([ 'prefix' => 'users', 'middleware' => ['web','auth','authorize:users.view']], function () {
+    Route::group([ 'prefix' => 'users', 'middleware' => ['web','auth','authorize:admin']], function () {
 
         Route::get('ldap', ['as' => 'ldap/user', 'uses' => 'UsersController@getLDAP', 'middleware' => ['authorize:users.edit'] ]);
         Route::post('ldap', 'UsersController@postLDAP');

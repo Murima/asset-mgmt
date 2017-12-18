@@ -701,7 +701,7 @@ class Helper
             'IT'       => 'Office IT Equipment',
             'MED'      => 'Medical Equipment',
             'SAT'      => 'Satellite Comms',
-            'TEL'      => 'Phone system',
+            'TEL'      => 'Telephone',
             'OTH'      => 'Other',
         );
         if (!empty($name = $categoryName[$prefix])){

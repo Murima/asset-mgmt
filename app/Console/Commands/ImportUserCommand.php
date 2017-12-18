@@ -133,9 +133,11 @@ class ImportUserCommand extends Command
             }
 
             if ($location){
-                $company_abbrev = array_search($location, $locationName);
+                $company_abbrev = array_search($location->name, $locationName);
                 if ($company_abbrev){
-                    $company_id = Company::where("name", $company_abbrev)->first()->id;
+                    if ($company = Company::where("name", $company_abbrev)->first()){
+                        $company_id = $company->id;
+                    }
                 }
             }
             else{
