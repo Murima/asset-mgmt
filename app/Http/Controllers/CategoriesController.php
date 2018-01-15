@@ -535,9 +535,40 @@ class CategoriesController extends Controller
     }
 
     /**
-     * get dataset for assets by category
+     * Show a count of assets by category
      */
     public function getAssetCountByCategory(){
 
+        //TODO make this get category prefix automatically
+        $categoryPref = ['CMP', 'IT', 'CMS', 'ELE', 'SAT', 'TEL', 'VEH'];
+        $categoryNames = [];
+        $colors = [];
+        $points = [];
+
+        foreach ($categoryPref as $prefix){
+            $catModel = Category::where('category_prefix', $prefix)->first();
+
+            if (!empty($catModel)){
+                $categoryNames[] = $catModel->name;
+                $points[]= Company::scopeCompanyables($catModel->assets())->count();
+
+            }
+            else{
+
+            }
+
+        }
+
+        $colors = Helper::chartBackgroundColors();
+        $result=[
+            "labels" => $categoryNames,
+            "datasets" => [[
+                "data" => $points,
+                "backgroundColor" => $colors,
+                "hoverBackgroundColor" => $colors
+            ]]
+        ];
+        return $result;
     }
+
 }

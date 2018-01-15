@@ -38,11 +38,11 @@ class AssetRequest extends Request
             'status'          => 'integer',
             'asset_tag'       => 'required',
             'purchase_cost'   => 'numeric',
-            /*"_snipeit_account_code"   => "digits:4",
+            "_snipeit_account_code"   => "digits:4",
             "_snipeit_cost_centre"    => "digits:5",
             "_snipeit_project_code"   => "digits:7",
             "_snipeit_dea"            => "digits:6",
-            "_snipeit_sof"            => "digits:8",*/
+            "_snipeit_sof"            => "digits:8",
 
         ];
 

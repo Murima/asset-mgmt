@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Company;
+use Illuminate\Support\Facades\Auth;
 use Input;
 use Lang;
 use App\Models\Statuslabel;
@@ -11,7 +14,6 @@ use App\Models\Setting;
 use Str;
 use View;
 use App\Helpers\Helper;
-use Auth;
 use Illuminate\Http\Request;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,24 +48,25 @@ class   StatuslabelsController extends Controller
     public function getAssetCountByStatuslabel()
     {
         $colors = [];
+        $statuslabels = '';
 
         $statuslabels = Statuslabel::with('assets')->get();
+
         $labels=[];
         $points=[];
         $colors=[];
         foreach ($statuslabels as $statuslabel) {
             if ($statuslabel->assets->count() > 0) {
                 $labels[]=$statuslabel->name;
-                $points[]=$statuslabel->assets()->whereNull('assigned_to')->count();
+                $points[]=Company::scopeCompanyables($statuslabel->assets()->whereNull('assigned_to'))->count(); //not assigned
                 if ($statuslabel->color!='') {
                     $colors[]=$statuslabel->color;
                 }
             }
 
-
         }
         $labels[]='Deployed';
-        $points[]=Asset::whereNotNull('assigned_to')->count();
+        $points[]=Company::scopeCompanyables(Asset::whereNotNull('assigned_to'))->count(); //assigned
 
         $colors_array = array_merge($colors, Helper::chartColors());
 
@@ -77,7 +80,6 @@ class   StatuslabelsController extends Controller
         ];
         return $result;
     }
-
 
     /**
      * Statuslabel create.
@@ -261,7 +263,7 @@ class   StatuslabelsController extends Controller
     public function getDatatable()
     {
         $statuslabels = Statuslabel::select(array('id','name','deployable','pending','archived','color','show_in_nav'))
-        ->whereNull('deleted_at');
+            ->whereNull('deleted_at');
 
         if (Input::has('search')) {
             $statuslabels = $statuslabels->TextSearch(e(Input::get('search')));

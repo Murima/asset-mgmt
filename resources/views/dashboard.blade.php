@@ -170,63 +170,65 @@
         </div>
     </div>
     @elseif (Auth::user()->hasAccess('admin'))
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ trans('general.assets') }}</h3>
 
-        <div class="col-md-6">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{ trans('general.assets') }}</h3>
-
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="chart-responsive">
-                                <canvas id="statusPieChart" height="250"></canvas>
-                            </div>
-                            <!-- ./chart-responsive -->
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
                         </div>
-
-                        <!-- /.col -->
                     </div>
-                    <!-- /.row -->
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="chart-responsive">
+                                    <canvas id="statusPieChart" height="250"></canvas>
+                                </div>
+                                <!-- ./chart-responsive -->
+                            </div>
+
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
                 </div>
+                <!-- /.box -->
             </div>
-            <!-- /.box -->
+
+            <!-- For the piechart-->
+            <div class="col-md-6 float-right">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ trans('general.assets_by_cat') }}</h3>
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="chart-responsive">
+                                    <canvas id="categoryPieChart" height="250"></canvas>
+                                </div>
+                                <!-- ./chart-responsive -->
+                            </div>
+
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
         </div>
 
-        <!-- this will be for the piechart-->
-        <div class="col-md-6">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{ trans('general.assets_by_cat') }}</h3>
-
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="chart-responsive">
-                                <canvas id="categoryPieChart" height="250"></canvas>
-                            </div>
-                            <!-- ./chart-responsive -->
-                        </div>
-
-                        <!-- /.col -->
-                    </div>
-                    <!-- /.row -->
-                </div>
-            </div>
-            <!-- /.box -->
-        </div>
     @endif
 
 
@@ -243,7 +245,7 @@
 
 
         $.get('{{  route('api.statuslabels.assets') }}', function (data) {
-            //console.log(data);
+            console.log('status',data);
             var myPieChart = new Chart(ctx,{
 
                 type: 'doughnut',
@@ -288,12 +290,12 @@
         var ctx1 = document.getElementById("categoryPieChart");
 
 
-        $.get('', function (data) {
-            console.log("pie data",data);
+        $.get('{{route('api.categories.assetscategory')}}', function (data) {
+            console.log("pie category",data);
             var myPieChart = new Chart(ctx1, {
                 type: 'pie',
                 data: data,
-                options: options
+                options: pieOptions
             });
         });
 

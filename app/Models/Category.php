@@ -112,6 +112,7 @@ class Category extends SnipeModel
 
     }
 
+
     /**
      * scopeRequiresAcceptance
      *

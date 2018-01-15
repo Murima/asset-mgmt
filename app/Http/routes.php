@@ -39,6 +39,7 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
         Route::get('list', [ 'as' => 'api.statuslabels.list', 'uses' => 'StatuslabelsController@getDatatable' ]);
         Route::get('assets', [ 'as' => 'api.statuslabels.assets', 'uses' => 'StatuslabelsController@getAssetCountByStatuslabel' ]);
 
+
     });
 
     /*---Accessories API---*/
@@ -159,6 +160,7 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
             [ 'as' => 'api.categories.component.view', 'uses' => 'CategoriesController@getDataViewComponent' ]
         );
         Route::get('assets', [ 'as' => 'api.categories.assets', 'uses' => 'CategoriesController@getAssetCountByCategory' ]);
+        Route::get('assetsByCategory', [ 'as' => 'api.categories.assetscategory', 'uses' => 'CategoriesController@getAssetCountByCategory' ]);
 
     });
 
