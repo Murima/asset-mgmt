@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body">
                 <div class="dynamic-form-row">
-                    <div class="col-md-4 col-xs-12"><label for="modal-name">{{ trans('general.name') }}:
+                    <div class="col-md-4 col-xs-12"><label for="modal-name">{{ trans('admin/models/table.name') }}:
                         </label></div>
                     <div class="col-md-8 col-xs-12 required"><input type='text' id='modal-name' class="form-control"></div>
                 </div>

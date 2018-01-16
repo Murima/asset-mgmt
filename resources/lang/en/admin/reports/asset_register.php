@@ -2,6 +2,7 @@
 
 return array(
     'assigned_to'   => 'Assigned To',
+    'asset_tag'     => 'Asset Tag',
     'description'   => 'Asset Description',
     'category'      => 'Category',
     'country'       => 'Country',

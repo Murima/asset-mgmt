@@ -6,7 +6,7 @@ return array(
     'created_at' 			=> 'Created at',
     'eol'	 				=> 'EOL',
     'modelnumber'   		=> 'Model No.',
-    'name'      			=> 'Asset Model Name',
+    'name'      			=> 'Model Name', //model creation page
     'numassets' 			=> 'Assets',
     'title'					=> 'Asset Models',
     'update'				=> 'Update Asset Model',

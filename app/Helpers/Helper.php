@@ -203,7 +203,7 @@ class Helper
      */
     public static function statusLabelList()
     {
-        $statuslabel_list = array('' => trans('general.select_statuslabel')) + Statuslabel::orderBy('name', 'asc')
+        $statuslabel_list = array('' => trans('general.select_statuslabel')) + Statuslabel::orderBy('created_at', 'asc')
                 ->pluck('name', 'id')->toArray();
         return $statuslabel_list;
     }
