@@ -91,7 +91,8 @@ class Asset extends Depreciable
     /**
      * Checkout asset
      */
-    public function checkOutToUser($user, $admin, $checkout_at = null, $expected_checkin = null, $note = null, $name = null, $manager)
+    public function checkOutToUser($user, $admin, $checkout_at = null, $expected_checkin = null,
+                                   $note = null, $name = null, $manager, $issue_location)
     {
         if (!$user) {
             return false;
@@ -102,6 +103,7 @@ class Asset extends Depreciable
         }
 
         $this->last_checkout = $checkout_at;
+        $this->iss_location_id = $issue_location;
 
         $this->assigneduser()->associate($user);
 

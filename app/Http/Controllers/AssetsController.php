@@ -572,9 +572,12 @@ class AssetsController extends Controller
 
         //Get the drowpdown of managers then pass it to the checkout view
         $manager_list = Helper::managerList();
+        $location_list = Helper::locationsList();
+
 
         return View::make('hardware/checkout', compact('asset'))
             ->with('users_list', $users_list)
+            ->with('location_list', $location_list)
             ->with('manager_list', $manager_list);
 
     }
@@ -590,6 +593,7 @@ class AssetsController extends Controller
     public function postCheckout(AssetCheckoutRequest $request, $assetId)
     {
 
+        $issue_location= '';
         // Check if the asset exists
         if (!$asset = Asset::find($assetId)) {
             return redirect()->to('hardware')->with('error', trans('admin/hardware/message.does_not_exist'));
@@ -622,8 +626,11 @@ class AssetsController extends Controller
             $expected_checkin = '';
         }
 
+        if (Input::has('iss_location_id')){
+            $issue_location = e(Input::get('iss_location_id'));
+        }
 
-        if ($asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager)) {
+        if ($asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager, $issue_location)) {
             // Redirect to the new asset page
             return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
         }
