@@ -20,6 +20,7 @@ return [
     'asset_tag'				=> 'Asset Tag',
     'assets_available'		=> 'assets available',
     'assets'				=> 'Assets',
+    'asset_by_status'        => 'Assets by status',
     'assets_by_cat'			=> 'Assets by Category',
     'avatar_delete'         => 'Delete Avatar',
     'avatar_upload'         => 'Upload Avatar',

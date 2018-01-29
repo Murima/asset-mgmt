@@ -134,19 +134,6 @@
         </div>
     </div>
 
-    <!-- Issuing location -->
-    <div class="form-group">
-        <label for="iss_location_id" class="col-md-3 control-label">{{ trans('admin/hardware/form.issue_location') }}</label>
-        <div class="col-md-7 col-sm-11">
-            {{ Form::select('iss_location_id', $location_list , Input::old('iss_location_id', $item->rtd_location_id), array('class'=>'select2', 'style'=>'width:100%','id'=>'iss_location_select')) }}
-
-        </div>
-
-        <div class="col-md-7 col-sm-11 col-md-offset-3">
-            <p class="help-block">{{ trans('admin/hardware/form.help_issue_location') }}</p>
-        </div>
-    </div>
-
     {{--
         @include ('partials.forms.edit.requestable', ['requestable_text' => trans('admin/hardware/general.requestable')])
     --}}
@@ -192,13 +179,10 @@
                 $('#dynamic_checkbox').empty(); //empty the dynamic div
 
                 $.get("{{config('app.url') }}/api/accessories/"+modelid+"/general",{_token: "{{ csrf_token() }}"},function (data) {
-                    console.log(data);
                     data = $.parseJSON(data);
 
-                    //console.log(data);
                     $.each(data, function (key,value)
                     {
-                        console.log(value.id);
                         let CH=$("<input/>",{type:"checkbox", name:"accessories[]",value:value.id });
                         let LB=$("<lable/>",{text:value.accessory_name });
                         $('#dynamic_checkbox').append(CH).append(LB).append('<br>');
@@ -214,6 +198,9 @@
             var modelid=$('#model_select_id').val();
             var company_id = $('#company_id').val();
 
+            $('#checkbox').hide();
+            $('#acc_label').show();
+            $('#acc_label').attr('checked', false);
 
             if(modelid=='') {
                 $('#custom_fields_content').html("");
@@ -236,7 +223,6 @@
 
         $('#accessories').change(function(){
             if( $('#accessories').is(":checked") ){
-                console.log('checked');
                 displayCheckboxes();
             }
             else{
