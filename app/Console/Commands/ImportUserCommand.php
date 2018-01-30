@@ -154,12 +154,13 @@ class ImportUserCommand extends Command
 
             if ($user = User::MatchEmailOrUsername($user_username, e($email))
                 ->whereNotNull('username')->first()) {
-                $user->password = "assets123";
+                $user->password = bcrypt("assets123");
                 $user->location_id = $location_id;
                 $user->jobtitle = $position;
                 $user->company_id = $company_id;
                 $user->activated = 1;
                 $user->employee_num = $emp_no;
+                $user->ldap_import = 0; 
                 $user->notes = $user_notes;
                 $user->save();
             }

@@ -558,7 +558,6 @@ class AssetsController extends Controller
     public function getCheckout($assetId)
     {
         //TODO add accessories to checkout
-        //TODO add issuing locaiton to checkout
         // Check if the asset exists
         if (is_null($asset = Asset::find(e($assetId)))) {
             // Redirect to the asset management page with error
@@ -566,6 +565,9 @@ class AssetsController extends Controller
         } elseif (!Company::isCurrentUserHasAccess($asset)) {
             return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
         }
+
+        //Get accessories
+        $accessories = Asset::find($assetId)->accessories;
 
         // Get the dropdown of users and then pass it to the checkout view
         $users_list = Helper::usersList();
@@ -578,7 +580,8 @@ class AssetsController extends Controller
         return View::make('hardware/checkout', compact('asset'))
             ->with('users_list', $users_list)
             ->with('location_list', $location_list)
-            ->with('manager_list', $manager_list);
+            ->with('manager_list', $manager_list)
+            ->with('accessories', $accessories);
 
     }
 

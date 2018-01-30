@@ -479,7 +479,7 @@ class Asset extends Depreciable
 
     public function accessories()
     {
-        return $this->hasMany('\App\Models\Accessory', 'asset_id');
+        return $this->hasMany('\App\Models\Accessory');
     }
 
     /**
@@ -631,7 +631,7 @@ class Asset extends Depreciable
     }
 
     /**
-     * Query builder scope for pending assets
+     * Query builder scope for assets pending response
      *
      * @param  Illuminate\Database\Query\Builder $query Query builder instance
      *
@@ -643,9 +643,8 @@ class Asset extends Depreciable
 
         return $query->whereHas('assetstatus', function ($query) {
 
-            $query->where('deployable', '=', 0)
-                ->where('pending', '=', 1)
-                ->where('archived', '=', 0);
+            $query->where('accepted', '=', 'pending')
+                ->orWhere('approved', '=', 'pending');
         });
     }
 

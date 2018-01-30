@@ -869,6 +869,7 @@ class AssetImportCommand extends Command
                     $_accessory->asset_id = $asset->id;
                     $_accessory->category_id = $category->id;
                     $_accessory->company_id = $company->id;
+                    $_accessory->qty = 1;
                     $_accessory->save();
                 }
             }
