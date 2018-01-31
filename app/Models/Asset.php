@@ -4,6 +4,7 @@ namespace App\Models;
 use App\Helpers\Helper;
 use App\Http\Controllers\AssetModelsController;
 use App\Http\Traits\UniqueUndeletedTrait;
+use App\Jobs\EmailApprover;
 use App\Jobs\EmailAssignedUser;
 use App\Models\Actionlog;
 use App\Models\Company;
@@ -160,11 +161,11 @@ class Asset extends Depreciable
         $data['note'] = $note;
         $data['item_serial'] = $this->serial;
         $data['require_acceptance'] = $this->requireAcceptance();
+        $data['assigned_to'] = $this->assigned_to;
 
         if ((($this->requireAcceptance()=='1')  || ($this->getEula())) && (!config('app.lock_passwords'))) {
             try{
 
-                //TODO use a better method instead of calling this facade twice
                 /*\Mail::send('emails.accept-asset', $data, function ($m) use ($user) {
                     //\Debugbar::addMessage($user->email, 'send');
                     $m->to($user->email, $user->first_name . ' ' . $user->last_name);
@@ -174,13 +175,15 @@ class Asset extends Depreciable
                 $this->dispatch(new EmailAssignedUser($user, $data));
 
                 if ($manager){
-                    /*$data['first_name'] = $manager->firstname;
-                    \Mail::send('emails.manager-approve', $data, function ($m) use ($manager) {
+                    $data['first_name'] = $manager->firstname;
+                    /*\Mail::send('emails.manager-approve', $data, function ($m) use ($manager) {
                         //\Debugbar::addMessage($user->email, 'send');
                         $m->to($manager->email, $manager->first_name . ' ' . $manager->last_name);
                         $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
                         $m->subject(trans('mail.Approve_asset_delivery'));
                     });*/
+                    $this->dispatch(new EmailApprover($manager, $data));
+
                 }
 
             }
