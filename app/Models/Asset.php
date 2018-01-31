@@ -4,6 +4,7 @@ namespace App\Models;
 use App\Helpers\Helper;
 use App\Http\Controllers\AssetModelsController;
 use App\Http\Traits\UniqueUndeletedTrait;
+use App\Jobs\EmailAssignedUser;
 use App\Models\Actionlog;
 use App\Models\Company;
 use App\Models\Location;
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Log;
 use Parsedown;
 use Watson\Validating\ValidatingTrait;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 /**
  * Model for Assets.
@@ -30,6 +32,7 @@ class Asset extends Depreciable
     use Loggable;
     use SoftDeletes;
     use Requestable;
+    use DispatchesJobs;
 
     /**
      * The database table used by the model.
@@ -162,19 +165,22 @@ class Asset extends Depreciable
             try{
 
                 //TODO use a better method instead of calling this facade twice
-                \Mail::send('emails.accept-asset', $data, function ($m) use ($user) {
+                /*\Mail::send('emails.accept-asset', $data, function ($m) use ($user) {
                     //\Debugbar::addMessage($user->email, 'send');
                     $m->to($user->email, $user->first_name . ' ' . $user->last_name);
                     $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
                     $m->subject(trans('mail.Confirm_asset_delivery'));
-                });
+                });*/
+                $this->dispatch(new EmailAssignedUser($user, $data));
+
                 if ($manager){
+                    /*$data['first_name'] = $manager->firstname;
                     \Mail::send('emails.manager-approve', $data, function ($m) use ($manager) {
                         //\Debugbar::addMessage($user->email, 'send');
                         $m->to($manager->email, $manager->first_name . ' ' . $manager->last_name);
                         $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
                         $m->subject(trans('mail.Approve_asset_delivery'));
-                    });
+                    });*/
                 }
 
             }
