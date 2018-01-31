@@ -84,7 +84,7 @@
                         </div>
 
 
-                    <!-- Checkout/Checkin Date -->
+                        <!-- Checkout/Checkin Date -->
                         <div class="form-group {{ $errors->has('checkout_at') ? 'error' : '' }}">
 
                             {{ Form::label('name', trans('admin/hardware/form.checkout_date'), array('class' => 'col-md-3 control-label')) }}
@@ -126,7 +126,20 @@
                             </div>
                         </div>
 
-                    <!-- Note -->
+                        <!-- Accessories -->
+                        <div id="checkbox"  class="form-group">
+                            <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.accessories') }}
+                            </label>
+                            <div id="accessories_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
+                                @foreach($accessories as $accessory)
+                                    <label for="accessories"><input  type="checkbox" name="accessories[]" id="{{$accessory}}" value="{{$accessory}}" >{{$accessory->name}}</label>
+s
+                                @endforeach
+                            </div>
+
+                        </div>
+
+                        <!-- Note -->
                         <div class="form-group {{ $errors->has('note') ? 'error' : '' }}">
 
                             {{ Form::label('note', trans('admin/hardware/form.notes'), array('class' => 'col-md-3 control-label')) }}
@@ -156,14 +169,14 @@
                                     <p class="text-yellow"><i class="fa fa-warning"></i> {{ trans('admin/categories/general.required_eula') }}</p>
                                 </div>
                             </div>
-                        @endif
+                    @endif
 
-                    </div>
+                </div>
                 <div class="box-footer">
                     <a class="btn btn-link" href="{{ URL::previous() }}"> {{ trans('button.cancel') }}</a>
                     <button type="submit" class="btn btn-success pull-right"><i class="fa fa-check icon-white"></i> {{ trans('general.checkout') }}</button>
                 </div>
-                  </div>
+            </div>
             </form>
         </div>
 
