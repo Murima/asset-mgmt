@@ -93,7 +93,7 @@ class AssetModelsController extends Controller
         }
 
         // Save the model data
-        $model->name                = e(Input::get('name'));
+        $model->name                = e(Input::get('specific_category')).' '.e(Input::get('name')).' '.e(Input::get('model_number'));
         $model->model_number             = e(Input::get('model_number'));
         $model->manufacturer_id     = e(Input::get('manufacturer_id'));
         $model->category_id         = e(Input::get('category_id'));
@@ -129,6 +129,7 @@ class AssetModelsController extends Controller
     }
 
     /**
+     * Automatic resource function
      * Validates and stores new Asset Model data created from the
      * modal form on the Asset Creation view.
      *
@@ -144,7 +145,7 @@ class AssetModelsController extends Controller
         $settings=Input::all();
         $settings['eol']= null;
 
-        $model->name=e(Input::get('name'));
+        $model->name=e(Input::get('specific_category')).' '.e(Input::get('name')).' '.e(Input::get('model_number'));
         $model->manufacturer_id = e(Input::get('manufacturer_id'));
         $model->category_id = e(Input::get('category_id'));
         $model->model_number = e(Input::get('model_number'));

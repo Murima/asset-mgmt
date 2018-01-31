@@ -130,7 +130,7 @@ class ReportsController extends Controller
                     trans('admin/hardware/form.issue_location'),
                     trans('admin/hardware/talble.asset_location'),
                     trans('admin/hardware/table.assigned_to'),
-                    trans('admin/reports/asset_register.assigned_date'),
+                    //trans('admin/reports/asset_register.assigned_date'),
 
                     trans('admin/reports/asset_register.description'),
                     trans('admin/reports/asset_register.accessories'),
@@ -139,6 +139,7 @@ class ReportsController extends Controller
                     trans('general.model_no'),
                     trans('admin/hardware/table.serial'),
                     trans('admin/reports/asset_register.other_reference'),
+                    trans('admin/hardware/form.tag'),
 
                     trans('admin/hardware/table.purchase_date'),
                     trans('admin/reports/asset_register.po_number'),
@@ -191,16 +192,18 @@ class ReportsController extends Controller
                         ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
                         //($asset->last_checkout!='') ? e($asset->last_checkout) : '',
 
+                        //description
                         ($asset->model->category_id) ? e($asset->model->category->name." ".$asset->model->name) : '',
                         //($asset->assigneduser) ? e($asset->assigneduser->id))
 
-                        ($accessories =$asset->getAccessories()),
+                        ($accessories =$asset->getAccessories()), //TODO get all accessories
                         //'NULL', //accessories
                         ($asset->model->manufacturer) ? $asset->model->manufacturer->name : '',
+                        //Asset model name
                         ($asset->model) ? $asset->model->name : '',
                         ($asset->model->model_number) ? $asset->model->model_number : '',
                         ($asset->serial) ? $asset->serial : '',
-                        'NULL', //Other reference number
+                        'NULL', //Other reference number //TODO add other ref numbers from custom fields
 
                         $asset->asset_tag,
                         //'NULL', //Finance aggresso
