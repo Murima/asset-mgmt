@@ -87,5 +87,5 @@
 			<p><strong><a href="{{ config('app.url') }}/account/accept-asset/{{ $data['log_id']  }}">{{ trans('mail.i_have_read') }}</a></strong></p>
 		@endif
 
-		<p>{{ $data['snipeSettings']->site_name }}</p>
+		<p>Asset Management</p>
 @stop
