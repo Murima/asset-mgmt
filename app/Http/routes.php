@@ -392,7 +392,7 @@ Route::group(
             Route::get('{modelID}/restore', [ 'as' => 'restore/model', 'uses' => 'AssetModelsController@getRestore', 'middleware' => ['authorize:superuser'] ]);
             Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);            Route::get('{modelId}/custom_fields', ['as' => 'custom_fields/model','uses' => 'AssetModelsController@getCustomFields']);
 
-            Route::get('{modelId}/{company_id}/cat_prefix', ['as' => 'cat_prefix/model','uses' => 'AssetsController@getAssetTag']);
+            Route::get('{modelId}/{company_id}/{tag_value}/cat_prefix', ['as' => 'cat_prefix/model','uses' => 'AssetsController@getAssetTag']);
 
             Route::get('/', [ 'as' => 'models', 'uses' => 'AssetModelsController@getIndex' ,'middleware' => ['authorize:superuser'] ]);
         });
