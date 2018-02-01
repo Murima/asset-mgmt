@@ -49,8 +49,13 @@ class   StatuslabelsController extends Controller
     {
         $colors = [];
         $statuslabels = '';
+        $except = array();
+
+        $except []= Statuslabel::where('name', 'Allocated')->first()->id;
+        $except []= Statuslabel::where('name', 'Disposed')->first()->id;
 
         $statuslabels = Statuslabel::with('assets')->get();
+        $statuslabels  = $statuslabels->except($except);
 
         $labels=[];
         $points=[];
