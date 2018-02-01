@@ -274,7 +274,7 @@
                         case "Disposable":
                             window.location= "{{ URL::to('hardware?status=Disposable') }}";
                             break;
-                        case "Allocated":
+                        case "Deployed":
                             window.location= "{{ URL::to('hardware?status=Deployed') }}";
                             break;
 

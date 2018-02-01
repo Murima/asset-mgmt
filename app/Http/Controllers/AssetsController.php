@@ -633,6 +633,7 @@ class AssetsController extends Controller
             $issue_location = e(Input::get('iss_location_id'));
         }
 
+        //TODO change the code below its too slow
         if ($asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager, $issue_location)) {
             // Redirect to the new asset page
             return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
@@ -2120,21 +2121,30 @@ class AssetsController extends Controller
     /**
      * get next Asset tag when model_id is provided
      */
-    public function getAssetTag($model_id=null , $company_id=null){
-        $category_prefix = AssetModel::find($model_id)->category->category_prefix;
-
-        if ($company_id == "undefined"){
-            $company_id = null;
+    public function getAssetTag($model_id=null , $company_id=null, $tag_value=null){
+        if ($tag_value == 0 && \Auth::user()->isSuperUser()){
+            return null;
         }
-        if ($company_id){
-            $company_abbrev = Company::find($company_id)->name;
-        }
-        elseif(\Auth::user()->isSuperUser()){
-            $company_abbrev = 'NRB';
+        elseif($tag_value== 0 && \Request::is('*/edit')){
+            return null;
         }
         else{
-            $company_abbrev = \Auth::user()->company->name;
+            $category_prefix = AssetModel::find($model_id)->category->category_prefix;
+
+            if ($company_id == "undefined"){
+                $company_id = null;
+            }
+            if ($company_id){
+                $company_abbrev = Company::find($company_id)->name;
+            }
+            elseif(\Auth::user()->isSuperUser()){
+                $company_abbrev = 'NRB';
+            }
+            else{
+                $company_abbrev = \Auth::user()->company->name;
+            }
         }
+
 
         return Asset::autoincrement_asset($category_prefix, $company_abbrev);
     }

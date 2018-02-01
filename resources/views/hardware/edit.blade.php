@@ -197,6 +197,9 @@
         function fetchCustomFields() {
             var modelid=$('#model_select_id').val();
             var company_id = $('#company_id').val();
+            var asset_tag = $('#asset_tag').val();
+            var tag_value = 0;
+
 
             $('#checkbox').hide();
             $('#acc_label').show();
@@ -208,8 +211,16 @@
                 $.get("{{config('app.url') }}/hardware/models/"+modelid+"/custom_fields",{_token: "{{ csrf_token() }}"},function (data) {
                     $('#custom_fields_content').html(data);
                 });
-                $.get("{{config('app.url') }}/hardware/models/"+modelid+"/"+company_id+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
-                    $("#asset_tag").val(tag);
+                if (asset_tag=='') {
+                    tag_value = 1;
+                }
+                $.get("{{config('app.url') }}/hardware/models/"+modelid+"/"+company_id+"/"+tag_value+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
+                    if(tag === ""){
+                        //pass
+                    }
+                    else{
+                        $("#asset_tag").val(tag);
+                    }
                 });
 
                 //displayCheckboxes(modelid);
@@ -228,6 +239,10 @@
             else{
                 console.log('not checked');
             }
+        });
+
+        $('#company_id').change(function(){
+            $("#asset_tag").val('');
         });
 
         $(function() {
