@@ -103,9 +103,10 @@
     </div>
 
     <!-- recent activity -->
-    <div class="row">
-        <div class="col-md-9">
-            @if (Auth::user()->hasAccess('superuser'))
+    @if (Auth::user()->hasAccess('superuser'))
+
+        <div class="row">
+            <div class="col-md-9">
 
                 <div class="box">
                     <div class="box-header with-border">
@@ -140,35 +141,35 @@
                         </div><!-- /.row -->
                     </div><!-- ./box-body -->
                 </div><!-- /.box -->
-        </div>
-        <div class="col-md-3">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{ trans('general.assets') }}</h3>
-
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="chart-responsive">
-                                <canvas id="statusPieChart" height="150"></canvas>
-                            </div>
-                            <!-- ./chart-responsive -->
-                        </div>
-
-                        <!-- /.col -->
-                    </div>
-                    <!-- /.row -->
-                </div>
             </div>
-            <!-- /.box -->
+            <div class="col-md-3">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ trans('general.assets') }}</h3>
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="chart-responsive">
+                                    <canvas id="statusPieChart" height="150"></canvas>
+                                </div>
+                                <!-- ./chart-responsive -->
+                            </div>
+
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
         </div>
-    </div>
     @elseif (Auth::user()->hasAccess('admin'))
         <div class="row">
             <div class="col-md-6">
@@ -200,7 +201,7 @@
             </div>
 
             <!-- For the piechart-->
-            <div class="col-md-6 float-right">
+            <div class="col-md-6">
                 <div class="box box-default">
                     <div class="box-header with-border">
                         <h3 class="box-title">{{ trans('general.assets_by_cat') }}</h3>
@@ -261,7 +262,7 @@
                     var status = myPieChart.data.labels[clickedElementindex];
                     console.log(status);
 
-                    switch (status){ //TODO this is so wrong im cryiiiing
+                    switch (status){ //TODO make the status automatic usning static names for now
                         case "Ready to Allocate":
                             window.location= "{{ URL::to('hardware?status=RTD') }}";
                             break;
@@ -297,6 +298,35 @@
                 data: data,
                 options: pieOptions
             });
+
+            $("#categoryPieChart").click(
+                function(evt){
+                    var activePoints = myPieChart.getElementAtEvent(evt);
+                    var clickedElementindex = activePoints[0]["_index"];
+                    //get specific label by index
+                    var category = myPieChart.data.labels[clickedElementindex];
+                    console.log(category);
+
+                    switch (category){
+                        case "Computer":
+                            window.location= "{{ URL::to('hardware?category=computer') }}";
+                            break;
+                        case "In Stock":
+                            window.location= "{{ URL::to('hardware?status=Archived') }}";
+                            break;
+                        case "Damaged":
+                            window.location= "{{ URL::to('hardware?status=Damaged') }}";
+                            break;
+                        case "Disposable":
+                            window.location= "{{ URL::to('hardware?status=Disposable') }}";
+                            break;
+                        case "Deployed":
+                            window.location= "{{ URL::to('hardware?status=Deployed') }}";
+                            break;
+
+                    }
+                }
+            );
         });
 
 

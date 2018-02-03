@@ -415,6 +415,15 @@ class AssetsController extends Controller
             $asset->image = '';
         }
 
+        if ($request->has('accessories')){
+            $accessory_details = array();
+            $accessory_details['asset_id']= $asset->id;
+            $accessories = $request->input('accessories');
+            $accessory_details['accessory_id']= $accessories;
+
+            $general_accessories = new GeneralAccessoriesController();
+            $general_accessories->postCreateFromAsset($accessory_details);
+        }
 
         // Update the asset data
         $asset->name         = e($request->input('name'));
@@ -1821,7 +1830,7 @@ class AssetsController extends Controller
      * @since [v2.0]
      * @return String JSON
      */
-    public function getDatatable(Request $request, $status = null)
+    public function getDatatable(Request $request, $status = null, $category = null)
     {
 
 
@@ -1847,15 +1856,6 @@ class AssetsController extends Controller
         if ($request->has('order_number')) {
             $assets->where('order_number', '=', e($request->get('order_number')));
         }
-        //added broader search term
-        if ($request->has('search_term')){
-            if ($assets->where('_snipeit_sof', '=', $request->get('search_term'))->exists()){
-                $assets = $assets->where('_snipeit_sof', '=', $request->get('search_term'));
-            }
-            elseif($assets->where('_snipeit_po_number', '=', $request->get('search_term'))->exists()){
-                $assets = $assets->where('_snipeit_po_number', '=', $request->get('search_term'));
-            }
-        }
         switch ($status) {
             case 'Deleted':
                 $assets->withTrashed()->Deleted();
@@ -1866,7 +1866,7 @@ class AssetsController extends Controller
             case 'RTD':
                 $assets->RTD();
                 break;
-            case 'Undeployable':
+            case 'Damaged':
                 $assets->Undeployable();
                 break;
             case 'Archived':
@@ -1880,6 +1880,12 @@ class AssetsController extends Controller
                 break;
         }
 
+        switch ($category){
+            case 'Computer':
+                $order = 'Computer';
+                $assets->OrderCategory($order);
+                break;
+        }
         if ($request->has('status_id')) {
             $assets->where('status_id','=', e($request->get('status_id')));
         }
@@ -1898,8 +1904,7 @@ class AssetsController extends Controller
             'manufacturer',
             'notes',
             'expected_checkin',
-            'order_number',
-            'companyName',
+            'Location Abbrev',
             'location',
             'image',
             'status_label',
@@ -1931,7 +1936,7 @@ class AssetsController extends Controller
             case 'manufacturer':
                 $assets = $assets->OrderManufacturer($order);
                 break;
-            case 'companyName':
+            case 'Location Abbrev':
                 $assets = $assets->OrderCompany($order);
                 break;
             case 'location':
@@ -2015,7 +2020,7 @@ class AssetsController extends Controller
                 'created_at' => ($asset->created_at!='')  ? e($asset->created_at->format('F j, Y h:iA')) : '',
                 'change'        => ($inout) ? $inout : '',
                 'actions'       => ($actions) ? $actions : '',
-                'companyName'   => is_null($asset->company) ? '' : e($asset->company->name)
+                'Location Abbrev'   => is_null($asset->company) ? '' : e($asset->company->name)
             );
             foreach ($all_custom_fields as $field) {
                 $column_name = $field->db_column_name();
