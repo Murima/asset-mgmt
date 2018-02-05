@@ -68,12 +68,7 @@
                                     data-toolbar="#toolbar"
                                     class="table table-striped snipe-table"
                                     id="table"
-                                    @if(Request::url('/byTag')){{--TODO remove this its already implemented--}}
-                                    data-url="{{route('api.hardware.list', array(''=>e(Input::get('status')),'order_number'=>e(Input::get('order_number')), 'status_id'=>e(Input::get('status_id')),
-                                    'search_term'=>Input::get('assetTag')))}}"
-                                    @else
                                     data-url="{{route('api.hardware.list', array(''=>e(Input::get('status')),'order_number'=>e(Input::get('order_number')), 'status_id'=>e(Input::get('status_id'))))}}"
-                                    @endif
                                     data-cookie="true"
                                     data-click-to-select="true"
                                     data-cookie-id-table="{{ e(Input::get('status')) }}assetTable-{{ config('version.hash_version') }}">
@@ -83,7 +78,7 @@
                                         <th data-class="hidden-xs" data-switchable="false" data-searchable="false" data-sortable="false" data-field="checkbox"><div class="text-center"><input type="checkbox" id="checkAll" style="padding-left: 0px;"></div></th>
                                     @endif
                                     <th data-sortable="true" data-field="id" data-visible="false">{{ trans('general.id') }}</th>
-                                    <th data-field="companyName" data-searchable="true" data-sortable="true" data-switchable="true" data-visible="false">{{ trans('general.company') }}</th>
+                                    <th data-field="Location Abbrev" data-searchable="true" data-sortable="true" data-switchable="true" data-visible="false">{{ trans('general.location_abbrev') }}</th>
                                     <th data-sortable="true" data-field="image" data-visible="false">{{ trans('admin/hardware/table.image') }}</th>
                                     <th data-sortable="true" data-field="name" data-visible="false">{{ trans('admin/hardware/form.name') }}</th>
                                     <th data-sortable="true" data-field="asset_tag">{{ trans('admin/hardware/table.asset_tag') }}</th>

@@ -418,14 +418,6 @@
                                 <a href="{{ URL::to('hardware') }}">@lang('general.list_all')</a>
                             </li>
 
-                            <?php $status_navs = \App\Models\Statuslabel::where('show_in_nav','=',1)->get(); ?>
-                            @if (count($status_navs) > 0)
-                                <li class="divider">&nbsp;</li>
-                                @foreach ($status_navs as $status_nav)
-                                    <li><a href="{{ URL::to('hardware?status_id='.$status_nav->id) }}"}> {{ $status_nav->name }}</a></li>
-                                @endforeach
-                            @endif
-
 
                             <li{!! (Request::query('status') == 'Deployed' ? ' class="active"' : '') !!}>
                                 <a href="{{ URL::to('hardware?status=Deployed') }}">@lang('general.deployed')
@@ -440,6 +432,14 @@
                                                         <li{!! (Request::query('status') == 'Undeployable' ? ' class="active"' : '') !!} ><a href="{{ URL::to('hardware?status=Undeployable') }}">@lang('general.undeployable')</a></li>
                             --}}
                             <li{!! (Request::query('status') == 'Archived' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Archived') }}">@lang('admin/hardware/general.archived')</a></li>
+
+                            <?php $status_navs = \App\Models\Statuslabel::where('show_in_nav','=',1)->orderBy('created_at', 'asc')->get(); ?>
+                            @if (count($status_navs) > 0)
+                                <li class="divider">&nbsp;</li>
+                                @foreach ($status_navs as $status_nav)
+                                    <li><a href="{{ URL::to('hardware?status_id='.$status_nav->id) }}"}> {{ $status_nav->name }}</a></li>
+                                @endforeach
+                            @endif
                             {{-- Dont need this for now
                                                         <li{!! (Request::query('status') == 'Requestable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Requestable') }}">@lang('admin/hardware/general.requestable')</a></li>
                             --}}

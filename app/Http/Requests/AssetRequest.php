@@ -6,7 +6,8 @@ use App\Http\Requests\Request;
 use App\Models\AssetModel;
 use Session;
 
-class AssetRequest extends Request
+class
+AssetRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -41,8 +42,8 @@ class AssetRequest extends Request
             "_snipeit_account_code"   => "digits:4",
             "_snipeit_cost_centre"    => "digits:5",
             "_snipeit_project_code"   => "digits:7",
-            "_snipeit_dea"            => "digits:6",
-            "_snipeit_sof"            => "digits:8",
+            "_snipeit_dea"            => "alpha_num:6",
+            "_snipeit_sof"            => "alpha_num:8",
 
         ];
 

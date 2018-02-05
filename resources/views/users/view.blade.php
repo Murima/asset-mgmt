@@ -67,7 +67,7 @@
                   <table class="table table-striped">
                     @if (!is_null($user->company))
                       <tr>
-                          <td>Company</td>
+                          <td>Location Abbrev</td>
                           <td>{{ $user->company->name }}</td>
                       </tr>
                     @endif

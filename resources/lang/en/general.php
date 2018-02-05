@@ -101,6 +101,7 @@ return [
     'list_all'				=> 'List All',
     'loading'				=> 'Loading',
     'lock_passwords'        => 'This field cannot be edited in this installation.',
+    'location_abbrev'       => 'Location Abbrev',
     'feature_disabled'      => 'This feature has been disabled for the demo installation.',
     'location'              => 'Location',
     'locations'				=> 'Locations',

@@ -61,7 +61,7 @@
     table, tbody {
       border: 1px solid #ccc;
     }
-    
+
     .header-name {
       cursor: pointer;
     }
@@ -80,7 +80,9 @@
 <div class="nav-tabs-custom">
   <ul class="nav nav-tabs">
     <li class="active"><a href="#tab_1" data-toggle="tab">Information</a></li>
-    <li><a href="#tab_2" data-toggle="tab">Permissions</a></li>
+      @if (\Auth::user()->isSuperUser())
+          <li><a href="#tab_2" data-toggle="tab">Permissions</a></li>
+      @endif
   </ul>
 
   <div class="tab-content">
@@ -210,19 +212,18 @@
             </div>
           </div>
 
-          <!-- Company -->
-          @if (\App\Models\Company::canManageUsersCompanies())
+         {{-- <!-- Company -->
+          @if (\App\Models\Company::canManageUsersCompanies())--}}
           <!-- Company -->
           <div class="form-group {{ $errors->has('company_id') ? 'has-error' : '' }}">
             <div class="col-md-3 control-label">
-              {{ Form::label('company_id', trans('general.company')) }}
+              {{ Form::label('company_id', trans('general.location_abbrev')) }}
             </div>
             <div class="col-md-8">
               {{ Form::select('company_id', $company_list , Input::old('company_id', $user->company_id), array('class'=>'select2', 'style'=>'width:350px')) }}
               {!! $errors->first('company_id', '<span class="alert-msg">:message</span>') !!}
             </div>
           </div>
-          @endif
 
           <!-- language // Dont nee this now-->
           {{--<div class="form-group {{ $errors->has('locale') ? 'has-error' : '' }}">

@@ -133,7 +133,7 @@
                             <div id="accessories_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
                                 @foreach($accessories as $accessory)
                                     <label for="accessories"><input  type="checkbox" name="accessories[]" id="{{$accessory}}" value="{{$accessory}}" >{{$accessory->name}}</label>
-s
+
                                 @endforeach
                             </div>
 
