@@ -1422,10 +1422,10 @@ class UsersController extends Controller
         $manager= User::find($userId)->manager;
         if ($manager){
             \Debugbar::addMessage('in getManager');
-            return response()->json(['manager_username'=> $manager->id]);
+            return response()->json(['manager_id'=> $manager->id]);
         }
         else{
-            return response()->json(['manager_username'=> 'No manager']);
+            return response()->json(['manager_id'=> 'No manager']);
         }
 
     }

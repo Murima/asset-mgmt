@@ -488,7 +488,7 @@ class Asset extends Depreciable
 
     public function accessories()
     {
-        return $this->hasMany('\App\Models\Accessory');
+        return $this->hasMany('\App\Models\Accessory', 'asset_id');
     }
 
     /**

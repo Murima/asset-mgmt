@@ -51,7 +51,9 @@ class GeneralAccessoriesController extends Controller
             $save_details['name']= $name;
             $save_details['qty']= 1;
 
-            $accessory = Accessory::create($save_details); //TODO measure performance of this
+            if (Accessory::where('asset_id', $save_details['asset_id'])->where('name', $save_details['name'])->exists() == false){
+                $accessory = Accessory::create($save_details); //TODO measure performance of this
+            }
         }
 
     }

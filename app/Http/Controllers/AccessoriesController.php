@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Helper;
 use App\Models\Accessory;
 use App\Models\Actionlog;
+use App\Models\Asset;
 use App\Models\AssetModel;
 use App\Models\Company;
 use App\Models\GeneralAccessory;
@@ -14,6 +15,7 @@ use Carbon\Carbon;
 use Config;
 use DB;
 use Gate;
+use Illuminate\Support\Facades\Route;
 use Input;
 use Lang;
 use Mail;
@@ -702,18 +704,24 @@ class AccessoriesController extends Controller
      * as checkboxes
      * @return json
      */
-    public function getGeneralAccessories($modelId){
+    public function getGeneralAccessories($modelId, $id=null){
 
-        //TODO use relationships here to make this easier
-        $model = AssetModel::find($modelId);
-        $category_id = $model->category->id;
-        if ($category_id){
-            $accessories = GeneralAccessory::where('category_id', '=', $category_id)->get();
-            return json_encode($accessories);
+        $category_id= AssetModel::find($modelId)->category_id;
+        $assetId = $id;
+        if ($id != null){ //if creating get general assets
+            if ($category_id){
+                $accessories = GeneralAccessory::where('category_id', '=', $category_id)->get();
+                return json_encode($accessories);
+            }
+            else{
+                return null; //fix this
+            }
         }
         else{
-            return null; //fix this
+            $accessories = Asset::find($assetId)->accessories;
+            return json_encode($accessories);
         }
+
     }
 
 
