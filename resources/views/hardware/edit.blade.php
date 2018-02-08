@@ -80,6 +80,7 @@
 
         </div>
 
+
         <div class="col-md-1 col-sm-1 text-left" style="margin-left: -7px; padding-top: 3px">
             <a href='#' data-toggle="modal"  data-target="#createModal" data-dependency="accessorie" data-select='modal-category_id' class="btn btn-sm btn-default">New</a>
         </div>
@@ -177,8 +178,13 @@
                 $('#acc_label').hide();
                 $('#checkbox').show(); //show the checkbox div
                 $('#dynamic_checkbox').empty(); //empty the dynamic div
+                var path = window.location.pathname;
+                var id = path.match(/\d+/);
 
-                $.get("{{config('app.url') }}/api/accessories/"+modelid+"/general",{_token: "{{ csrf_token() }}"},function (data) {
+                if(id !==null){
+                    id = id[0];
+                }
+                $.get("{{config('app.url') }}/api/accessories/"+modelid+"/"+id+"/general",{_token: "{{ csrf_token() }}"},function (data) {
                     data = $.parseJSON(data);
 
                     $.each(data, function (key,value)

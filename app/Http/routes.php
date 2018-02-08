@@ -52,7 +52,7 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
             [ 'as' => 'api.accessories.view', 'uses' => 'AccessoriesController@getDataView' ]
         );
         //get general accessories
-        Route::get('{modelId}/general', ['as' => 'api.accessories.general', 'uses' =>'AccessoriesController@getGeneralAccessories']
+        Route::get('{modelId}/{id}/general', ['as' => 'api.accessories.general', 'uses' =>'AccessoriesController@getGeneralAccessories']
         );
     });
 

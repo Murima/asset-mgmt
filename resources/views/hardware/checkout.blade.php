@@ -78,7 +78,7 @@
                             <label class="col-md-3 control-label" for="manager_id">{{ trans('admin/users/table.manager') }}</label>
 
                             <div class="col-md-7 required">
-                                {{ Form::select('manager_id', $manager_list , Input::old('manager_id', $user->manager_id), array('class'=>'select2', 'style'=>'width:350px')) }}
+                                {{ Form::select('manager_id', $manager_list , Input::old('manager_id', $user->manager_id), array('class'=>'select2', 'style'=>'width:350px', 'id'=>'manager_id')) }}
                                 {!! $errors->first('manager_id', '<span class="alert-msg">:message</span>') !!}
                             </div>
                         </div>
@@ -132,8 +132,7 @@
                             </label>
                             <div id="accessories_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
                                 @foreach($accessories as $accessory)
-                                    <label for="accessories"><input  type="checkbox" name="accessories[]" id="{{$accessory}}" value="{{$accessory}}" >{{$accessory->name}}</label>
-
+                                    <label for="accessories"><input  type="checkbox" name="accessories[]" id="accessories" value="{{$accessory->id}}" >{{$accessory->name}}</label>
                                 @endforeach
                             </div>
 
@@ -375,10 +374,19 @@
 
                     //TODO set the value of manager dropdown depending on user
                     $.get("{{config('app.url')}}/api/users/"+userid+"/manager", {_token: "{{ csrf_token() }}"}, function(data){
-                        //console.log(data.manager_username);
-                        //console.log ($('#assigned_to').val());
-                        $("#manager_id").val(data.manager_username);
-                        //$("#manager_id").get(0).selectedIndex = data.manager_username;
+                        var manager_id = data.manager_id;
+                        if (manager_id === 'No Manager'){
+                            $('#manager_id').empty();
+                        }
+                        else {
+
+                            $("#manager_id").val(manager_id);
+                            /*$('#manager_id').filter(function () {
+                                return this.id === manager_id
+                                
+                            }).prop('selected', true);*/
+
+                        }
                     });
                 }
             });
