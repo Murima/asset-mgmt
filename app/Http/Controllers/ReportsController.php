@@ -113,22 +113,30 @@ class ReportsController extends Controller
     public function exportAssetReport()
     {
 
+        $report_name = '';
+        if(\Auth::user()->isSuperUser()){
+
+            $report_name= 'All-Offices';
+        }
+        else{
+            $report_name= Company::find(\Auth::user()->company_id)->name; //fix this
+        }
         \Debugbar::disable();
 
         $customfields = CustomField::get();
 
-        $response = new StreamedResponse(function() use ($customfields) {
+        $response = new StreamedResponse(function() use ($customfields, $report_name) {
             // Open output stream
             $handle = fopen('php://output', 'w');
 
-            Company::scopeCompanyables(Asset::with('assigneduser', 'assetloc','defaultLoc','assigneduser.userloc','model','supplier','accessories','assetstatus','model.manufacturer'))->orderBy('created_at', 'DESC')->chunk(500, function($assets) use($handle, $customfields) {
+            Company::scopeCompanyables(Asset::with('assigneduser', 'assetloc','defaultLoc','assigneduser.userloc','model','supplier','accessories','assetstatus','model.manufacturer'))->orderBy('created_at', 'DESC')->chunk(500, function($assets) use($handle, $customfields, $report_name) {
                 $headers=[
                     //trans('general.company'),
                     trans('admin/hardware/table.asset_id'),
                     trans('admin/reports/asset_register.category'),
                     trans('admin/reports/asset_register.country'),
                     trans('admin/hardware/form.issue_location'),
-                    trans('admin/hardware/talble.asset_location'),
+                    trans('admin/hardware/table.asset_location'),
                     trans('admin/hardware/table.assigned_to'),
                     //trans('admin/reports/asset_register.assigned_date'),
 
@@ -181,7 +189,16 @@ class ReportsController extends Controller
                 fputcsv($handle, $headers);
 
                 foreach ($assets as $asset) {
+                    $other_no= null;
+
                     // Add a new row with data
+                    if ($asset->asset_type =='VEH'){
+                        $other_no="NUMBER PLATE: ";
+                        $other_no .= $asset->_snipeit_number_plate;
+                    }elseif ($asset->asset_type == 'TEL' || $asset->asset_type == 'SAT'){
+                        $other_no="IMEI: ";
+                        $other_no .= $asset->_snipeit_imei;
+                    }
                     $values=[
                         //($asset->company) ? $asset->company->name : '', dont need this for now
                         $asset->id,
@@ -203,7 +220,7 @@ class ReportsController extends Controller
                         ($asset->model) ? $asset->model->name : '',
                         ($asset->model->model_number) ? $asset->model->model_number : '',
                         ($asset->serial) ? $asset->serial : '',
-                        'NULL', //Other reference number //TODO add other ref numbers from custom fields
+                        ($other_no) ? $other_no : '', //TODO add chasis no and other no
 
                         $asset->asset_tag,
                         //'NULL', //Finance aggresso
@@ -247,7 +264,7 @@ class ReportsController extends Controller
             fclose($handle);
         }, 200, [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="assets-'.date('Y-m-d-his').'.csv"',
+            'Content-Disposition' => 'attachment; filename="Assets-'.$report_name.'-'.date('Y-m-d-his').'.csv"',
         ]);
 
         return $response;
