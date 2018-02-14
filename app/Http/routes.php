@@ -51,9 +51,15 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
             '{accessoryID}/view',
             [ 'as' => 'api.accessories.view', 'uses' => 'AccessoriesController@getDataView' ]
         );
+        Route::get(
+            'remove/{values}/general',
+            ['as' => 'api.accessories.remove', 'uses' => 'GeneralAccessoriesController@delete']
+        );
+
         //get general accessories
         Route::get('{modelId}/{id}/general', ['as' => 'api.accessories.general', 'uses' =>'AccessoriesController@getGeneralAccessories']
         );
+
     });
 
     /*---Consumables API---*/
