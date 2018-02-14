@@ -13,20 +13,26 @@ class GeneralAccessoriesController extends Controller
 {
 
     /**
-     * Store general accessories from asset creation modal
+     * Store general accessories names from asset creation modal
      */
     public function store()
     {
-        $accessory = new GeneralAccessory();
-        $accessory->accessory_name = e(Input::get('name'));
-        $accessory->category_id = e(Input::get('category_id'));
+        if (!GeneralAccessory::where('accessory_name', e(Input::get('name')))
+            ->where('category_id', e(Input::get('category_id')))->exists()){
+            $accessory = new GeneralAccessory();
+            $accessory->accessory_name = e(Input::get('name'));
+            $accessory->category_id = e(Input::get('category_id'));
 
-        if ($accessory->save()) {
-            return JsonResponse::create($accessory);
-        } else {
-            return JsonResponse::create(["error" => "Failed validation: ".print_r($accessory->getErrors()->all('<li>:message</li>'), true)], 500);
+            if ($accessory->save()) {
+                return JsonResponse::create($accessory);
+            } else {
+                return JsonResponse::create(["error" => "Failed validation: ".print_r($accessory->getErrors()->all('<li>:message</li>'), true)], 500);
+            }
         }
+        else{
+            return JsonResponse::create(["error" => "Already exists: "], 500);
 
+        }
 
     }
 
@@ -56,5 +62,29 @@ class GeneralAccessoriesController extends Controller
             }
         }
 
+    }
+
+    /**
+     * delete the general accessory name
+     * @param $gAccessory
+     */
+    public function delete($gAccessoryId=null)
+    {
+        $gAccessoryIds = explode(',', $gAccessoryId);
+        $result = null;
+
+        foreach ($gAccessoryIds as $id){
+            if (GeneralAccessory::find($id)->exists()){
+                $gAccessory = GeneralAccessory::find($gAccessoryId);
+                $gAccessory->delete();
+                $result = true;
+            }
+
+            else{
+                $result = false;
+            }
+        }
+
+        return json_encode($result=true); //fix this
     }
 }
