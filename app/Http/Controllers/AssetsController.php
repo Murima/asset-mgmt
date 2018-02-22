@@ -6,6 +6,7 @@ use App\Http\Requests\AssetRequest;
 use App\Http\Requests\AssetFileRequest;
 use App\Http\Requests\AssetCheckinRequest;
 use App\Http\Requests\AssetCheckoutRequest;
+use App\Models\Accessory;
 use App\Models\Actionlog;
 use App\Models\Asset;
 use App\Models\AssetMaintenance;
@@ -26,11 +27,12 @@ use Codeception\Util\Debug;
 use Debugbar;
 use function foo\func;
 use Hamcrest\Core\Set;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Validator;
 use Artisan;
-use Auth;
 use Config;
 use League\Csv\Reader;
 use DB;
@@ -115,6 +117,8 @@ class AssetsController extends Controller
      */
     public function getCreate($model_id = null)
     {
+        $accessories = array(); //TODO this is not needed
+
         // Grab the dropdown lists
         $model_list = Helper::modelList();
         $statuslabel_list = Helper::statusLabelList();
@@ -137,6 +141,7 @@ class AssetsController extends Controller
         $view->with('manufacturer', $manufacturer_list);
         $view->with('category', $category_list);
         $view->with('statuslabel_types', $statuslabel_types);
+        $view->with('accessories', $accessories);
 
         if (!is_null($model_id)) {
             $selected_model = AssetModel::find($model_id);
@@ -326,6 +331,7 @@ class AssetsController extends Controller
         } elseif (!Company::isCurrentUserHasAccess($item)) {
             return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
         }
+        $accessories = Asset::find($assetId)->accessories;
 
         // Grab the dropdown lists
         $model_list = Helper::modelList();
@@ -339,6 +345,7 @@ class AssetsController extends Controller
         $statuslabel_types =Helper::statusTypeList();
 
         return View::make('hardware/edit', compact('item'))
+            ->with('accessories', $accessories)
             ->with('model_list', $model_list)
             ->with('supplier_list', $supplier_list)
             ->with('company_list', $company_list)
@@ -566,7 +573,6 @@ class AssetsController extends Controller
      */
     public function getCheckout($assetId)
     {
-        //TODO add accessories to checkout
         // Check if the asset exists
         if (is_null($asset = Asset::find(e($assetId)))) {
             // Redirect to the asset management page with error
@@ -643,10 +649,29 @@ class AssetsController extends Controller
         }
 
 
-        //TODO check for errors
+        if ($request->input('accessories')){
+            //assign accessories to user
+            $accessories = $request->input('accessories');
+            foreach ($accessories as $accessory){
+                if (is_null($accessory = Accessory::find($accessory))) {
+                    // Redirect to the accessory management page with error
+                    return redirect()->to('accessories')->with('error', trans('admin/accessories/message.user_not_found'));
+                }
+
+                $accessory->assigned_to  = e(Input::get('assigned_to'));
+                $accessory->users()->attach($accessory->id, array(
+                    'accessory_id' => $accessory->id,
+                    'created_at' => Carbon::now(),
+                    'user_id' => Auth::user()->id,
+                    'assigned_to' => e(Input::get('assigned_to'))));
+
+            }
+        }
+        //TODO check for errors after queue is done
         $asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager, $issue_location);
 
-        return redirect()->to("hardware");
+
+        return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
         /*if ($asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager, $issue_location)) {
             // Redirect to the new asset page
             return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
@@ -2131,10 +2156,11 @@ class AssetsController extends Controller
      * get next Asset tag when model_id is provided
      */
     public function getAssetTag($model_id=null , $company_id=null, $tag_value=null){
-        if ($tag_value == 0 && \Auth::user()->isSuperUser()){
-            return null;
-        }
-        elseif($tag_value== 0 && \Request::is('*/edit')){
+        $path= str_replace(url('/'), '', url()->previous());
+        $parts = explode('/', $path);
+        $action_name = array_pop($parts);
+
+        if ($tag_value== 0 && $action_name == 'edit'){
             return null;
         }
         else{

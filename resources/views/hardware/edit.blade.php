@@ -80,8 +80,9 @@
 
         </div>
 
-        <div class="col-md-1 col-sm-1 text-left" style="margin-left: -7px; padding-top: 3px">
-            <a href='#' data-toggle="modal"  data-target="#createModal" data-dependency="accessorie" data-select='modal-category_id' class="btn btn-sm btn-default">New</a>
+
+        <div id="new_accessory" class="col-md-1 col-sm-1 text-left" style="margin-left: -7px; padding-top: 3px">
+            <a id="new_accessory_button" href='#' data-toggle="modal"  data-target="#createModal" data-dependency="accessorie" data-select='modal-category_id' class="btn btn-sm btn-default">New</a>
         </div>
     </div>
 
@@ -169,6 +170,41 @@
 
     <script>
 
+
+        function deleteAccessories(){
+
+            var values = [];
+            $('input[name="accessories[]"]:checked').each(function () {
+                values.push(this.value);
+            });
+            $.get("{{config('app.url') }}/api/accessories/remove/"+values+"/general",{_token: "{{ csrf_token() }}"},function (result) {
+                result = $.parseJSON(result);
+                    $('#checkbox').hide();
+                    $('#acc_label').show();
+                    $('#acc_label').attr('checked', false);
+            });
+        }
+        $('#new_accessory').on("click", '#remove_accessory', function () {
+
+            deleteAccessories();
+        });
+
+        $('#dynamic_checkbox').click(function(){
+
+            var oneChecked = $('#accessories:checkbox:checked').length > 0;
+            if(oneChecked){
+                $('#new_accessory>a').hide();
+
+
+                var url_tag = "<a id='remove_accessory' class='btn btn-sm btn-danger'>Remove </a>";
+                $('#new_accessory')
+                    .append(url_tag)
+            }
+            else{
+            }
+
+        });
+
         function displayCheckboxes(){
             //display checkboxes from database
             var modelid=$('#model_select_id').val();
@@ -177,8 +213,16 @@
                 $('#acc_label').hide();
                 $('#checkbox').show(); //show the checkbox div
                 $('#dynamic_checkbox').empty(); //empty the dynamic div
+                $('#remove_accessory').remove();
+                $('#new_accessory_button').show();
 
-                $.get("{{config('app.url') }}/api/accessories/"+modelid+"/general",{_token: "{{ csrf_token() }}"},function (data) {
+                var path = window.location.pathname;
+                var id = path.match(/\d+/);
+
+                if(id !==null){
+                    id = id[0];
+                }
+                $.get("{{config('app.url') }}/api/accessories/"+encodeURIComponent(modelid)+"/"+encodeURIComponent(id)+"/general",{_token: "{{ csrf_token() }}"},function (data) {
                     data = $.parseJSON(data);
 
                     $.each(data, function (key,value)
@@ -208,13 +252,13 @@
             if(modelid=='') {
                 $('#custom_fields_content').html("");
             } else {
-                $.get("{{config('app.url') }}/hardware/models/"+modelid+"/custom_fields",{_token: "{{ csrf_token() }}"},function (data) {
+                $.get("{{config('app.url') }}/hardware/models/"+encodeURIComponent(modelid)+"/custom_fields",{_token: "{{ csrf_token() }}"},function (data) {
                     $('#custom_fields_content').html(data);
                 });
                 if (asset_tag=='') {
                     tag_value = 1;
                 }
-                $.get("{{config('app.url') }}/hardware/models/"+modelid+"/"+company_id+"/"+tag_value+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
+                $.get("{{config('app.url') }}/hardware/models/"+encodeURIComponent(modelid)+"/"+encodeURIComponent(company_id)+"/"+encodeURIComponent(tag_value)+"/cat_prefix",{_token: "{{ csrf_token() }}"},function (tag) {
                     if(tag === ""){
                         //pass
                     }
@@ -223,7 +267,6 @@
                     }
                 });
 
-                //displayCheckboxes(modelid);
             }
         }
 
@@ -232,7 +275,7 @@
             $('#model_select_id').on("change",fetchCustomFields);
         });
 
-        $('#accessories').change(function(){
+        $('#accessories').click(function(){
             if( $('#accessories').is(":checked") ){
                 displayCheckboxes();
             }
@@ -271,8 +314,7 @@
                     }
                 });
             }
-        };
-
+        }
         $(function () {
             var model,select;
 
@@ -369,11 +411,11 @@
 
                 reader.onloadend = function() {
                     processFile(reader.result, file.type);
-                }
+                };
 
                 reader.onerror = function() {
                     alert("Unable to read file");
-                }
+                };
 
                 reader.readAsDataURL(file);
             }

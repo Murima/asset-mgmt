@@ -161,7 +161,12 @@ class Asset extends Depreciable
         $data['note'] = $note;
         $data['item_serial'] = $this->serial;
         $data['require_acceptance'] = $this->requireAcceptance();
-        $data['assigned_to'] = $this->assigned_to;
+        if (User::find($this->assigned_to)->exitst()){
+            $data['assigned_to'] = $this->assigned_to;
+        }
+        else{
+            $data['assigned_to']= null;
+        }
 
         if ((($this->requireAcceptance()=='1')  || ($this->getEula())) && (!config('app.lock_passwords'))) {
             try{
@@ -175,7 +180,7 @@ class Asset extends Depreciable
                 $this->dispatch(new EmailAssignedUser($user, $data));
 
                 if ($manager){
-                    $data['first_name'] = $manager->firstname;
+                    $data['first_name'] = $manager->first_name;
                     /*\Mail::send('emails.manager-approve', $data, function ($m) use ($manager) {
                         //\Debugbar::addMessage($user->email, 'send');
                         $m->to($manager->email, $manager->first_name . ' ' . $manager->last_name);
