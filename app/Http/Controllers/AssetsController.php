@@ -661,6 +661,7 @@ class AssetsController extends Controller
                     return redirect()->to('accessories')->with('error', trans('admin/accessories/message.user_not_found'));
                 }
 
+
                 $accessory_names[] = $accessory->name;
                 $accessory->assigned_to  = e(Input::get('assigned_to'));
                 $accessory->users()->attach($accessory->id, array(
@@ -671,6 +672,7 @@ class AssetsController extends Controller
 
             }
         }
+
 
         $response = $asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager, $issue_location);
 

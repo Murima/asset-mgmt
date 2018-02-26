@@ -213,6 +213,7 @@
                 $('#acc_label').hide();
                 $('#checkbox').show(); //show the checkbox div
                 $('#dynamic_checkbox').empty(); //empty the dynamic div
+
                 $('#remove_accessory').hide();  
                 $('#new_accessory_button').show();
 
