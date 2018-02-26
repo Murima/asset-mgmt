@@ -216,6 +216,7 @@ return [
         PragmaRX\Google2FA\Vendor\Laravel\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
 
         /*
          * Custom service provider
@@ -275,6 +276,7 @@ return [
         'Html'      => 'Collective\Html\HtmlFacade',
         'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
         'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
+        'PDF'       => Barryvdh\Snappy\Facades\SnappyPdf::class,
     ],
 
 ];

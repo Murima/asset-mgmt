@@ -29,6 +29,7 @@ use function foo\func;
 use Hamcrest\Core\Set;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
+use PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Validator;
@@ -612,6 +613,8 @@ class AssetsController extends Controller
     {
 
         $issue_location= '';
+        $accessory_names= array();
+
         // Check if the asset exists
         if (!$asset = Asset::find($assetId)) {
             return redirect()->to('hardware')->with('error', trans('admin/hardware/message.does_not_exist'));
@@ -658,6 +661,8 @@ class AssetsController extends Controller
                     return redirect()->to('accessories')->with('error', trans('admin/accessories/message.user_not_found'));
                 }
 
+
+                $accessory_names[] = $accessory->name;
                 $accessory->assigned_to  = e(Input::get('assigned_to'));
                 $accessory->users()->attach($accessory->id, array(
                     'accessory_id' => $accessory->id,
@@ -667,11 +672,60 @@ class AssetsController extends Controller
 
             }
         }
-        //TODO check for errors after queue is done
-        $asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager, $issue_location);
 
 
-        return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
+        $response = $asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager, $issue_location);
+
+        $settings = Setting::getSettings();
+        if ($response == true && $settings->issue_form_download == 1){
+            $accessories = $request->input('accessories');
+            $pdf_data= array();
+
+            $pdf_data['snipeSettings'] = $settings;
+            $pdf_data['last_name'] = $user->last_name;
+            $pdf_data['first_name'] = $user->first_name;
+            $pdf_data['user_title'] = $user->jobtitle;
+            $pdf_data['issue_fname'] = Auth::user()->first_name ?: 'NULL';
+            $pdf_data['issue_lname'] = Auth::user()->last_name ?: 'NULL';
+            $pdf_data['issue_title'] = Auth::user()->jobtitle ?: '';
+            $pdf_data['approver_fname'] = $manager->first_name;
+            $pdf_data['approver_lname'] = $manager->last_name;
+            $pdf_data['approver_title'] = $manager->jobtitle;
+            $pdf_data['description'] = $asset->model->name;
+            $pdf_data['tag'] = $asset->asset_tag;
+            $pdf_data['accessories'] = $accessory_names;
+            $pdf_data['date'] = date("Y-m-d");
+
+            if ($asset->serial){
+                $pdf_data['serial'] = $asset->serial;
+            }
+            else{
+                //get unique number based on category
+                $category = $asset->asset_type;
+                switch ($category){
+                    case 'VEH':
+                        $pdf_data['serial'] = $asset->_snipeit_number_plate ?: 'NULL';
+                        break;
+                    case 'TEL':
+                        $pdf_data['serial'] = $asset->_snipeit_imei ?: 'NULL';
+                        break;
+                }
+            }
+            if ($location_id = Auth::user()->location_id){
+                $location_name = Location::find($location_id)->name;
+                $pdf_data['office'] = $location_name;
+            }
+
+            $pdf = PDF::loadView('reports.issue_form_test', $pdf_data);
+            return $pdf->inline('issue_form.pdf');
+        }
+        elseif( $response== true && $settings->issue_form_download == 0){
+            return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
+        }
+        else{
+            return redirect()->to("hardware/$assetId/checkout")->with('error', trans('admin/hardware/message.checkout.error'))->withErrors($asset->getErrors());
+        }
+
         /*if ($asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager, $issue_location)) {
             // Redirect to the new asset page
             return redirect()->to("hardware")->with('success', trans('admin/hardware/message.checkout.success'));
@@ -2182,6 +2236,36 @@ class AssetsController extends Controller
 
 
         return Asset::autoincrement_asset($category_prefix, $company_abbrev);
+    }
+
+
+    public function testPDF($pdf_data){
+        /*$pdf_data= array();
+        $settings = \App\Models\Setting::getSettings();
+        $user = \App\Models\User::find(90);
+        $manager = \App\Models\User::find(100);
+        $asset = \App\Models\Asset::find(2018);
+        $pdf_data= array();
+        $pdf_data['snipeSettings'] = $settings;
+        $pdf_data['last_name'] = $user->last_name;
+        $pdf_data['first_name'] = $user->first_name;
+        $pdf_data['user_title'] = $user->jobtitle;
+        $pdf_data['issue_fname'] = Auth::user()->first_name ?: 'NULL';
+        $pdf_data['issue_lname'] = Auth::user()->last_name ?: 'NULL';
+        $pdf_data['issue_title'] = Auth::user()->jobtitle ?: 'NULL';
+        $pdf_data['approver_fname'] = $manager->first_name;
+        $pdf_data['approver_lname'] = $manager->last_name;
+        $pdf_data['approver_title'] = $manager->jobtitle;
+        $pdf_data['description'] = $asset->model->name;
+        $pdf_data['tag'] = $asset->asset_tag;
+        $pdf_data['date'] = date("Y-m-d");
+
+        if ($asset->serial){
+            $pdf_data['serial'] = $asset->serial;
+        }*/
+
+        $pdf = PDF::loadView('reports.issue_form_test', $pdf_data);
+        return $pdf->download('issue_form.pdf');
     }
 
 }

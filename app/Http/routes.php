@@ -51,9 +51,15 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
             '{accessoryID}/view',
             [ 'as' => 'api.accessories.view', 'uses' => 'AccessoriesController@getDataView' ]
         );
-        //get general accessories
-        Route::get('{modelId}/general', ['as' => 'api.accessories.general', 'uses' =>'AccessoriesController@getGeneralAccessories']
+        Route::get(
+            'remove/{values}/general',
+            ['as' => 'api.accessories.remove', 'uses' => 'GeneralAccessoriesController@delete']
         );
+
+        //get general accessories
+        Route::get('{modelId}/{id}/general', ['as' => 'api.accessories.general', 'uses' =>'AccessoriesController@getGeneralAccessories']
+        );
+
     });
 
     /*---Consumables API---*/
@@ -191,8 +197,8 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
 
 Route::group(
     [ 'prefix' => 'hardware',
-    'middleware' => ['web',
-    'auth']],
+        'middleware' => ['web',
+            'auth']],
     function () {
 
         Route::get('history', [
@@ -209,23 +215,23 @@ Route::group(
 
 
         Route::get('create/{model?}', [
-                'as'   => 'create/hardware',
-                'middleware' => 'authorize:assets.create',
-                'uses' => 'AssetsController@getCreate'
-            ]);
+            'as'   => 'create/hardware',
+            'middleware' => 'authorize:assets.create',
+            'uses' => 'AssetsController@getCreate'
+        ]);
 
         Route::post('create', [
-                'as'   => 'savenew/hardware',
-                'middleware' => 'authorize:assets.create',
-                'uses' => 'AssetsController@postCreate'
-            ]);
+            'as'   => 'savenew/hardware',
+            'middleware' => 'authorize:assets.create',
+            'uses' => 'AssetsController@postCreate'
+        ]);
 
 
         Route::get('{assetId}/edit', [
-                'as'   => 'update/hardware',
-                'middleware' => 'authorize:assets.edit',
-                'uses' => 'AssetsController@getEdit'
-            ]);
+            'as'   => 'update/hardware',
+            'middleware' => 'authorize:assets.edit',
+            'uses' => 'AssetsController@getEdit'
+        ]);
         Route::get('/bytag', [
             'as'   => 'findbytag/hardware',
             'middleware' => 'authorize:assets.view',
@@ -297,24 +303,24 @@ Route::group(
         ]);
 
         Route::get('import/delete-import/{filename}',  [
-                'as' => 'assets/import/delete-file',
-                'middleware' => 'authorize:assets.create',
-                'uses' => 'AssetsController@getDeleteImportFile'
+            'as' => 'assets/import/delete-file',
+            'middleware' => 'authorize:assets.create',
+            'uses' => 'AssetsController@getDeleteImportFile'
         ]);
 
         Route::post( 'import/process/', [ 'as' => 'assets/import/process-file',
-                'middleware' => 'authorize:assets.create',
-                'uses' => 'AssetsController@postProcessImportFile'
+            'middleware' => 'authorize:assets.create',
+            'uses' => 'AssetsController@postProcessImportFile'
         ]);
         Route::get( 'import/delete/{filename}', [ 'as' => 'assets/import/delete-file',
-                'middleware' => 'authorize:assets.create', // TODO What permissions should this require?
-                'uses' => 'AssetsController@getDeleteImportFile'
+            'middleware' => 'authorize:assets.create', // TODO What permissions should this require?
+            'uses' => 'AssetsController@getDeleteImportFile'
         ]);
 
         Route::get('import',[
-                'as' => 'assets/import',
-                'middleware' => 'authorize:assets.create',
-                'uses' => 'AssetsController@getImportUpload'
+            'as' => 'assets/import',
+            'middleware' => 'authorize:assets.create',
+            'uses' => 'AssetsController@getImportUpload'
         ]);
 
 
@@ -357,6 +363,15 @@ Route::group(
             ]
         );
 
+        Route::get(
+            'testpdf',
+            [
+                'as' => 'hardware/testpdf',
+                'middleware' => 'authorize:assets.edit',
+                'uses' => 'AssetsController@testPDF'
+            ]
+        );
+
         Route::post(
             'bulksave',
             [
@@ -367,11 +382,11 @@ Route::group(
         );
 
         # Bulk checkout / checkin
-         Route::get( 'bulkcheckout',  [
-                 'as' => 'hardware/bulkcheckout',
-                 'middleware' => 'authorize:assets.checkout',
-                 'uses' => 'AssetsController@getBulkCheckout'
-         ]);
+        Route::get( 'bulkcheckout',  [
+            'as' => 'hardware/bulkcheckout',
+            'middleware' => 'authorize:assets.checkout',
+            'uses' => 'AssetsController@getBulkCheckout'
+        ]);
         Route::post( 'bulkcheckout',  [
             'as' => 'hardware/bulkcheckout',
             'middleware' => 'authorize:assets.checkout',
@@ -398,10 +413,10 @@ Route::group(
         });
 
         Route::get('/', [
-                'as'   => 'hardware',
-                'middleware' => 'authorize:assets.view',
-                'uses' => 'AssetsController@getIndex'
-            ]);
+            'as'   => 'hardware',
+            'middleware' => 'authorize:assets.view',
+            'uses' => 'AssetsController@getIndex'
+        ]);
 
     }
 );
@@ -444,11 +459,11 @@ Route::group([ 'prefix' => 'admin','middleware' => ['web','auth']], function () 
     Route::get('requests',
         // foreach( CheckoutRequest::with('user')->get() as $requestedItem) {
         //     echo $requestedItem->user->username . ' requested ' . $requestedItem->requestedItem->name;
-            [
+        [
             'as' => 'requests',
             'middleware' => 'authorize:admin',
             'uses' => 'ViewAssetsController@getRequestedIndex'
-            ]);
+        ]);
     # Licenses
     Route::group([ 'prefix' => 'licenses', 'middleware'=>'authorize:licenses.view' ], function () {
 
@@ -1007,7 +1022,7 @@ Route::group(['middleware' => ['web','auth','authorize:reports.view']], function
         'reports/activity/json',
         [ 'as' => 'api.activity.list', 'uses' => 'ReportsController@getActivityReportDataTable' ]
     );
-    
+
     Route::get(
         'reports/unaccepted_assets',
         [ 'as' => 'reports/unaccepted_assets', 'uses' => 'ReportsController@getAssetAcceptanceReport' ]
@@ -1031,45 +1046,45 @@ Route::group([ 'prefix' => 'setup', 'middleware' => 'web'], function () {
     Route::get(
         'user',
         [
-        'as'  => 'setup.user',
-        'uses' => 'SettingsController@getSetupUser' ]
+            'as'  => 'setup.user',
+            'uses' => 'SettingsController@getSetupUser' ]
     );
 
     Route::post(
         'user',
         [
-        'as'  => 'setup.user.save',
-        'uses' => 'SettingsController@postSaveFirstAdmin' ]
+            'as'  => 'setup.user.save',
+            'uses' => 'SettingsController@postSaveFirstAdmin' ]
     );
 
 
     Route::get(
         'migrate',
         [
-        'as'  => 'setup.migrate',
-        'uses' => 'SettingsController@getSetupMigrate' ]
+            'as'  => 'setup.migrate',
+            'uses' => 'SettingsController@getSetupMigrate' ]
     );
 
     Route::get(
         'done',
         [
-        'as'  => 'setup.done',
-        'uses' => 'SettingsController@getSetupDone' ]
+            'as'  => 'setup.done',
+            'uses' => 'SettingsController@getSetupDone' ]
     );
 
     Route::get(
         'mailtest',
         [
-        'as'  => 'setup.mailtest',
-        'uses' => 'SettingsController@ajaxTestEmail' ]
+            'as'  => 'setup.mailtest',
+            'uses' => 'SettingsController@ajaxTestEmail' ]
     );
 
 
     Route::get(
         '/',
         [
-        'as'  => 'setup',
-        'uses' => 'SettingsController@getSetupIndex' ]
+            'as'  => 'setup',
+            'uses' => 'SettingsController@getSetupIndex' ]
     );
 
 });
@@ -1101,9 +1116,9 @@ Route::post(
 Route::get(
     '/',
     [
-    'as' => 'home',
-    'middleware' => ['web', 'auth'],
-    'uses' => 'DashboardController@getIndex' ]
+        'as' => 'home',
+        'middleware' => ['web', 'auth'],
+        'uses' => 'DashboardController@getIndex' ]
 );
 
 
