@@ -2,7 +2,8 @@
 namespace App\Models;
 
 use App\Helpers\Helper;
-use App\Http\Controllers\AssetModelsController;
+use App\Http\Controllers\AssetsController;
+use App\Http\Requests\Request;
 use App\Http\Traits\UniqueUndeletedTrait;
 use App\Jobs\EmailApprover;
 use App\Jobs\EmailAssignedUser;
@@ -12,7 +13,7 @@ use App\Models\Location;
 use App\Models\Loggable;
 use App\Models\Requestable;
 use App\Models\Setting;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Config;
 use DateTime;
 use Debugbar;
@@ -22,6 +23,7 @@ use Log;
 use Parsedown;
 use Watson\Validating\ValidatingTrait;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use PDF;
 
 /**
  * Model for Assets.
@@ -109,20 +111,23 @@ class Asset extends Depreciable
         $this->last_checkout = $checkout_at;
         $this->iss_location_id = $issue_location;
 
-        $this->assigneduser()->associate($user);
-
         if($name != null)
         {
             $this->name = $name;
         }
 
+        if($status_id = Statuslabel::where('name', 'Allocated')->first()->id){
+            $this->status_id = $status_id;
+        }
+        $this->assigneduser()->associate($user);
+
+
         $settings = Setting::getSettings();
 
-        if ($this->requireAcceptance()) {
+        if ($this->requireAcceptance()== '1' && $settings->issue_form_download == 0) {
             $this->accepted="pending";
             $this->approved="pending";
         }
-
 
 
         if ($this->save()) {
@@ -135,7 +140,7 @@ class Asset extends Depreciable
                 $user->email = $user->getEmailAddress();
                 $user->save();
             }
-            if ((($this->requireAcceptance()=='1')  || ($this->getEula())) && ($user->email!='')) {
+            if ((($this->requireAcceptance()=='1')  || ($this->getEula())) && ($user->email!='') && $settings->issue_form_download == 0) {
                 $this->checkOutNotifyMail($log->id, $user, $checkout_at, $expected_checkin, $note, $manager);
             }
 
@@ -188,7 +193,7 @@ class Asset extends Depreciable
 
             }
             catch (\Exception $e){
-                dd($e->getMessage());
+                return false;
             }
 
         }
