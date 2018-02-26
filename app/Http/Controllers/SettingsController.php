@@ -343,6 +343,7 @@ class SettingsController extends Controller
         $setting->alt_barcode_enabled = e(Input::get('alt_barcode_enabled', '0'));
         $setting->barcode_type = e(Input::get('barcode_type'));
         $setting->load_remote = e(Input::get('load_remote', '0'));
+        $setting->issue_form_download = e(Input::get('issue_form', '0'));
         $setting->default_currency = e(Input::get('default_currency', '$'));
         $setting->qr_text = e(Input::get('qr_text'));
         $setting->auto_increment_prefix = e(Input::get('auto_increment_prefix'));
