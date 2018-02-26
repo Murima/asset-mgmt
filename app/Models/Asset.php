@@ -166,7 +166,7 @@ class Asset extends Depreciable
         $data['note'] = $note;
         $data['item_serial'] = $this->serial;
         $data['require_acceptance'] = $this->requireAcceptance();
-        if (User::find($this->assigned_to)->exitst()){
+        if (User::find($this->assigned_to)->exists()){
             $data['assigned_to'] = $this->assigned_to;
         }
         else{
