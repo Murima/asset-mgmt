@@ -1,6 +1,7 @@
 <?php
 namespace App\Helpers;
 
+use App\Http\Requests\Request;
 use DB;
 use App\Models\Statuslabel;
 use App\Models\Location;
@@ -19,6 +20,7 @@ use App\Models\Consumable;
 use App\Models\Asset;
 use Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Route;
 
 class Helper
 {
@@ -261,13 +263,26 @@ class Helper
      */
     public static function managerList()
     {
-        $manager_list = array('' => trans('general.select_user')) +
-            User::where('deleted_at', '=', null)
-                ->orderBy('last_name', 'asc')
-                ->orderBy('first_name', 'asc')->get()
-                ->lists('complete_name', 'id')->toArray();
+        $routeName = \Route::current()->getName();
+        if ($routeName == 'checkout/hardware'){
+            $users_list_all =   array( '' => trans('general.select_user')) +
+                User::where('deleted_at', '=', null)
+                    ->where('show_in_list','=',1)
+                    ->orderBy('last_name', 'asc')
+                    ->orderBy('first_name', 'asc')->get()
+                    ->lists('complete_name', 'id')->toArray();
 
-        return $manager_list;
+            return $users_list_all;
+        }
+        else{
+            $manager_list = array('' => trans('general.select_user')) +
+                User::where('deleted_at', '=', null)
+                    ->orderBy('last_name', 'asc')
+                    ->orderBy('first_name', 'asc')->get()
+                    ->lists('complete_name', 'id')->toArray();
+
+            return $manager_list;
+        }
     }
 
     /**
@@ -306,14 +321,29 @@ class Helper
      */
     public static function usersList()
     {
-        $users_list =   array( '' => trans('general.select_user')) +
-            Company::scopeCompanyables(User::where('deleted_at', '=', null))
-                ->where('show_in_list','=',1)
-                ->orderBy('last_name', 'asc')
-                ->orderBy('first_name', 'asc')->get()
-                ->lists('complete_name', 'id')->toArray();
 
-        return $users_list;
+        $routeName = \Route::current()->getName();
+        if ($routeName == 'checkout/hardware'){
+            $users_list_all =   array( '' => trans('general.select_user')) +
+                User::where('deleted_at', '=', null)
+                    ->where('show_in_list','=',1)
+                    ->orderBy('last_name', 'asc')
+                    ->orderBy('first_name', 'asc')->get()
+                    ->lists('complete_name', 'id')->toArray();
+
+            return $users_list_all;
+        }
+        else{
+            $users_list =   array( '' => trans('general.select_user')) +
+                Company::scopeCompanyables(User::where('deleted_at', '=', null))
+                    ->where('show_in_list','=',1)
+                    ->orderBy('last_name', 'asc')
+                    ->orderBy('first_name', 'asc')->get()
+                    ->lists('complete_name', 'id')->toArray();
+
+            return $users_list;
+        }
+
     }
 
     /**

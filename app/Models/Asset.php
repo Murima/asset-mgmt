@@ -706,7 +706,7 @@ class Asset extends Depreciable
         return $query->whereNULL('assigned_to')
             ->whereHas('assetstatus', function ($query) {
 
-                $query->where('deployable', '=', 1)
+                $query->where('deployable', '=', 1) //TODO use this instead of hardcoded status labels
                     ->where('pending', '=', 0)
                     ->where('archived', '=', 0);
             });

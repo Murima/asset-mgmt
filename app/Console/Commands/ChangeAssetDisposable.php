@@ -39,13 +39,14 @@ class ChangeAssetDisposable extends Command
      */
     public function handle()
     {
-        $disposable_id = StatusLabel::TextSearch("Disposable")->first()->id;
+        $disposable_id = StatusLabel::TextSearch("Disposable")->first()->id; //TODO stop hardcoding status labels
         $damaged_id = StatusLabel::TextSearch("Damaged")->first()->id;
 
         $eol_assets = Asset::where('archived', '=', '0')
             ->whereNotNull('purchase_date')
             ->whereNull('deleted_at')
             ->where('status_id', '!=', $disposable_id)
+            ->where('status_id', '!=', $damaged_id)
             ->whereNotNull('model_id')->get();
 
         $this->info(count($eol_assets).' EOL assets');
