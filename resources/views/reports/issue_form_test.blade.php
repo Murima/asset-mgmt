@@ -50,9 +50,9 @@ color: #FFFFFF;">
 
                 <th>Accessories:</th>
                 @foreach($accessories as $accessory)
-                <tr>
-                    <td>{{$accessory or ''}}</td>
-                </tr>
+                    <tr>
+                        <td>{{$accessory or ''}}</td>
+                    </tr>
                 @endforeach
 
             </table>
@@ -155,9 +155,12 @@ color: #FFFFFF;">
                 <tr >
 
             </table>
+            <br>
+            <div style="text-align: center; width: 100%;">
+                <h3>Fill on return</h3>
+                <hr>
+            </div>
 
-            <h3 style="text-align: center">Fill on return</h3>
-            <hr>
 
             <table border="1" style="float: left; width: 50%;">
                 <tr style="height: 60px;">

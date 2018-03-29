@@ -72,7 +72,7 @@
                         <div class="form-group">
                             <label for="country_director" class="col-md-3 control-label">{{ trans('admin/hardware/form.cd') }}</label>
                             <div class="col-md-7 col-sm-12">
-                                {{ Form::select('country_director', $users_list , array('class'=>'select2', 'id'=>'country_director', 'style'=>'width:100%')) }}
+                                {{ Form::select('country_director', $all_users , array('class'=>'select2', 'id'=>'country_director', 'style'=>'width:100%')) }}
 
                             </div>
                         </div>

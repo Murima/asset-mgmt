@@ -14,6 +14,7 @@ use App\Models\Location;
 use App\Models\Setting;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -114,12 +115,12 @@ class ReportsController extends Controller
     {
 
         $report_name = '';
-        if(\Auth::user()->isSuperUser()){
+        if(Auth::user()->isSuperUser()){
 
             $report_name= 'All-Offices';
         }
         else{
-            $report_name= Company::find(\Auth::user()->company_id)->name; //fix this
+            $report_name= Company::find(Auth::user()->company_id)->name; //fix this
         }
         \Debugbar::disable();
 
@@ -203,9 +204,9 @@ class ReportsController extends Controller
                         //($asset->company) ? $asset->company->name : '', dont need this for now
                         $asset->id,
                         ($asset->asset_type) ? $asset->asset_type : '',
-                        ($asset->defaultloc) ? $asset->defaultLoc->country : '',
-                        ($asset->assigneduser)  ? $asset->defaultLoc->name : '',
-                        ($asset->defaultLoc->name)  ? $asset->defaultLoc->name : '',
+                        ($asset->defaultLoc) ? $asset->defaultLoc->country : '',
+                        ($asset->issueLoc)  ? $asset->issueLoc->name : '',
+                        ($asset->defaultLoc)  ? $asset->defaultLoc->name : '',
                         ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
                         //($asset->last_checkout!='') ? e($asset->last_checkout) : '',
 
@@ -214,7 +215,6 @@ class ReportsController extends Controller
                         //($asset->assigneduser) ? e($asset->assigneduser->id))
 
                         ($accessories =$asset->getAccessories()), //TODO get all accessories
-                        //'NULL', //accessories
                         ($asset->model->manufacturer) ? $asset->model->manufacturer->name : '',
                         //Asset model name
                         ($asset->model) ? $asset->model->name : '',

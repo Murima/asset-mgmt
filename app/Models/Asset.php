@@ -353,6 +353,18 @@ class Asset extends Depreciable
     }
 
     /**
+     * get the assets issue location based on issue location
+     */
+    public function issueLoc()
+    {
+        if ($this->assigneduser) {
+            return $this->belongsTo('\App\Models\Location', 'iss_location_id');
+        } else {
+            return $this->belongsTo('\App\Models\Location', 'rtd_location_id');
+        }
+
+    }
+    /**
      * Get action logs for this asset
      */
     public function assetlog()
@@ -560,7 +572,6 @@ class Asset extends Depreciable
 
             Debugbar::addMessage('cat_prefix', $category_prefix);
 
-            Debugbar::addMessage('temp', $temp_asset_tag);
             $asset_tag_digits = preg_replace('/\D/', '', $temp_asset_tag);
             $asset_tag = preg_replace('/^0*/', '', $asset_tag_digits);
 
@@ -781,6 +792,19 @@ class Asset extends Depreciable
         return $query->where('assigned_to', '>', '0');
     }
 
+    /**
+     * Query builder scope for Disposed assets
+     * @param $query
+     */
+    public function scopeDisposable($query) //TODO add method to check if asset is disposable based on asset type
+    {
+        return $query->whereHas('assetstatus', function ($query) {
+
+            $query->where('deployable', '=', 0)
+                ->where('pending', '=', 1)
+                ->where('archived', '=', 1);
+        });
+    }
     /**
      * Query builder scope for Requestable assets
      *

@@ -1399,7 +1399,7 @@ class AssetsController extends Controller
     public function getRestore($assetId = null)
     {
 
-        // Get user information
+        // Get asset information
         $asset = Asset::withTrashed()->find($assetId);
 
         if (!Company::isCurrentUserHasAccess($asset)) {
@@ -1407,7 +1407,7 @@ class AssetsController extends Controller
         } elseif (isset($asset->id)) {
 
             // Restore the asset
-            Asset::withTrashed()->where('id', $assetId)->restore();
+            Asset::withTrashed()->where('id', $assetId)->restore(); //TODO check if disposed then change to disposable or allocated
             return redirect()->route('hardware')->with('success', trans('admin/hardware/message.restore.success'));
 
         } else {
@@ -1564,7 +1564,7 @@ class AssetsController extends Controller
     public function postBulkEdit($assets = null)
     {
 
-        if (!Company::isCurrentUserAuthorized()) {
+        if (Auth::user()->hasAccess('assets:edit')) {
             return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
 
         } elseif (!Input::has('edit_asset')) {
@@ -1623,8 +1623,12 @@ class AssetsController extends Controller
             } elseif (Input::get('bulk_actions')== 'dispose'){
 
                 $users_list = Helper::usersList();
+                $all_users = Helper::usersList(true);
+
                 $assets = Asset::with('assigneduser', 'assetloc')->find($asset_ids);
-                return View::make('hardware/bulk-dispose')->with('assets', $assets)->with('users_list', $users_list );
+                return View::make('hardware/bulk-dispose')->with('assets', $assets)
+                    ->with('users_list', $users_list )
+                    ->with('all_users', $all_users);
 
             }
 
@@ -1784,7 +1788,7 @@ class AssetsController extends Controller
 
             // no values given, nothing to update
         } else {
-            return redirect()->to("hardware")->with('info', trans('admin/hardware/message.delete.nothing_updated'));
+            return redirect()->to("hardware")->with('info', trans('admin/hardware/message.update.nothing_updated'));
 
         }
 
@@ -1799,32 +1803,40 @@ class AssetsController extends Controller
      */
     public function postBulkDispose(Request $request)
     {
-        if (!Company::isCurrentUserAuthorized()) {
+        if (Auth::user()->hasAccess('assets:delete')) {
             return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
-        } elseif (Input::has('bulk_edit')) {
-            //$asset_id = Input::get('bulk_edit');
-            $assets = Asset::find(Input::get('bulk_edit'));
-            //print_r($assets);
+        }
 
+        elseif (Input::has('bulk_edit')) {
+            //$asset_id = Input::get('bulk_edit');
+            $asset_ids=[];
+            $assets = Asset::find(Input::get('bulk_edit'));
+            $status_id = Statuslabel::where('name', 'Disposed')->first()->id; //TODO make this automatic
+            //print_r($assets);
+            foreach ($assets as $asset_id => $value) {
+                $asset_ids[] = $value->id;
+            }
+            $count = Asset::whereIn('id', $asset_ids)->where('status_id', $status_id)->withTrashed()->count();
+            if ($count > 0){
+                return redirect()->to('hardware')->with('error', trans('admin/hardware/message.dispose.already_disposed'));
+            }
             $form_array = array();
             $form_array['reason']= Input::get('reason');
             $form_array['disposal_methods']= Input::get('disposal_methods');
             $form_array['requested_by']= User::find(Input::get('requested_by'));
             $form_array['budget_holder']= User::find(Input::get('budget_holder'));
             $form_array['country_director']= User::find(Input::get('country_director'));
+            $form_array['date'] = date("Y-m-d");
 
-
-            $status_id = Statuslabel::where('name', 'Disposed')->first()->id;
             $dispose_asset = new DisposedAsset();
 
             foreach ($assets as $asset) {
                 //echo '<li>'.$asset;
-                //$update_array['deleted_at'] = date('Y-m-d H:i:s'); delete later in the end
-
                 $this->saveDisposedAssets($asset, $dispose_asset, $form_array);
 
                 $update_array['status_id'] = $status_id;
                 $update_array['assigned_to'] = null;
+                $update_array['deleted_at'] = date("Y-m-d H:i:s");
 
                 if (DB::table('assets')
                     ->where('id', $asset->id)
@@ -1843,20 +1855,24 @@ class AssetsController extends Controller
                     $form_array['eol']= 'Null';
                 }
             }
+            $form_array['assets']= $assets;
             \Debugbar::disable();
 
             $snipeSettings = Setting::getSettings();
 
-            Excel::create('Asset Disposal form', function ($excel) use($snipeSettings, $assets, $form_array){
+            $pdf = PDF::loadView('reports.disposal_form_test',$assets,$form_array, $snipeSettings);
+            return $pdf->inline('disposal_form.pdf');
+
+           /* Excel::create('Asset Disposal form', function ($excel) use($snipeSettings, $assets, $form_array){
                 $excel->sheet('Disposal', function ($sheet) use($snipeSettings, $assets, $form_array){
                     $sheet->loadview('reports.disposal_form')
                         ->with('snipeSettings', $snipeSettings)
                         ->with('form_array', $form_array)
                         ->with('assets', $assets);
                 });
-            })->download('xls');
+            })->download('xls');*/
 
-            return redirect()->to("hardware")->with('success', trans('admin/hardware/message.dispose.initiated'));
+            //return redirect()->to("hardware")->with('success', trans('admin/hardware/message.dispose.initiated'));
         }
         else {
             return redirect()->to("hardware")->with('info', trans('admin/hardware/message.delete.nothing_updated'));
@@ -1960,6 +1976,9 @@ class AssetsController extends Controller
                 break;
             case 'Deployed':
                 $assets->Deployed();
+                break;
+            case 'Disposable':
+                $assets->Disposable();
                 break;
         }
 
@@ -2239,33 +2258,11 @@ class AssetsController extends Controller
     }
 
 
-    public function testPDF($pdf_data){
-        /*$pdf_data= array();
-        $settings = \App\Models\Setting::getSettings();
-        $user = \App\Models\User::find(90);
-        $manager = \App\Models\User::find(100);
-        $asset = \App\Models\Asset::find(2018);
-        $pdf_data= array();
-        $pdf_data['snipeSettings'] = $settings;
-        $pdf_data['last_name'] = $user->last_name;
-        $pdf_data['first_name'] = $user->first_name;
-        $pdf_data['user_title'] = $user->jobtitle;
-        $pdf_data['issue_fname'] = Auth::user()->first_name ?: 'NULL';
-        $pdf_data['issue_lname'] = Auth::user()->last_name ?: 'NULL';
-        $pdf_data['issue_title'] = Auth::user()->jobtitle ?: 'NULL';
-        $pdf_data['approver_fname'] = $manager->first_name;
-        $pdf_data['approver_lname'] = $manager->last_name;
-        $pdf_data['approver_title'] = $manager->jobtitle;
-        $pdf_data['description'] = $asset->model->name;
-        $pdf_data['tag'] = $asset->asset_tag;
-        $pdf_data['date'] = date("Y-m-d");
+    public function testPDF(){
 
-        if ($asset->serial){
-            $pdf_data['serial'] = $asset->serial;
-        }*/
-
-        $pdf = PDF::loadView('reports.issue_form_test', $pdf_data);
-        return $pdf->download('issue_form.pdf');
+        /*$pdf = PDF::loadView('reports.disposal_form_test');
+        return $pdf->inline('disposal_form.pdf');*/
+        return view('reports.disposal_form_test');
     }
 
 }

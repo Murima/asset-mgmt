@@ -42,6 +42,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('snipeit:expiring-alerts')->weekly();
         $schedule->command('snipeit:backup')->weekly()->mondays()->fridays();
         $schedule->command('backup:clean')->monthly();
-        $schedule->command('asset:disposable')->daily();
+        //$schedule->command('asset:disposable')->daily();
     }
 }

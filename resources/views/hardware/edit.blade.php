@@ -87,6 +87,7 @@
     </div>
 
     @if (!$item->id)
+
         <!-- Assigned To -->
         <div id="assigned_user" style="display: none;" class="form-group {{ $errors->has('assigned_to') ? ' has-error' : '' }}">
             <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.checkout_to') }}
@@ -118,6 +119,7 @@
     @include ('partials.forms.edit.notes')
 
     <!-- Default Location -->
+
     <div class="form-group {{ $errors->has('rtd_location_id') ? ' has-error' : '' }}">
         <label for="rtd_location_id" class="col-md-3 control-label">{{ trans('admin/hardware/form.default_location') }}</label>
         <div class="col-md-7 col-sm-11">
@@ -286,7 +288,10 @@
         });
 
         $('#company_id').change(function(){
-            $("#asset_tag").val('');
+            var routeName = "{{\Request::route()->getName()}}";
+            if (routeName !== 'update/hardware'){
+                $("#asset_tag").val('');
+            }
         });
 
         $(function() {

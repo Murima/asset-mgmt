@@ -437,7 +437,8 @@
                             @if (count($status_navs) > 0)
                                 <li class="divider">&nbsp;</li>
                                 @foreach ($status_navs as $status_nav)
-                                    <li><a href="{{ URL::to('hardware?status_id='.$status_nav->id) }}"}> {{ $status_nav->name }}</a></li>
+                                   {{-- <li><a href="{{ URL::to('hardware?status_id='.$status_nav->id) }}"}> {{ $status_nav->name }}</a></li>--}}
+                                    <li{!! (Request::query('status') == 'Disposable' ? ' class="active"' : '') !!}><a href="{{ URL::to('hardware?status=Disposable') }}">{{ $status_nav->name }}</a></li>
                                 @endforeach
                             @endif
                             {{-- Dont need this for now
