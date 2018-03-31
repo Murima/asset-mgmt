@@ -496,18 +496,7 @@ class Asset extends Depreciable
         return $this->belongsTo('\App\Models\Supplier', 'supplier_id');
     }
 
-    /**
-     * Get this assets accessories
-     * @return array
-     */
-    public function getAccessories(){
-        //TODO show all accessories for asset from user or something
-        $acc_array= array();
-        foreach ($this->accessories as $accessory){
-            return $acc_array = $accessory->name;
-        }
-        //return $acc_array;
-    }
+
 
     public function months_until_eol()
     {

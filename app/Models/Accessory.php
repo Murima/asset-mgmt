@@ -90,9 +90,6 @@ class Accessory extends SnipeModel
         return $this->belongsTo('\App\Models\Manufacturer', 'manufacturer_id');
     }
 
-    public function asset(){
-        return $this->belongsTo('\App\Models\Asset');
-    }
     public function checkin_email()
     {
         return $this->category->checkin_email;
