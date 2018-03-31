@@ -49,7 +49,7 @@ class Accessory extends SnipeModel
      *
      * @var array
      */
-    protected $fillable = ['name','qty','category_id','asset_id'];
+    protected $fillable = ['name','qty','category_id','company_id', 'general_accessory_id'];
 
     public function company()
     {
@@ -179,7 +179,7 @@ class Accessory extends SnipeModel
     }
 
     /**
-    * Query builder scope to order on company
+    * Query builder scope to order on category
     *
     * @param  Illuminate\Database\Query\Builder  $query  Query builder instance
     * @param  text                              $order       Order
@@ -192,7 +192,7 @@ class Accessory extends SnipeModel
     }
 
     /**
-    * Query builder scope to order on company
+    * Query builder scope to order on location
     *
     * @param  Illuminate\Database\Query\Builder  $query  Query builder instance
     * @param  text                              $order       Order

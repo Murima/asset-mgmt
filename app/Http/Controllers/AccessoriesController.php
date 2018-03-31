@@ -708,7 +708,7 @@ class AccessoriesController extends Controller
 
         $category_id= AssetModel::find($modelId)->category_id;
         $assetId = $id;
-        if ($id != null){ //if creating get general assets
+        if ($id != null || $id !== 0){ //if creating an asset get general accessories
             if ($category_id){
                 $accessories = GeneralAccessory::where('category_id', '=', $category_id)->get();
                 return json_encode($accessories);
@@ -717,9 +717,7 @@ class AccessoriesController extends Controller
                 return null; //fix this
             }
         }
-        else{
-            $accessories = Asset::find($assetId)->accessories;
-            return json_encode($accessories);
+        else{ //if editing assets
         }
 
     }

@@ -234,7 +234,14 @@ class AssetsController extends Controller
             $asset->iss_location_id     = e(Input::get('iss_location_id'));
         }
 
+        if ($request->input('accessories')){
+            $accessory_details = array();
+            $accessories = $request->input('accessories');
+            $accessory_details['accessory_id']= $accessories;
 
+            $general_accessories = new GeneralAccessoriesController();
+            $general_accessories->postCreateFromAsset($accessory_details);
+        }
 
         // Create the image (if one was chosen.)
         if (Input::has('image')) {
@@ -290,16 +297,6 @@ class AssetsController extends Controller
         // Was the asset created?
         if ($asset->save()) {
 
-            if ($request->input('accessories')){
-                $accessory_details = array();
-                $accessory_details['asset_id']= $asset->id;
-                $accessories = $request->input('accessories');
-                $accessory_details['accessory_id']= $accessories;
-
-                $general_accessories = new GeneralAccessoriesController();
-                $general_accessories->postCreateFromAsset($accessory_details);
-            }
-
             $asset->logCreate();
             if (Input::get('assigned_to')!='') {
                 $user = User::find(e(Input::get('assigned_to')));
@@ -332,7 +329,6 @@ class AssetsController extends Controller
         } elseif (!Company::isCurrentUserHasAccess($item)) {
             return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
         }
-        $accessories = Asset::find($assetId)->accessories;
 
         // Grab the dropdown lists
         $model_list = Helper::modelList();
@@ -346,7 +342,6 @@ class AssetsController extends Controller
         $statuslabel_types =Helper::statusTypeList();
 
         return View::make('hardware/edit', compact('item'))
-            ->with('accessories', $accessories)
             ->with('model_list', $model_list)
             ->with('supplier_list', $supplier_list)
             ->with('company_list', $company_list)
@@ -423,7 +418,9 @@ class AssetsController extends Controller
             $asset->image = '';
         }
 
-        if ($request->has('accessories')){
+        //No accessories when editing
+
+        /*if ($request->has('accessories')){
             $accessory_details = array();
             $accessory_details['asset_id']= $asset->id;
             $accessories = $request->input('accessories');
@@ -431,7 +428,7 @@ class AssetsController extends Controller
 
             $general_accessories = new GeneralAccessoriesController();
             $general_accessories->postCreateFromAsset($accessory_details);
-        }
+        }*/
 
         // Update the asset data
         $asset->name         = e($request->input('name'));
@@ -582,22 +579,27 @@ class AssetsController extends Controller
             return redirect()->to('hardware')->with('error', trans('general.insufficient_permissions'));
         }
 
-        //Get accessories
-        $accessories = Asset::find($assetId)->accessories;
-
+        $download_form=false;
         // Get the dropdown of users and then pass it to the checkout view
         $users_list = Helper::usersList();
 
         //Get the drowpdown of managers then pass it to the checkout view
         $manager_list = Helper::managerList();
         $location_list = Helper::locationsList();
+        $settings = Setting::getSettings();
+
+        if ($settings->issue_form_download ==1){
+            $download_form=true;
+        }
+        $category_list = Helper::categoryList('asset');
 
 
         return View::make('hardware/checkout', compact('asset'))
             ->with('users_list', $users_list)
             ->with('location_list', $location_list)
             ->with('manager_list', $manager_list)
-            ->with('accessories', $accessories);
+            ->with('download_form', $download_form)
+            ->with('category', $category_list);
 
     }
 
@@ -651,16 +653,19 @@ class AssetsController extends Controller
             $issue_location = e(Input::get('iss_location_id'));
         }
 
-
         if ($request->input('accessories')){
-            //assign accessories to user
+            $accessory_details = array();
             $accessories = $request->input('accessories');
-            foreach ($accessories as $accessory){
-                if (is_null($accessory = Accessory::find($accessory))) {
-                    // Redirect to the accessory management page with error
-                    return redirect()->to('accessories')->with('error', trans('admin/accessories/message.user_not_found'));
-                }
+            $accessory_details['accessory_id']= $accessories;
 
+            $general_accessories = new GeneralAccessoriesController();
+            $exists = $general_accessories->postCreateFromAsset($accessory_details, true);
+            if (!$exists) {
+                // Redirect to the accessory management page with error
+                return redirect()->to('accessories')->with('error', trans('admin/accessories/message.accessory_not_found'));
+            }
+            $accessories = Accessory::whereIn('general_accessory_id',$accessories)->get();
+            foreach ($accessories as $accessory) {
 
                 $accessory_names[] = $accessory->name;
                 $accessory->assigned_to  = e(Input::get('assigned_to'));
@@ -669,10 +674,8 @@ class AssetsController extends Controller
                     'created_at' => Carbon::now(),
                     'user_id' => Auth::user()->id,
                     'assigned_to' => e(Input::get('assigned_to'))));
-
             }
         }
-
 
         $response = $asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')), $manager, $issue_location);
 
@@ -716,7 +719,7 @@ class AssetsController extends Controller
                 $pdf_data['office'] = $location_name;
             }
 
-            $pdf = PDF::loadView('reports.issue_form_test', $pdf_data);
+            $pdf = PDF::loadView('reports.issue_form', $pdf_data);
             return $pdf->inline('issue_form.pdf');
         }
         elseif( $response== true && $settings->issue_form_download == 0){

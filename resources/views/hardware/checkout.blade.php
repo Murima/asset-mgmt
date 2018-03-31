@@ -45,7 +45,7 @@
                                 </div>
                             </div>
                     @endif
-
+                    {{ Form::hidden('invisible', $asset->model->id, array('id' => 'model_id')) }}
                     <!-- Asset Name -->
                     {{-- <div class="form-group {{ $errors->has('name') ? 'error' : '' }}">
 
@@ -127,15 +127,31 @@
                         </div>
 
                         <!-- Accessories -->
+                        {{-- <div id="checkbox"  class="form-group">
+                             <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.accessories') }}
+                             </label>
+                             <div id="accessories_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
+                                 @foreach($accessories as $accessory)
+                                     <label for="accessories"><input  type="checkbox" name="accessories[]" id="accessories" value="{{$accessory->id}}" >{{$accessory->name}}</label>
+                                 @endforeach
+                             </div>
+
+                         </div>--}}
+
+                        @include('partials.forms.edit.accessories_checkbox', ['accessories_text' => trans('admin/hardware/form.accessories'),
+                        'accessories_help_text' => trans('admin/hardware/general.accessories_help')])
+
                         <div id="checkbox"  class="form-group">
                             <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.accessories') }}
                             </label>
-                            <div id="accessories_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
-                                @foreach($accessories as $accessory)
-                                    <label for="accessories"><input  type="checkbox" name="accessories[]" id="accessories" value="{{$accessory->id}}" >{{$accessory->name}}</label>
-                                @endforeach
+                            <div id="dynamic_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
+
                             </div>
 
+
+                            <div id="new_accessory" class="col-md-1 col-sm-1 text-left" style="margin-left: -7px; padding-top: 3px">
+                                <a id="new_accessory_button" href='#' data-toggle="modal"  data-target="#createModal" data-dependency="accessorie" data-select='modal-category_id' class="btn btn-sm btn-default">New</a>
+                            </div>
                         </div>
 
                         <!-- Note -->
@@ -151,24 +167,31 @@
 
 
 
-                        @if ($asset->requireAcceptance())
+                        @if ($download_form ==0)
 
                             <div class="form-group">
                                 <div class="col-md-8 col-md-offset-3">
                                     <p class="text-yellow"><i class="fa fa-warning"></i> {{ trans('admin/categories/general.required_acceptance') }}</p>
+                                    <p class="text-yellow"><i class="fa fa-warning"></i> {{ trans('admin/categories/general.required_eula') }}</p>
                                     <p class="text-yellow"><i class="fa fa-warning"></i> {{ trans('admin/categories/general.require_line_manager') }}</p>
                                 </div>
                             </div>
-                        @endif
-
-
-                        @if ($asset->getEula())
+                        @else
                             <div class="form-group">
                                 <div class="col-md-8 col-md-offset-3">
-                                    <p class="text-yellow"><i class="fa fa-warning"></i> {{ trans('admin/categories/general.required_eula') }}</p>
+                                    <p class="text-yellow"><i class="fa fa-warning"></i> {{ trans('admin/categories/general.download_issue_form') }}</p>
                                 </div>
                             </div>
                     @endif
+
+
+                    {{--@if ($asset->getEula())
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-3">
+                                <p class="text-yellow"><i class="fa fa-warning"></i> {{ trans('admin/categories/general.required_eula') }}</p>
+                            </div>
+                        </div>
+                @endif--}}
 
                 </div>
                 <div class="box-footer">
@@ -233,8 +256,26 @@
                         <div class="col-md-8 col-xs-12 required"><input type='password' id='modal-password' class="form-control"></div>
                     </div>
 
+                    <div class="dynamic-form-row">
+                        <div class="col-md-4 col-xs-12"><label for="modal-category_id">{{ trans('general.category') }}:
+                            </label></div>
+                        <div class="col-md-8 col-xs-12 required">{{ Form::select('modal-category', $category ,'', array('class'=>'select2 parent', 'style'=>'width:100%','id' => 'modal-category_id')) }}</div>
+                    </div>
+
+                    <div class="dynamic-form-row">
+                        <div class="col-md-4 col-xs-12"><label for="accessory-name">{{ trans('admin/accessories/general.accessory_name') }}:
+                            </label></div>
+                        <div class="col-md-8 col-xs-12 required"><input type='text' id='accessory-name' class="form-control"></div>
+                    </div>
+
+                    <div class="dynamic-form-row">
+                        <div class="col-md-4 col-xs-12"><label for="modal-name">{{ trans('admin/accessories/general.accessory_name') }}:
+                            </label></div>
+                        <div class="col-md-8 col-xs-12 required"><input type='text' id='modal-name' class="form-control"></div>
+                    </div>
 
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('button.cancel') }}</button>
                     <button type="button" class="btn btn-primary" id="modal-save">{{ trans('general.save') }}</button>
@@ -279,6 +320,11 @@
                         show_er("#modal-email");
                         show_er("#modal-password");
                         show_er("#modal-password_confirm");
+                        break;
+                    case 'accessorie':
+                        //show_er("#modal-accessory_category");
+                        show_er('#modal-accessory-name');
+                        show_er('#modal-category_id');
                         break;
 
 
@@ -382,14 +428,101 @@
 
                             $("#manager_id").val(manager_id);
                             /*$('#manager_id').filter(function () {
-                                return this.id === manager_id
-                                
-                            }).prop('selected', true);*/
+                             return this.id === manager_id
+
+                             }).prop('selected', true);*/
 
                         }
                     });
                 }
             });
+        });
+        function deleteAccessories(){
+
+            var values = [];
+            $('input[name="accessories[]"]:checked').each(function () {
+                values.push(this.value);
+            });
+            $.get("{{config('app.url') }}/api/accessories/remove/"+values+"/general",{_token: "{{ csrf_token() }}"},function (result) {
+                result = $.parseJSON(result);
+                $('#checkbox').hide();
+                $('#acc_label').show();
+                $('#acc_label').attr('checked', false);
+            });
+        }
+        $('#new_accessory').on("click", '#remove_accessory', function () {
+
+            deleteAccessories();
+        });
+
+
+        $('#dynamic_checkbox').click(function(){
+
+            var oneChecked = $('#accessories:checkbox:checked').length > 0;
+            if(oneChecked){
+                $('#new_accessory>a').hide();
+
+
+                var url_tag = "<a id='remove_accessory' class='btn btn-sm btn-danger'>Remove </a>";
+                $('#new_accessory')
+                    .append(url_tag)
+            }
+            else{
+            }
+
+        });
+
+        function displayCheckboxes(){
+            //display checkboxes from database
+            var modelid=$('#model_id').val();
+
+            if (modelid) {
+                $('#acc_label').hide();
+                $('#checkbox').show(); //show the checkbox div
+                $('#dynamic_checkbox').empty(); //empty the dynamic div
+
+                $('#remove_accessory').hide();
+                $('#new_accessory_button').show();
+
+                var id=0;
+
+                $.get("{{config('app.url') }}/api/accessories/"+encodeURIComponent(modelid)+"/"+encodeURIComponent(id)+"/general",{_token: "{{ csrf_token() }}"},function (data) {
+                    data = $.parseJSON(data);
+
+                    $.each(data, function (key,value)
+                    {
+                        let CH=$("<input/>",{type:"checkbox", name:"accessories[]",value:value.id });
+                        let LB=$("<lable/>",{text:value.accessory_name });
+                        $('#dynamic_checkbox').append(CH).append(LB).append('<br>');
+                    });
+                });
+            } else {
+                console.log('No modelid');
+            }
+
+        }
+
+        $('#accessories').click(function(){
+            if( $('#accessories').is(":checked") ){
+                displayCheckboxes();
+            }
+            else{
+                console.log('not checked');
+            }
+        });
+
+    </script>
+
+    <script>
+
+
+        $(document).ready(function(){
+
+            $(function () {//initialize popovers
+                $('[data-toggle="popover"]').popover()
+            });
+
+            $('#checkbox').hide();// hide checkbox inputs
         });
     </script>
 @stop
