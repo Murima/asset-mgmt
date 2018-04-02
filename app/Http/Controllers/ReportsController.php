@@ -130,7 +130,7 @@ class ReportsController extends Controller
             // Open output stream
             $handle = fopen('php://output', 'w');
 
-            Company::scopeCompanyables(Asset::with('assigneduser', 'assetloc','defaultLoc','assigneduser.userloc','model','supplier','accessories','assetstatus','model.manufacturer'))->orderBy('created_at', 'DESC')->chunk(500, function($assets) use($handle, $customfields, $report_name) {
+            Company::scopeCompanyables(Asset::with('assigneduser', 'assetloc','defaultLoc','assigneduser.userloc','model','supplier','assetstatus','model.manufacturer'))->orderBy('created_at', 'DESC')->chunk(500, function($assets) use($handle, $customfields, $report_name) {
                 $headers=[
                     //trans('general.company'),
                     trans('admin/hardware/table.asset_id'),
@@ -204,9 +204,15 @@ class ReportsController extends Controller
                         //($asset->company) ? $asset->company->name : '', dont need this for now
                         $asset->id,
                         ($asset->asset_type) ? $asset->asset_type : '',
+<<<<<<< HEAD
                         ($asset->defaultLoc) ? $asset->defaultLoc->country : '',
                         ($asset->issueLoc)  ? $asset->issueLoc->name : '',
                         ($asset->defaultLoc)  ? $asset->defaultLoc->name : '',
+=======
+                        ($asset->defaultloc) ? $asset->defaultLoc->country : '',
+                        ($asset->assigneduser)  ? $asset->defaultLoc->name : '',
+                        ($asset->defaultloc)  ? $asset->defaultloc->name : '',
+>>>>>>> accessories
                         ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
                         //($asset->last_checkout!='') ? e($asset->last_checkout) : '',
 
@@ -214,7 +220,8 @@ class ReportsController extends Controller
                         ($asset->model->category_id) ? e($asset->model->category->name." ".$asset->model->name) : '',
                         //($asset->assigneduser) ? e($asset->assigneduser->id))
 
-                        ($accessories =$asset->getAccessories()), //TODO get all accessories
+                        ($asset->assigneduser) ? $asset->assigneduser->getAccessories($asset->assigneduser) : '', //accessories TODO get all accessories
+>>>>>>> accessories
                         ($asset->model->manufacturer) ? $asset->model->manufacturer->name : '',
                         //Asset model name
                         ($asset->model) ? $asset->model->name : '',

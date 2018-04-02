@@ -191,6 +191,20 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * Get users accessories and format for asset report
+     * @param $user
+     * @return mixed
+     */
+    public function getAccessories($user){
+        //TODO show all accessories for asset from user or something
+        $accessory_array= array();
+        foreach ($user->accessories as $accessory){
+            $accessory_array []= $accessory->name;
+        }
+        return implode (',',$accessory_array);
+    }
+
+    /**
      * Get consumables assigned to this user
      */
     public function consumables()

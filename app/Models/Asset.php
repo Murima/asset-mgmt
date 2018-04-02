@@ -166,8 +166,8 @@ class Asset extends Depreciable
         $data['note'] = $note;
         $data['item_serial'] = $this->serial;
         $data['require_acceptance'] = $this->requireAcceptance();
-        if (User::find($this->assigned_to)->exitst()){
-            $data['assigned_to'] = $this->assigned_to;
+        if (User::find($this->assigned_to)->exists()){
+            $data['assigned_to'] = User::find($this->assigned_to)->username;
         }
         else{
             $data['assigned_to']= null;
@@ -508,22 +508,7 @@ class Asset extends Depreciable
         return $this->belongsTo('\App\Models\Supplier', 'supplier_id');
     }
 
-    public function accessories()
-    {
-        return $this->hasMany('\App\Models\Accessory', 'asset_id');
-    }
 
-    /**
-     * Get this assets accessories
-     * @return array
-     */
-    public function getAccessories(){ //TODO show all accessories for asset
-        $acc_array= array();
-        foreach ($this->accessories as $accessory){
-            return $acc_array = $accessory->name;
-        }
-        //return $acc_array;
-    }
 
     public function months_until_eol()
     {
