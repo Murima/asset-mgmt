@@ -90,73 +90,85 @@ color: #FFFFFF;">
             </div>
             <h3 style="text-align: center">Fill on issue</h3>
 
-            <table border="2" style="width: 50%;">
-                <tr >
-                    <th>Issued to:</th>
-                    <td>{{$first_name}}</td>
-                    <td>{{$last_name}}</td>
-                </tr>
-                <tr>
-                    <th>Date:</th>
-                    <td>{{$date}}</td>
-                </tr>
-                <tr>
-                    <th>Position:</th>
-                    <td>{{$user_title}}</td>
-                </tr>
-                <tr>
-                    <th>Signature:</th>
-                    <td style="height: 50px;"></td>
-                </tr>
-                <tr >
+            <div style="display: flex;">
 
-            </table>
+                <div style="flex:1;width: 50%; float: left;">
+                    <table border="1">
+                        <tr >
+                            <th>Issued to:</th>
+                            <td>{{$first_name}}</td>
+                            <td>{{$last_name}}</td>
+                        </tr>
+                        <tr>
+                            <th>Date:</th>
+                            <td>{{$date}}</td>
+                        </tr>
+                        <tr>
+                            <th>Position:</th>
+                            <td>{{$user_title}}</td>
+                        </tr>
+                        <tr>
+                            <th>Signature:</th>
+                            <td style="height: 50px;"></td>
+                        </tr>
+                        <tr >
 
-            <table border="1" style="float: left;width: 50%;">
-                <tr >
-                    <th>Approved by:</th>
-                    <td>{{$approver_fname}}</td>
-                    <td>{{$approver_lname}}</td>
-                </tr>
-                <tr>
-                    <th>Date:</th>
-                    <td>{{$date}}</td>
-                </tr>
-                <tr>
-                    <th>Position:</th>
-                    <td>{{$approver_title}}</td>
-                </tr>
-                <tr>
-                    <th>Signature:</th>
-                    <td style="height: 50px;"></td>
-                </tr>
-                <tr >
+                    </table>
+                </div>
 
-            </table>
+                <div style="flex:1;width: 50%; float: left;">
+                    <table border="1">
+                        <tr >
+                            <th>Approved by:</th>
+                            <td>{{$approver_fname}}</td>
+                            <td>{{$approver_lname}}</td>
+                        </tr>
+                        <tr>
+                            <th>Date:</th>
+                            <td>{{$date}}</td>
+                        </tr>
+                        <tr>
+                            <th>Position:</th>
+                            <td>{{$approver_title}}</td>
+                        </tr>
+                        <tr>
+                            <th>Signature:</th>
+                            <td style="height: 50px;"></td>
+                        </tr>
+                        <tr >
 
-            <table border="1" style="width: 50%;">
-                <tr >
-                    <th>Issued by:</th>
-                    <td>{{$issue_fname}}</td>
-                    <td>{{$issue_lname}}</td>
-                </tr>
-                <tr>
-                    <th>Date:</th>
-                    <td>{{$date}}</td>
-                </tr>
-                <tr>
-                    <th>Position:</th>
-                    <td>{{$issue_title}}</td>
-                </tr>
-                <tr>
-                    <th>Signature:</th>
-                    <td style="height: 50px;"></td>
-                </tr>
-                <tr >
+                    </table>
+                </div>
 
-            </table>
+            </div>
+
+            <div style="">
+                <table border="1" style="width: 50%; margin-top: 20px">
+                    <tr >
+                        <th>Issued by:</th>
+                        <td>{{$issue_fname}}</td>
+                        <td>{{$issue_lname}}</td>
+                    </tr>
+                    <tr>
+                        <th>Date:</th>
+                        <td>{{$date}}</td>
+                    </tr>
+                    <tr>
+                        <th>Position:</th>
+                        <td>{{$issue_title}}</td>
+                    </tr>
+                    <tr>
+                        <th>Signature:</th>
+                        <td style="height: 50px;"></td>
+                    </tr>
+                    <tr >
+
+                </table>
+            </div>
+
+
             <br>
-            <div style="text-align: center; width: 100%;">
+            <div style="vertical-align: middle; width: 100%; text-align: center">
                 <h3>Fill on return</h3>
                 <hr>
             </div>

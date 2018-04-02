@@ -2259,10 +2259,32 @@ class AssetsController extends Controller
 
 
     public function testPDF(){
+        //test PDF here
+        /*$settings = Setting::getSettings();
+        $user = User::find(84);
+        $manager = User::find(84);
+        $asset = Asset::find(2018);
+        $accessory_names[]= "Test";
+        $pdf_data= array();
 
-        /*$pdf = PDF::loadView('reports.disposal_form_test');
-        return $pdf->inline('disposal_form.pdf');*/
-        return view('reports.disposal_form_test');
+        $pdf_data['snipeSettings'] = $settings;
+        $pdf_data['last_name'] = $user->last_name;
+        $pdf_data['first_name'] = $user->first_name;
+        $pdf_data['user_title'] = $user->jobtitle;
+        $pdf_data['issue_fname'] = Auth::user()->first_name ?: 'NULL';
+        $pdf_data['issue_lname'] = Auth::user()->last_name ?: 'NULL';
+        $pdf_data['issue_title'] = Auth::user()->jobtitle ?: '';
+        $pdf_data['approver_fname'] = $manager->first_name;
+        $pdf_data['approver_lname'] = $manager->last_name;
+        $pdf_data['approver_title'] = $manager->jobtitle;
+        $pdf_data['description'] = $asset->model->name;
+        $pdf_data['tag'] = $asset->asset_tag;
+        $pdf_data['accessories'] = $accessory_names;
+        $pdf_data['date'] = date("Y-m-d");
+        $pdf_data['serial'] = $asset->serial;*/
+
+        /*$pdf = PDF::loadView('reports.issue_form_test', $pdf_data);
+        return $pdf->inline('issue_form.pdf');*/
     }
 
 }
