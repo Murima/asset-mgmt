@@ -89,12 +89,7 @@
         </div>
     @endif
 
-<<<<<<< HEAD
-    @if (!$item->id)
-
-=======
     @if (!$item->id && Auth::user()->hasAccess('superadmin'))
->>>>>>> accessories
         <!-- Assigned To -->
         <div id="assigned_user" style="display: none;" class="form-group {{ $errors->has('assigned_to') ? ' has-error' : '' }}">
             <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.checkout_to') }}
