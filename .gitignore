@@ -43,3 +43,4 @@ tests/_support/_generated/*
 composer.json
 composer.lock
 composer.lock
+config/snappy.php
