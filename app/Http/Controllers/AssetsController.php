@@ -697,7 +697,7 @@ class AssetsController extends Controller
             $pdf_data['description'] = $asset->model->name;
             $pdf_data['tag'] = $asset->asset_tag;
             $pdf_data['accessories'] = $accessory_names;
-            $pdf_data['date'] = date("Y-m-d");
+            $pdf_data['date'] = $checkout_at;
 
             if ($asset->serial){
                 $pdf_data['serial'] = $asset->serial;
