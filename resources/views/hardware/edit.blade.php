@@ -69,24 +69,32 @@
 
     @include ('partials.forms.edit.status')
 
-    @include('partials.forms.edit.accessories_checkbox', ['accessories_text' => trans('admin/hardware/form.accessories'),
+
+
+    @if(\Request::route()->getName() == 'create/hardware')
+        @include('partials.forms.edit.accessories_checkbox', ['accessories_text' => trans('admin/hardware/form.accessories'),
     'accessories_help_text' => trans('admin/hardware/general.accessories_help')])
 
+        <div id="checkbox"  class="form-group">
+            <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.accessories') }}
+            </label>
+            <div id="dynamic_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
 
-    <div id="checkbox"  class="form-group">
-        <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.accessories') }}
-        </label>
-        <div id="dynamic_checkbox" class="col-md-7 col-sm-12" style="border:1px dashed lightgrey; -webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
+            </div>
 
+
+            <div id="new_accessory" class="col-md-1 col-sm-1 text-left" style="margin-left: -7px; padding-top: 3px">
+                <a id="new_accessory_button" href='#' data-toggle="modal"  data-target="#createModal" data-dependency="accessorie" data-select='modal-category_id' class="btn btn-sm btn-default">New</a>
+            </div>
         </div>
+    @endif
 
+<<<<<<< HEAD
+    @if (!$item->id)
 
-        <div id="new_accessory" class="col-md-1 col-sm-1 text-left" style="margin-left: -7px; padding-top: 3px">
-            <a id="new_accessory_button" href='#' data-toggle="modal"  data-target="#createModal" data-dependency="accessorie" data-select='modal-category_id' class="btn btn-sm btn-default">New</a>
-        </div>
-    </div>
-
+=======
     @if (!$item->id && Auth::user()->hasAccess('superadmin'))
+>>>>>>> accessories
         <!-- Assigned To -->
         <div id="assigned_user" style="display: none;" class="form-group {{ $errors->has('assigned_to') ? ' has-error' : '' }}">
             <label for="parent" class="col-md-3 control-label">{{ trans('admin/hardware/form.checkout_to') }}
@@ -118,6 +126,7 @@
     @include ('partials.forms.edit.notes')
 
     <!-- Default Location -->
+
     <div class="form-group {{ $errors->has('rtd_location_id') ? ' has-error' : '' }}">
         <label for="rtd_location_id" class="col-md-3 control-label">{{ trans('admin/hardware/form.default_location') }}</label>
         <div class="col-md-7 col-sm-11">
@@ -179,9 +188,9 @@
             });
             $.get("{{config('app.url') }}/api/accessories/remove/"+values+"/general",{_token: "{{ csrf_token() }}"},function (result) {
                 result = $.parseJSON(result);
-                    $('#checkbox').hide();
-                    $('#acc_label').show();
-                    $('#acc_label').attr('checked', false);
+                $('#checkbox').hide();
+                $('#acc_label').show();
+                $('#acc_label').attr('checked', false);
             });
         }
         $('#new_accessory').on("click", '#remove_accessory', function () {
@@ -214,7 +223,7 @@
                 $('#checkbox').show(); //show the checkbox div
                 $('#dynamic_checkbox').empty(); //empty the dynamic div
 
-                $('#remove_accessory').hide();  
+                $('#remove_accessory').hide();
                 $('#new_accessory_button').show();
 
                 var path = window.location.pathname;
@@ -286,7 +295,10 @@
         });
 
         $('#company_id').change(function(){
-            $("#asset_tag").val('');
+            var routeName = "{{\Request::route()->getName()}}";
+            if (routeName !== 'update/hardware'){
+                $("#asset_tag").val('');
+            }
         });
 
         $(function() {
@@ -368,7 +380,7 @@
                     case 'accessorie':
                         //show_er("#modal-accessory_category");
                         show_er('#modal-category_id');
-
+                        break;
 
                 }
 

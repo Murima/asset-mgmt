@@ -11,6 +11,7 @@ return array(
     'create'  							=> 'Create Category',
     'edit'                              => 'Edit Category',
     'eula_text'							=> 'Category EULA',
+    'download_issue_form'     			=> 'An issue form will be displayed after assignment, please download',
     'eula_text_help'					=> 'This field allows you to customize your EULAs for specific types of assets. If you only have one EULA for all of your assets, you can check the box below to use the primary default.',
     'require_line_manager'              => 'Line managers will also get an email to confirm',
     'require_acceptance'				=> 'Require users to confirm acceptance of assets in this category.',

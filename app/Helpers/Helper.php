@@ -319,11 +319,21 @@ class Helper
      * @since [v2.5]
      * @return Array
      */
-    public static function usersList()
+    public static function usersList($all_users=null)
     {
 
         $routeName = \Route::current()->getName();
         if ($routeName == 'checkout/hardware'){
+            $users_list_all =   array( '' => trans('general.select_user')) +
+                User::where('deleted_at', '=', null)
+                    ->where('show_in_list','=',1)
+                    ->orderBy('last_name', 'asc')
+                    ->orderBy('first_name', 'asc')->get()
+                    ->lists('complete_name', 'id')->toArray();
+
+            return $users_list_all;
+        }
+        elseif ($all_users){
             $users_list_all =   array( '' => trans('general.select_user')) +
                 User::where('deleted_at', '=', null)
                     ->where('show_in_list','=',1)

@@ -37,6 +37,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'username'                => 'required|string|min:2|unique_undeleted',
         'email'                   => 'email',
         'password'                => 'required|min:6',
+        'location_id'             => 'required',
     ];
 
 
@@ -187,6 +188,20 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function accessories()
     {
         return $this->belongsToMany('\App\Models\Accessory', 'accessories_users', 'assigned_to', 'accessory_id')->withPivot('id')->withTrashed();
+    }
+
+    /**
+     * Get users accessories and format for asset report
+     * @param $user
+     * @return mixed
+     */
+    public function getAccessories($user){
+        //TODO show all accessories for asset from user or something
+        $accessory_array= array();
+        foreach ($user->accessories as $accessory){
+            $accessory_array []= $accessory->name;
+        }
+        return implode (',',$accessory_array);
     }
 
     /**

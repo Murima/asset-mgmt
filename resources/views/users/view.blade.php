@@ -200,7 +200,7 @@
 
                       <td class="hidden-print">
                           @can('assets.edit')
-                              <a href="{{ route('checkin/hardware', array('assetId'=> $asset->id, 'backto'=>'user')) }}" class="btn btn-primary btn-sm">Checkin</a>
+                              <a href="{{ route('checkin/hardware', array('assetId'=> $asset->id, 'backto'=>'user')) }}" class="btn btn-primary btn-sm">Return</a>
                           @endcan
                       </td>
                     </tr>

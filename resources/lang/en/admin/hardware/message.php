@@ -53,7 +53,9 @@ return array(
     'dispose' => array(
         'confirm'   	=> 'Are you sure you wish to dispose this asset?',
         'error'   		=> 'There was an issue disposing the asset. Please try again.',
-        'initiated' 		=> 'The asset disposal process was initiated.'
+        'initiated' 	=> 'The asset disposal process was initiated.',
+        'already_disposed'	=>  'Assets were already disposed.'
+
     ),
 
     'checkout' => array(

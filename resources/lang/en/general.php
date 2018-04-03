@@ -13,6 +13,7 @@ return [
     'add_seats'     => 'Added seats',
     'all_assets'			=> 'All Assets',
     'all'       			=> 'All',
+    'all_fields_required'   => 'All fields are required!',
     'archived'              => 'Archived',
     'asset_models'			=> 'Asset Models',
     'asset'					=> 'Asset',

@@ -30,6 +30,7 @@ AssetRequest extends Request
             'name'            => 'min:2|max:255',
             'model_id'        => 'required|integer',
             'status_id'       => 'required|integer',
+            'rtd_location_id' => 'required',
             'company_id'      => 'integer',
             'warranty_months' => 'integer|min:0|max:240',
             'physical'        => 'integer',

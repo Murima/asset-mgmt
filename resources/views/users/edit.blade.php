@@ -406,7 +406,7 @@
             </div>
           </div>
           <!-- Email user -->
-          @if (!$user->id)
+          @if (!$user->id && Auth::user()->isSuperUser())
 
           <div class="form-group">
             <div class="col-sm-3">

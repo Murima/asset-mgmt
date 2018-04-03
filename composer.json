@@ -26,7 +26,11 @@
       "neitanod/forceutf8": "dev-master",
       "pragmarx/google2fa": "^1.0",
     "barryvdh/laravel-ide-helper": "^2.3",
-    "maatwebsite/excel": "~2.1.0"
+    "maatwebsite/excel": "~2.1.0",
+    "h4cc/wkhtmltopdf-i386": "0.12.x",
+    "barryvdh/laravel-snappy": "^0.4.1",
+    "knplabs/knp-snappy": "^1.0",
+    "wemersonjanuario/wkhtmltopdf-windows": "0.12.2.3"
     },
     "require-dev": {
       "fzaninotto/faker": "~1.4",

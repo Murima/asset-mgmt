@@ -350,7 +350,7 @@ Route::group(
             'bulkdispose',
             [
                 'as'   => 'hardware/bulkdispose',
-                'middleware' => 'authorize:assets.delete',
+                'middleware' => 'authorize:assets.manage',
                 'uses' => 'AssetsController@postBulkDispose'
             ]
         );
