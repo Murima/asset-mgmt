@@ -2263,7 +2263,8 @@ class AssetsController extends Controller
 
     public function testPDF(){
         //test PDF here
-        /*$settings = Setting::getSettings();
+       $settings = Setting::getSettings();
+       $user2 = User::find(90);
         $user = User::find(84);
         $manager = User::find(84);
         $asset = Asset::find(2018);
@@ -2277,17 +2278,29 @@ class AssetsController extends Controller
         $pdf_data['issue_fname'] = Auth::user()->first_name ?: 'NULL';
         $pdf_data['issue_lname'] = Auth::user()->last_name ?: 'NULL';
         $pdf_data['issue_title'] = Auth::user()->jobtitle ?: '';
-        $pdf_data['approver_fname'] = $manager->first_name;
-        $pdf_data['approver_lname'] = $manager->last_name;
-        $pdf_data['approver_title'] = $manager->jobtitle;
+        $pdf_data['approver_fname'] = $user2->first_name;
+        $pdf_data['approver_lname'] = $user2->last_name;
+        $pdf_data['approver_title'] = $user2->jobtitle;
         $pdf_data['description'] = $asset->model->name;
         $pdf_data['tag'] = $asset->asset_tag;
         $pdf_data['accessories'] = $accessory_names;
         $pdf_data['date'] = date("Y-m-d");
-        $pdf_data['serial'] = $asset->serial;*/
+        $pdf_data['serial'] = $asset->serial;
 
-        /*$pdf = PDF::loadView('reports.issue_form_test', $pdf_data);
-        return $pdf->inline('issue_form.pdf');*/
+        $pdf = PDF::loadView('reports.issue_form', $pdf_data);
+        return $pdf->inline('issue_form.pdf');
+    }
+
+    public function testWaybill(){
+
+        /*$pdf = PDF::loadView('reports.waybill_test')
+        ->setPaper('a4')->setOrientation('landscape');
+
+        return $pdf->inline('waybill.pdf');*/
+
+        $snipeSettings = Setting::getSettings();
+        return view('reports.waybill_test', $snipeSettings);
+
     }
 
 }

@@ -204,15 +204,15 @@ class ReportsController extends Controller
                         //($asset->company) ? $asset->company->name : '', dont need this for now
                         $asset->id,
                         ($asset->asset_type) ? $asset->asset_type : '',
-<<<<<<< HEAD
+
                         ($asset->defaultLoc) ? $asset->defaultLoc->country : '',
                         ($asset->issueLoc)  ? $asset->issueLoc->name : '',
                         ($asset->defaultLoc)  ? $asset->defaultLoc->name : '',
-=======
+
                         ($asset->defaultloc) ? $asset->defaultLoc->country : '',
                         ($asset->assigneduser)  ? $asset->defaultLoc->name : '',
                         ($asset->defaultloc)  ? $asset->defaultloc->name : '',
->>>>>>> accessories
+
                         ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
                         //($asset->last_checkout!='') ? e($asset->last_checkout) : '',
 
@@ -221,7 +221,7 @@ class ReportsController extends Controller
                         //($asset->assigneduser) ? e($asset->assigneduser->id))
 
                         ($asset->assigneduser) ? $asset->assigneduser->getAccessories($asset->assigneduser) : '', //accessories TODO get all accessories
->>>>>>> accessories
+
                         ($asset->model->manufacturer) ? $asset->model->manufacturer->name : '',
                         //Asset model name
                         ($asset->model) ? $asset->model->name : '',
