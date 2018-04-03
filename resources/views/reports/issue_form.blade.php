@@ -90,10 +90,10 @@ color: #FFFFFF;">
             </div>
             <h3 style="text-align: center">Fill on issue</h3>
 
-            <div style="display: flex;">
+            <div>
 
-                <div style="flex:1;width: 50%; float: left;">
-                    <table border="1">
+                <div>
+                    <table border="1" style="width:50%;float: left;">
                         <tr >
                             <th>Issued to:</th>
                             <td>{{$first_name}}</td>
@@ -116,8 +116,8 @@ color: #FFFFFF;">
                     </table>
                 </div>
 
-                <div style="flex:1;width: 50%; float: left;">
-                    <table border="1">
+                <div >
+                    <table border="1" style="width: 50%; float: left;">
                         <tr >
                             <th>Approved by:</th>
                             <td>{{$approver_fname}}</td>
@@ -142,8 +142,8 @@ color: #FFFFFF;">
 
             </div>
 
-            <div style="">
-                <table border="1" style="width: 50%; margin-top: 20px">
+            <div style="margin-top: 20px;">
+                <table border="1" style="width: 50%;">
                     <tr >
                         <th>Issued by:</th>
                         <td>{{$issue_fname}}</td>

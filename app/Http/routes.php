@@ -371,6 +371,14 @@ Route::group(
                 'uses' => 'AssetsController@testPDF'
             ]
         );
+        Route::get(
+            'testwaybill',
+            [
+                'as' => 'hardware/testwaybill',
+                'middleware' => 'authorize:assets.edit',
+                'uses' => 'AssetsController@testWaybill'
+            ]
+        );
 
         Route::post(
             'bulksave',
