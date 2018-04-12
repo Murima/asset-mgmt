@@ -209,10 +209,6 @@ class ReportsController extends Controller
                         ($asset->issueLoc)  ? $asset->issueLoc->name : '',
                         ($asset->defaultLoc)  ? $asset->defaultLoc->name : '',
 
-                        ($asset->defaultloc) ? $asset->defaultLoc->country : '',
-                        ($asset->assigneduser)  ? $asset->defaultLoc->name : '',
-                        ($asset->defaultloc)  ? $asset->defaultloc->name : '',
-
                         ($asset->assigneduser) ? e($asset->assigneduser->fullName()) : '',
                         //($asset->last_checkout!='') ? e($asset->last_checkout) : '',
 
