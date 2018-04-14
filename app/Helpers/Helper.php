@@ -744,7 +744,8 @@ class Helper
             'TEL'      => 'Telephone',
             'OTH'      => 'Other',
         );
-        if (!empty($name = $categoryName[$prefix])){
+        if (array_key_exists($prefix, $categoryName)){
+            $name = $categoryName[$prefix];
             return $name;
         }
         else{
