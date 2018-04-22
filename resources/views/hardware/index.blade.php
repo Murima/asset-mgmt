@@ -53,9 +53,11 @@
                                 <div id="toolbar">
                                     <select name="bulk_actions" class="form-control select2">
                                         <option value="edit">Edit</option>
+                                        <option value="labels">Generate Labels</option>
+                                        <option value="waybill">Transfer</option>
                                         <option value="delete">Delete</option>
                                         <option value="dispose">Dispose</option>
-                                        <option value="labels">Generate Labels</option>
+
                                     </select>
                                     <button class="btn btn-default" id="bulkEdit" disabled>Go</button>
                                 </div>

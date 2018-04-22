@@ -34,6 +34,8 @@
 
     <link rel="shortcut icon" type="image/ico" href="{{ asset('favicon.ico') }}">
 
+
+
     <style>
         @if ($snipeSettings)
             @if ($snipeSettings->header_color)
@@ -91,6 +93,9 @@
     <script src="{{ asset('assets/js/respond.js') }}"></script>
     @endif
     <![endif]-->
+
+
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
 <div class="wrapper">

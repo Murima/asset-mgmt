@@ -1633,6 +1633,15 @@ class AssetsController extends Controller
                     ->with('users_list', $users_list )
                     ->with('all_users', $all_users);
 
+                //Bulk transfer
+            } elseif (Input::get('bulk_actions') == 'waybill'){
+                $all_users = Helper::usersList(true);
+
+                $assets = Asset::with('assigneduser', 'assetloc')->find($asset_ids);
+                $region = Auth::user()->userloc->name;
+                return View::make('waybill/bulk_transfer')->with('assets', $assets)
+                    ->with('all_users', $all_users)
+                    ->with('origin', $region);
             }
 
         } else {
@@ -2322,7 +2331,7 @@ class AssetsController extends Controller
         return $pdf->inline('waybill.pdf');*/
         $pdf_data= array();
 
-        $snipeSettings = Setting::getSettings();
+        /*$snipeSettings = Setting::getSettings();
         $user = User::find(44);
         $asset_user = User::find(90);
         $assets = Asset::where('assigned_to', $user->id)->get(); //TODO why doesn't relations work here
@@ -2330,10 +2339,12 @@ class AssetsController extends Controller
         $pdf_data['settings'] = $snipeSettings;
         $pdf_data['requester'] = $user;
         $pdf_data['assets'] = $assets;
-        $pdf_data['date'] = date('Y-m-d');
+        $pdf_data['date'] = date('Y-m-d');*/
 
+        $pdf_data['date'] = date('Y-m-d');
         $snipeSettings = Setting::getSettings();
-        return view('reports.table-two', $pdf_data);
+        $pdf_data['settings'] = $snipeSettings;
+        return view('reports.waybill', $pdf_data);
 
     }
 

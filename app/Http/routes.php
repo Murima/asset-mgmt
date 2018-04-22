@@ -354,15 +354,22 @@ Route::group(
                 'uses' => 'AssetsController@postBulkDispose'
             ]
         );
-        Route::get(
-            'testdispose',
+        Route::post(
+            'bulktransfer',
             [
-                'as' => 'hardware/testdispose',
-                'middleware' => 'authorize:assets.edit',
-                'uses' => 'AssetsController@testExcel'
+                'as'   => 'hardware/bulktransfer',
+                'middleware' => 'authorize:assets.manage',
+                'uses' => 'WayBillController@postBulkTransfer'
             ]
         );
-
+        Route::get(
+            'testwaybill2',
+            [
+                'as' => 'hardware/testwaybill2',
+                'middleware' => 'authorize:assets.edit',
+                'uses' => 'WayBillController@testWaybillForm'
+            ]
+        );
         Route::get(
             'testpdf',
             [
@@ -378,6 +385,15 @@ Route::group(
                 'middleware' => 'authorize:assets.edit',
                 'uses' => 'AssetsController@testWaybill'
             ]
+        );
+        Route::get(
+            'testwaybillform',
+            [
+                'as' => 'hardware/testwaybillform',
+                'middleware' => 'authorize:assets.edit',
+                'uses' => 'WayBillController@getView'
+            ]
+
         );
 
         Route::post(
