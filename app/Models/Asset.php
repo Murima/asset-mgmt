@@ -553,6 +553,7 @@ class Asset extends Depreciable
                 ->where('physical', '=', '1')
                 ->where('asset_type', '=', $category_prefix)
                 ->where('rtd_location_id', '=', $location_id)
+                ->where('transferred', '!=', 1)
                 ->max('asset_tag');
 
             Debugbar::addMessage('cat_prefix', $category_prefix);

@@ -50,6 +50,9 @@
                                     <option value="sale">Sale</option>
                                     <option value="donation">Donation</option>
                                     <option value="transfer">Transfer</option>
+                                    <option value="tender">Tender</option>
+                                    <option value="to_donor">Retrn to donor</option>
+                                    <option value="other">Other</option>
                                 </select>
                             </div>
                         </div>

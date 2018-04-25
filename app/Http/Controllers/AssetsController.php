@@ -1633,6 +1633,15 @@ class AssetsController extends Controller
                     ->with('users_list', $users_list )
                     ->with('all_users', $all_users);
 
+                //Bulk transfer
+            } elseif (Input::get('bulk_actions') == 'waybill'){
+                $all_users = Helper::usersList(true);
+
+                $assets = Asset::with('assigneduser', 'assetloc')->find($asset_ids);
+                $region = Auth::user()->userloc->name;
+                return View::make('waybill/bulk_transfer')->with('assets', $assets)
+                    ->with('all_users', $all_users)
+                    ->with('origin', $region);
             }
 
         } else {
@@ -1820,13 +1829,22 @@ class AssetsController extends Controller
                 $asset_ids[] = $value->id;
             }
             $count = Asset::whereIn('id', $asset_ids)->where('status_id', $status_id)->withTrashed()->count();
-            if ($count > 0){
+            if ($count > 0 || empty($asset_ids)){
                 return redirect()->to('hardware')->with('error', trans('admin/hardware/message.dispose.already_disposed'));
             }
             $form_array = array();
+            $method = array();
+
             $form_array['reason']= Input::get('reason');
-            $form_array['disposal_methods']= Input::get('disposal_methods');
-            $form_array['requested_by']= User::find(Input::get('requested_by'));
+            $method[] = strtolower(Input::get('disposal_methods'));
+            $form_array['disposal_method']= $method;
+            $form_array['requester']= User::find(Input::get('requested_by'));
+            if(User::find(Input::get('requested_by'))->userloc->name){
+                $form_array['office'] = User::find(Input::get('requested_by'))->userloc->name;
+            }
+            else{
+                $form_array['office'] = '';
+            }
             $form_array['budget_holder']= User::find(Input::get('budget_holder'));
             $form_array['country_director']= User::find(Input::get('country_director'));
             $form_array['date'] = date("Y-m-d");
@@ -1863,7 +1881,7 @@ class AssetsController extends Controller
 
             $snipeSettings = Setting::getSettings();
 
-            $pdf = PDF::loadView('reports.disposal_form_test',$assets,$form_array, $snipeSettings);
+            $pdf = PDF::loadView('reports.disposal_form_new',$assets,$form_array, $snipeSettings);
             return $pdf->inline('disposal_form.pdf');
 
            /* Excel::create('Asset Disposal form', function ($excel) use($snipeSettings, $assets, $form_array){
@@ -1894,9 +1912,9 @@ class AssetsController extends Controller
         $dispose_asset->asset_id = $asset->id;
         $dispose_asset->asset_tag = $asset->asset_tag;
         $dispose_asset->reason_for_dispose = $form_array['reason'];
-        $dispose_asset->means = $form_array['disposal_methods'];
-        $dispose_asset->requestor = $form_array['requested_by']->username;
-        $dispose_asset->location_id = $form_array['requested_by']->location_id;
+        $dispose_asset->means = $form_array['disposal_method'][0];
+        $dispose_asset->requestor = $form_array['requester']->username;
+        $dispose_asset->location_id = $form_array['requester']->location_id;
         $dispose_asset->budget_holder = $form_array['budget_holder']->username;
         $dispose_asset->country_director = $form_array['country_director']->username;
         $dispose_asset->save();
@@ -1908,20 +1926,34 @@ class AssetsController extends Controller
     public function testExcel(){
 
         //dd('heeeeey');
+        $pdf_data= array();
+        $disposal_method= array();
+
         $snipeSettings = Setting::getSettings();
         $user = User::find(44);
         $asset_user = User::find(90);
-        $assets = Asset::where('assigned_to', $user->id)->get(); //TODO why doesn't relations work here
+        $assets = Asset::where('assigned_to', $asset_user->id)->get(); //TODO why doesn't relations work here
+
+        $pdf_data['settings'] = $snipeSettings;
+        $pdf_data['requester'] = $user;
+        $pdf_data['assets'] = $assets;
+        $pdf_data['date'] = date('Y-m-d');
+        $disposal_method[]='donate';
+        $pdf_data['method'] =$disposal_method;
         //$assets = Asset::find(34);
 
-        Excel::create('Disposal form', function ($excel) use($snipeSettings, $user, $assets){
+        /*Excel::create('Disposal form', function ($excel) use($snipeSettings, $user, $assets){
             $excel->sheet('Disposal', function ($sheet) use($snipeSettings, $user, $assets){
                 $sheet->loadview('reports.disposal_form')
                     ->with('snipeSettings', $snipeSettings)
                     ->with('user', $user)
                     ->with('assets', $assets);
             });
-        })->download('xls');
+        })->download('xls');*/
+
+
+        $pdf = PDF::loadView('reports.disposal_form_new', $pdf_data);
+        return $pdf->inline('issue_form.pdf');
 
     }
     /**
@@ -2297,9 +2329,22 @@ class AssetsController extends Controller
         ->setPaper('a4')->setOrientation('landscape');
 
         return $pdf->inline('waybill.pdf');*/
+        $pdf_data= array();
 
+        /*$snipeSettings = Setting::getSettings();
+        $user = User::find(44);
+        $asset_user = User::find(90);
+        $assets = Asset::where('assigned_to', $user->id)->get(); //TODO why doesn't relations work here
+
+        $pdf_data['settings'] = $snipeSettings;
+        $pdf_data['requester'] = $user;
+        $pdf_data['assets'] = $assets;
+        $pdf_data['date'] = date('Y-m-d');*/
+
+        $pdf_data['date'] = date('Y-m-d');
         $snipeSettings = Setting::getSettings();
-        return view('reports.waybill_test', $snipeSettings);
+        $pdf_data['settings'] = $snipeSettings;
+        return view('reports.waybill', $pdf_data);
 
     }
 
