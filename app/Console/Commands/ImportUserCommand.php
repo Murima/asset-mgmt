@@ -99,8 +99,15 @@ class ImportUserCommand extends Command
 
             $user_username = substr($email, 0,strpos(e($email), '@'));
             $name_array = explode(".", $user_username);
-            $first_name = $name_array[0];
-            $last_name = $name_array[1];
+
+            if( $name_array[0]){
+                $first_name = $name_array[0];
+            }else {
+                $first_name='';
+            }
+            if($name_array[1]){
+                $last_name = $name_array[1];
+            }
 
             $pos = strpos($location, '#')+1;
             $substring = substr($location, $pos);
@@ -160,7 +167,7 @@ class ImportUserCommand extends Command
                 $user->company_id = $company_id;
                 $user->activated = 1;
                 $user->employee_num = $emp_no;
-                $user->ldap_import = 0; 
+                $user->ldap_import = 0;
                 $user->notes = $user_notes;
                 $user->save();
             }
