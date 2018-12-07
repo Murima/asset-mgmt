@@ -405,8 +405,9 @@ class Asset extends Depreciable
     public static function assetcount()
     {
 
-        return Company::scopeCompanyables(Asset::where('physical', '=', '1'))
-            ->whereNull('deleted_at', 'and')
+        return Company::scopeCompanyables(
+            Asset::where('physical', '=', '1'))
+            ->whereNull('deleted_at')
             ->count();
     }
 
@@ -619,10 +620,10 @@ class Asset extends Depreciable
             return number_format(Asset::sum('purchase_cost'), 2);
         }
         else{
-            $user_location = \Auth::user()->location_id;
-
-            $total = Asset::where("rtd_location_id", $user_location)->sum('purchase_cost');
-            return number_format($total,2);
+            return number_format(Company::scopeCompanyables(
+                Asset::where('physical', '=', '1'))
+                ->whereNull('deleted_at')
+                ->sum('purchase_cost'), 2);
         }
     }
 
@@ -704,7 +705,7 @@ class Asset extends Depreciable
             ->whereHas('assetstatus', function ($query) {
 
                 $query->where('deployable', '=', 1) //TODO use this instead of hardcoded status labels
-                    ->where('pending', '=', 0)
+                ->where('pending', '=', 0)
                     ->where('archived', '=', 0);
             });
     }

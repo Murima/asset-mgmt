@@ -237,6 +237,10 @@ Route::group(
             'middleware' => 'authorize:assets.view',
             'uses' => 'AssetsController@getAssetByTag'
         ]);
+        Route::get('/bybarcode/{tag}', [
+            'middleware'  => 'authorize:assets.edit',
+            'uses'  => 'AssetsController@getAssetByBarcodeTag'
+        ]);
 
         Route::get('{assetId}/clone', [
             'as' => 'clone/hardware',

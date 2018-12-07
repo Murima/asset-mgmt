@@ -27,6 +27,8 @@ class Kernel extends ConsoleKernel
         Commands\AssetImportCommand::class,
         Commands\ChangeAssetDisposable::class,
         Commands\ImportUserCommand::class,
+        Commands\AssetImportRequiredColumns::class,
+        Commands\FixAssetTag::class,
     ];
 
     /**
