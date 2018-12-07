@@ -791,8 +791,8 @@ class Helper
             'BUR'      => 'Burao',
             'DHO'      => 'Dhobley',
             'GRW'      => 'Garowe',
-            'KIS'      => 'Kismayo',
             'ADO'      => 'Adado',
+            'KIS'      => 'Kismayo',
             'OTH'      => 'Other',
         );
         if (!empty($name = $locationName[$prefix])){
