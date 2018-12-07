@@ -184,6 +184,18 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
         );
     });
 
+    /*-- app -*/
+    Route:group(['prefix' => 'app'], function (){
+        Route::post(
+            '/login',
+            'AuthController@login'
+        );
+
+        Route::get('/asset', function () {
+            
+        });
+    });
+
 });
 
 /*
