@@ -128,14 +128,14 @@
         </div>
         <div class="pull-left">
         @if (($settings->labels_display_tag=='1') && ($asset->asset_tag!=''))
-            T: {{ $asset->asset_tag }}
+                <b>{{ $asset->asset_tag }}</b>
         @endif
         </div>
-        <div class="pull-left">
+       {{-- <div class="pull-left">
         @if (($settings->labels_display_serial=='1') && ($asset->serial!=''))
             S: {{ $asset->serial }}
         @endif
-         </div>
+         </div>--}}
 
     </div>
 

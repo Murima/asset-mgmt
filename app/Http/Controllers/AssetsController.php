@@ -109,6 +109,14 @@ class AssetsController extends Controller
 
     }
 
+    /***
+     * @author [Murima]
+     */
+    public function getAssetByBarcodeTag($tag=null){
+
+        //TODO sanitize the input perfectly- recontstruct the URL, count  the tag length
+    }
+
     /**
      * Returns a view that presents a form to create a new asset.
      *
@@ -1199,9 +1207,16 @@ class AssetsController extends Controller
         $company_list = Helper::companyList();
 
         $asset = clone $asset_to_clone;
+        $company_abbrev = Auth::user()->company->name;
+        if ($company_abbrev){
+            $asset->asset_tag = Asset::autoincrement_asset($asset->asset_type, $company_abbrev);
+        }
+        else{
+            $asset->asset_tag = '';
+        }
         $asset->id = null;
-        $asset->asset_tag = '';
         $asset->serial = '';
+        $asset->snipeit_imei ='';
         $asset->assigned_to = '';
 
         return View::make('hardware/edit')
@@ -1232,7 +1247,7 @@ class AssetsController extends Controller
         return View::make('hardware/history');
     }
 
-    /**
+    /**{
      * Import history
      *
      * This needs a LOT of love. It's done very inelegantly right now, and there are
@@ -1884,14 +1899,14 @@ class AssetsController extends Controller
             $pdf = PDF::loadView('reports.disposal_form_new',$assets,$form_array, $snipeSettings);
             return $pdf->inline('disposal_form.pdf');
 
-           /* Excel::create('Asset Disposal form', function ($excel) use($snipeSettings, $assets, $form_array){
-                $excel->sheet('Disposal', function ($sheet) use($snipeSettings, $assets, $form_array){
-                    $sheet->loadview('reports.disposal_form')
-                        ->with('snipeSettings', $snipeSettings)
-                        ->with('form_array', $form_array)
-                        ->with('assets', $assets);
-                });
-            })->download('xls');*/
+            /* Excel::create('Asset Disposal form', function ($excel) use($snipeSettings, $assets, $form_array){
+                 $excel->sheet('Disposal', function ($sheet) use($snipeSettings, $assets, $form_array){
+                     $sheet->loadview('reports.disposal_form')
+                         ->with('snipeSettings', $snipeSettings)
+                         ->with('form_array', $form_array)
+                         ->with('assets', $assets);
+                 });
+             })->download('xls');*/
 
             //return redirect()->to("hardware")->with('success', trans('admin/hardware/message.dispose.initiated'));
         }
@@ -2295,8 +2310,8 @@ class AssetsController extends Controller
 
     public function testPDF(){
         //test PDF here
-       $settings = Setting::getSettings();
-       $user2 = User::find(90);
+        $settings = Setting::getSettings();
+        $user2 = User::find(90);
         $user = User::find(84);
         $manager = User::find(84);
         $asset = Asset::find(2018);

@@ -58,7 +58,9 @@ class Statuslabel extends SnipeModel
             return 'archived';
         } elseif (($this->pending == '0') && ($this->archived == '0')  && ($this->deployable == '0')) {
             return 'undeployable';
-        } else {
+        } elseif (($this->pending == '1') && ($this->archived == '1')  && ($this->deployable == '0')) {
+            return 'disposable';
+        }else {
             return 'deployable';
         }
     }
