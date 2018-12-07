@@ -11,8 +11,6 @@
 
 @section('inputFields')
 
-    {{--company displays as region--}}
-    @include ('partials.forms.edit.company')
 
     <!-- Asset Tag -->
     <div class="form-group {{ $errors->has('asset_tag') ? ' has-error' : '' }}">

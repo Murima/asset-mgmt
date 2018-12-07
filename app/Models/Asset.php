@@ -546,14 +546,11 @@ class Asset extends Depreciable
     {
         $settings = \App\Models\Setting::getSettings();
 
-        $company_name = Helper::getCompanyName($company_abbrev);
-        $location_id = Location::where('name', $company_name)->first()->id;
 
         if ($settings->auto_increment_assets == '1') {
             $temp_asset_tag = \DB::table('assets')
                 ->where('physical', '=', '1')
                 ->where('asset_type', '=', $category_prefix)
-                ->where('rtd_location_id', '=', $location_id)
                 ->where('transferred', '!=', 1)
                 ->max('asset_tag');
 
@@ -568,7 +565,7 @@ class Asset extends Depreciable
             if ($settings->zerofill_count > 0) {
 
                 $category_prefix.="-";
-                return $settings->auto_increment_prefix.$company_abbrev."-".$category_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);
+                return $settings->auto_increment_prefix.$category_prefix.Asset::zerofill(($asset_tag + 1),$settings->zerofill_count);
 
 
             }

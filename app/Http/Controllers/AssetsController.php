@@ -2292,7 +2292,7 @@ class AssetsController extends Controller
             if ($company_id == "undefined"){
                 $company_id = null;
             }
-            if ($company_id){
+           /* if ($company_id){
                 $company_abbrev = Company::find($company_id)->name;
             }
             elseif(\Auth::user()->isSuperUser()){
@@ -2300,11 +2300,11 @@ class AssetsController extends Controller
             }
             else{
                 $company_abbrev = \Auth::user()->company->name;
-            }
+            }*/
         }
 
 
-        return Asset::autoincrement_asset($category_prefix, $company_abbrev);
+        return Asset::autoincrement_asset($category_prefix, null);
     }
 
 
