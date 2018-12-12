@@ -184,19 +184,13 @@ Route::group([ 'prefix' => 'api', 'middleware' => 'auth' ], function () {
         );
     });
 
-    /*-- app -*/
-    Route:group(['prefix' => 'app'], function (){
-        Route::post(
-            '/login',
-            'AuthController@login'
-        );
-
-        Route::get('/asset', function () {
-            
-        });
-    });
-
 });
+
+/*-- app -*/
+    Route::post(
+        'app/login',
+        [ 'as' => 'app.login', 'uses' => 'AuthController@test' ]
+    );
 
 /*
 |--------------------------------------------------------------------------
@@ -248,10 +242,6 @@ Route::group(
             'as'   => 'findbytag/hardware',
             'middleware' => 'authorize:assets.view',
             'uses' => 'AssetsController@getAssetByTag'
-        ]);
-        Route::get('/bybarcode/{tag}', [
-            'middleware'  => 'authorize:assets.edit',
-            'uses'  => 'AssetsController@getAssetByBarcodeTag'
         ]);
 
         Route::get('{assetId}/clone', [
@@ -378,6 +368,16 @@ Route::group(
                 'uses' => 'WayBillController@postBulkTransfer'
             ]
         );
+
+        Route::get(
+            'bybarcode/{tag}',
+                    [
+                        'middleware' => 'authorize:assets.edit',
+                        'uses' => 'AssetsController@getByBarcode',
+                    ]
+
+                );
+
         Route::get(
             'testwaybill2',
             [
@@ -460,6 +460,7 @@ Route::group(
 
     }
 );
+
 
 /*
 |--------------------------------------------------------------------------

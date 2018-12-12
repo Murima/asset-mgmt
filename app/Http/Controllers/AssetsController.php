@@ -112,9 +112,16 @@ class AssetsController extends Controller
     /***
      * @author [Murima]
      */
-    public function getAssetByBarcodeTag($tag=null){
+    public function getByBarcode($tag){
 
         //TODO sanitize the input perfectly- recontstruct the URL, count  the tag length
+        if ($asset = Asset::where('asset_tag', '=', $tag)->first()) {
+            return redirect()->route('view/hardware', $asset->id)->with('topsearch');
+        }
+        else{
+            return $this->getIndex();
+        }
+
     }
 
     /**
