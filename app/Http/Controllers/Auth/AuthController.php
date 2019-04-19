@@ -109,6 +109,27 @@ class AuthController extends Controller
         return $user;
     }
 
+    /**
+     * Test login
+     */
+    public function test(Request $request){
+        if ($request->has('username') && $request->has('password')) {
+
+            $username = $request->input('username');
+            $password = $request->input('password');
+
+            $user = User::where('username', $username)->first();
+
+            if (!Auth::attempt($username, $password)){
+                return response()->json(array('success' => 0, 'message' => 'Failed to log in'), 200);
+            }
+            else{
+                return response()->json(array('success' => 1, 'message' => $user), 200);
+
+            }
+
+        }
+    }
 
     /**
      * Account sign in form processing.

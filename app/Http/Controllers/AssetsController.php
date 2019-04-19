@@ -112,9 +112,17 @@ class AssetsController extends Controller
     /***
      * @author [Murima]
      */
-    public function getAssetByBarcodeTag($tag=null){
+    public function getByBarcode($tag){
 
-        //TODO sanitize the input perfectly- recontstruct the URL, count  the tag length
+        if (preg_match('/([A-Z]){3}-([A-Z]){2,3}-\d{6}/', $tag) == 1){
+            if ($asset = Asset::where('asset_tag', '=', $tag)->first()) {
+                return redirect()->route('view/hardware', $asset->id)->with('topsearch');
+            }
+            else{
+                return $this->getIndex();
+            }
+        }
+        return abort(404, 'Not found');
     }
 
     /**
@@ -2292,7 +2300,8 @@ class AssetsController extends Controller
             if ($company_id == "undefined"){
                 $company_id = null;
             }
-           /* if ($company_id){
+
+            if ($company_id){
                 $company_abbrev = Company::find($company_id)->name;
             }
             elseif(\Auth::user()->isSuperUser()){
@@ -2300,11 +2309,11 @@ class AssetsController extends Controller
             }
             else{
                 $company_abbrev = \Auth::user()->company->name;
-            }*/
+            }
         }
 
 
-        return Asset::autoincrement_asset($category_prefix, null);
+        return Asset::autoincrement_asset($category_prefix, $company_abbrev);
     }
 
 
