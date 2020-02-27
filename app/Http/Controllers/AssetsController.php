@@ -194,6 +194,7 @@ class AssetsController extends Controller
         $asset->archived                    = '0';
         $asset->physical                    = '1';
         $asset->depreciate                  = '0';
+        $asset->transferred                 = '0';
 
 
         if (e(Input::get('status_id')) == '') {
@@ -2305,7 +2306,7 @@ class AssetsController extends Controller
                 $company_abbrev = Company::find($company_id)->name;
             }
             elseif(\Auth::user()->isSuperUser()){
-                $company_abbrev = 'NRB';
+                $company_abbrev = 'KAM';
             }
             else{
                 $company_abbrev = \Auth::user()->company->name;
